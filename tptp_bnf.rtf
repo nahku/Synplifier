@@ -1,0 +1,738 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2509
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue233;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c0\c0\c93333;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \expnd0\expndtw0\kerning0
+%----v7.3.0.0\'a0(TPTP\'a0version.internal\'a0development\'a0number)\
+%------------------------------------------------------------------------------\
+%----README\'a0...\'a0this\'a0header\'a0provides\'a0important\'a0meta-\'a0and\'a0usage\'a0information\
+%----\
+%----Intended\'a0uses\'a0of\'a0the\'a0various\'a0parts\'a0of\'a0the\'a0TPTP\'a0syntax\'a0are\'a0explained\
+%----in\'a0the\'a0TPTP\'a0technical\'a0manual,\'a0linked\'a0from\'a0www.tptp.org.\
+%----\
+%----Four\'a0kinds\'a0of\'a0separators\'a0are\'a0used,\'a0to\'a0indicate\'a0different\'a0types\'a0of\'a0rules:\
+%----\'a0\'a0::=\'a0is\'a0used\'a0for\'a0regular\'a0grammar\'a0rules,\'a0for\'a0syntactic\'a0parsing.\
+%----\'a0\'a0:==\'a0is\'a0used\'a0for\'a0semantic\'a0grammar\'a0rules.\'a0These\'a0define\'a0specific\'a0values\
+%----\'a0\'a0\'a0\'a0\'a0\'a0that\'a0make\'a0semantic\'a0sense\'a0when\'a0more\'a0general\'a0syntactic\'a0rules\'a0apply.\
+%----\'a0\'a0::-\'a0is\'a0used\'a0for\'a0rules\'a0that\'a0produce\'a0tokens.\
+%----\'a0\'a0:::\'a0is\'a0used\'a0for\'a0rules\'a0that\'a0define\'a0character\'a0classes\'a0used\'a0in\'a0the\
+%----\'a0\'a0\'a0\'a0\'a0\'a0\'a0construction\'a0of\'a0tokens.\
+%----\
+%----White\'a0space\'a0may\'a0occur\'a0between\'a0any\'a0two\'a0tokens.\'a0White\'a0space\'a0is\'a0not\'a0specified\
+%----in\'a0the\'a0grammar,\'a0but\'a0there\'a0are\'a0some\'a0restrictions\'a0to\'a0ensure\'a0that\'a0the\'a0grammar\
+%----is\'a0compatible\'a0with\'a0standard\'a0Prolog:\'a0a\'a0<TPTP_file>\'a0should\'a0be\'a0readable\'a0with\
+%----read/1.\
+%----\
+%----The\'a0syntax\'a0of\'a0comments\'a0is\'a0defined\'a0by\'a0the\'a0<comment>\'a0rule.\'a0Comments\'a0may\
+%----occur\'a0between\'a0any\'a0two\'a0tokens,\'a0but\'a0do\'a0not\'a0act\'a0as\'a0white\'a0space.\'a0Comments\
+%----will\'a0normally\'a0be\'a0discarded\'a0at\'a0the\'a0lexical\'a0level,\'a0but\'a0may\'a0be\'a0processed\
+%----by\'a0systems\'a0that\'a0understand\'a0them\'a0(e.g.,\'a0if\'a0the\'a0system\'a0comment\'a0convention\
+%----is\'a0followed).\
+%----\
+%----Multiple\'a0languages\'a0are\'a0defined.\'a0Depending\'a0on\'a0your\'a0need,\'a0you\'a0can\'a0implement\'a0\
+%----just\'a0the\'a0one(s)\'a0you\'a0need.\'a0The\'a0common\'a0rules\'a0for\'a0atoms,\'a0terms,\'a0etc,\'a0come\'a0\
+%----after\'a0the\'a0definitions\'a0of\'a0the\'a0languages,\'a0and\'a0mostly\'a0all\'a0needed\'a0for\'a0all\'a0the\'a0\
+%----languages.\
+%----\cf3 \ul \ulc3 Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----Files.\'a0Empty\'a0file\'a0is\'a0OK.\
+<TPTP_file>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul TPTP_input\cf0 \ulnone >*\
+<TPTP_input>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul annotated_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul include\cf0 \ulnone >\
+\
+%----Formula\'a0records\
+<annotated_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_annotated\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_annotated\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tcf_annotated\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_annotated\cf0 \ulnone >\'a0|\'a0<\cf3 \ul cnf_annotated\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tpi_annotated\cf0 \ulnone >\
+%----Future\'a0languages\'a0may\'a0include\'a0...\'a0\'a0english\'a0|\'a0efof\'a0|\'a0tfof\'a0|\'a0mathml\'a0|\'a0...\
+<tpi_annotated>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0tpi(<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul formula_role\cf0 \ulnone >,<\cf3 \ul tpi_formula\cf0 \ulnone ><\cf3 \ul annotations\cf0 \ulnone >).\
+<tpi_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_formula\cf0 \ulnone >\
+<thf_annotated>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0thf(<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul formula_role\cf0 \ulnone >,<\cf3 \ul thf_formula\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul annotations\cf0 \ulnone >).\
+<tff_annotated>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0tff(<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul formula_role\cf0 \ulnone >,<\cf3 \ul tff_formula\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul annotations\cf0 \ulnone >).\
+<tcf_annotated>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0tcf(<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul formula_role\cf0 \ulnone >,<\cf3 \ul tcf_formula\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul annotations\cf0 \ulnone >).\
+<fof_annotated>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0fof(<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul formula_role\cf0 \ulnone >,<\cf3 \ul fof_formula\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul annotations\cf0 \ulnone >).\
+<cnf_annotated>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0cnf(<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul formula_role\cf0 \ulnone >,<\cf3 \ul cnf_formula\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul annotations\cf0 \ulnone >).\
+<annotations>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0,<\cf3 \ul source\cf0 \ulnone ><\cf3 \ul optional_info\cf0 \ulnone >\'a0|\'a0<\cf3 \ul null\cf0 \ulnone >\
+%----In\'a0derivations\'a0the\'a0annotated\'a0formulae\'a0names\'a0must\'a0be\'a0unique,\'a0so\'a0that\
+%----parent\'a0references\'a0(see\'a0<inference_record>)\'a0are\'a0unambiguous.\
+\
+%----Types\'a0for\'a0problems.\
+%----Note:\'a0The\'a0previous\'a0<source_type>\'a0from\'a0...\
+%----\'a0\'a0\'a0<formula_role>\'a0::=\'a0<user_role>-<source>\
+%----...\'a0is\'a0now\'a0gone.\'a0Parsers\'a0may\'a0choose\'a0to\'a0be\'a0tolerant\'a0of\'a0it\'a0for\'a0backwards\
+%----compatibility.\
+<formula_role>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul lower_word\cf0 \ulnone >\
+<formula_role>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0axiom\'a0|\'a0hypothesis\'a0|\'a0definition\'a0|\'a0assumption\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0lemma\'a0|\'a0theorem\'a0|\'a0corollary\'a0|\'a0conjecture\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0negated_conjecture\'a0|\'a0plain\'a0|\'a0type\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0fi_domain\'a0|\'a0fi_functors\'a0|\'a0fi_predicates\'a0|\'a0unknown\
+%----"axiom"s\'a0are\'a0accepted,\'a0without\'a0proof.\'a0There\'a0is\'a0no\'a0guarantee\'a0that\'a0the\
+%----axioms\'a0of\'a0a\'a0problem\'a0are\'a0consistent.\
+%----"hypothesis"s\'a0are\'a0assumed\'a0to\'a0be\'a0true\'a0for\'a0a\'a0particular\'a0problem,\'a0and\'a0are\
+%----used\'a0like\'a0"axiom"s.\
+%----"definition"s\'a0are\'a0intended\'a0to\'a0define\'a0symbols.\'a0They\'a0are\'a0either\'a0universally\
+%----quantified\'a0equations,\'a0or\'a0universally\'a0quantified\'a0equivalences\'a0with\'a0an\
+%----atomic\'a0lefthand\'a0side.\'a0They\'a0can\'a0be\'a0treated\'a0like\'a0"axiom"s.\
+%----"assumption"s\'a0can\'a0be\'a0used\'a0like\'a0axioms,\'a0but\'a0must\'a0be\'a0discharged\'a0before\'a0a\
+%----derivation\'a0is\'a0complete.\
+%----"lemma"s\'a0and\'a0"theorem"s\'a0have\'a0been\'a0proven\'a0from\'a0the\'a0"axiom"s.\'a0They\'a0can\'a0be\
+%----used\'a0like\'a0"axiom"s\'a0in\'a0problems,\'a0and\'a0a\'a0problem\'a0containing\'a0a\'a0non-redundant\
+%----"lemma"\'a0or\'a0theorem"\'a0is\'a0ill-formed.\'a0They\'a0can\'a0also\'a0appear\'a0in\'a0derivations.\
+%----"theorem"s\'a0are\'a0more\'a0important\'a0than\'a0"lemma"s\'a0from\'a0the\'a0user\'a0perspective.\
+%----"conjecture"s\'a0are\'a0to\'a0be\'a0proven\'a0from\'a0the\'a0"axiom"(-like)\'a0formulae.\'a0A\'a0problem\
+%----is\'a0solved\'a0only\'a0when\'a0all\'a0"conjecture"s\'a0are\'a0proven.\
+%----"negated_conjecture"s\'a0are\'a0formed\'a0from\'a0negation\'a0of\'a0a\'a0"conjecture"\'a0(usually\
+%----in\'a0a\'a0FOF\'a0to\'a0CNF\'a0conversion).\
+%----"plain"s\'a0have\'a0no\'a0specified\'a0user\'a0semantics.\
+%----"fi_domain",\'a0"fi_functors",\'a0and\'a0"fi_predicates"\'a0are\'a0used\'a0to\'a0record\'a0the\
+%----domain,\'a0interpretation\'a0of\'a0functors,\'a0and\'a0interpretation\'a0of\'a0predicates,\'a0for\
+%----a\'a0finite\'a0interpretation.\
+%----"type"\'a0defines\'a0the\'a0type\'a0globally\'a0for\'a0one\'a0symbol;\'a0treat\'a0as\'a0$true.\
+%----"unknown"s\'a0have\'a0unknown\'a0role,\'a0and\'a0this\'a0is\'a0an\'a0error\'a0situation.\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----THF\'a0formulae.\
+<thf_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_logic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_atom_typing\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_subtype\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_sequent\cf0 \ulnone >\
+<thf_logic_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_unary_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_binary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_defined_infix\cf0 \ulnone >\
+<thf_binary_formula>\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_binary_nonassoc\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_binary_assoc\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_binary_type\cf0 \ulnone >\
+%----There's\'a0no\'a0precedence\'a0among\'a0binary\'a0connectives\
+<thf_binary_nonassoc>\'a0\'a0::=\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0<\cf3 \ul nonassoc_connective\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\
+<thf_binary_assoc>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_or_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_and_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_apply_formula\cf0 \ulnone >\
+<thf_or_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_or_formula\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\
+<thf_and_formula>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0&\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_and_formula\cf0 \ulnone >\'a0&\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\
+%----@\'a0(denoting\'a0apply)\'a0is\'a0left-associative\'a0and\'a0lambda\'a0is\'a0right-associative.\
+%----^\'a0[X]\'a0:\'a0^\'a0[Y]\'a0:\'a0f\'a0@\'a0g\'a0(where\'a0f\'a0is\'a0a\'a0<thf_apply_formula>\'a0and\'a0g\'a0is\'a0a\
+%----<thf_unitary_formula>)\'a0should\'a0be\'a0parsed\'a0as:\'a0(^\'a0[X]\'a0:\'a0(^\'a0[Y]\'a0:\'a0f))\'a0@\'a0g.\
+%----That\'a0is,\'a0g\'a0is\'a0not\'a0in\'a0the\'a0scope\'a0of\'a0either\'a0lambda.\
+<thf_apply_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0@\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_apply_formula\cf0 \ulnone >\'a0@\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\
+<thf_unit_formula>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_unary_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_defined_infix\cf0 \ulnone >\
+<thf_preunit_formula>\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_prefix_unary\cf0 \ulnone >\
+<thf_unitary_formula>\'a0\'a0::=\'a0<\cf3 \ul thf_quantified_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_atomic_formula\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul thf_logic_formula\cf0 \ulnone >)\
+%----All\'a0variables\'a0must\'a0be\'a0quantified\
+<thf_quantified_formula>\'a0::=\'a0<\cf3 \ul thf_quantification\cf0 \ulnone >\'a0<\cf3 \ul thf_unit_formula\cf0 \ulnone >\
+<thf_quantification>\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_quantifier\cf0 \ulnone >\'a0[<\cf3 \ul thf_variable_list\cf0 \ulnone >]\'a0:\
+<thf_variable_list>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_typed_variable\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_typed_variable\cf0 \ulnone >,<\cf3 \ul thf_variable_list\cf0 \ulnone >\
+<thf_typed_variable>\'a0\'a0\'a0::=\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0:\'a0<\cf3 \ul thf_top_level_type\cf0 \ulnone >\
+<thf_unary_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_prefix_unary\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_infix_unary\cf0 \ulnone >\
+<thf_prefix_unary>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unary_connective\cf0 \ulnone >\'a0<\cf3 \ul thf_preunit_formula\cf0 \ulnone >\
+<thf_infix_unary>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_term\cf0 \ulnone >\'a0<\cf3 \ul infix_inequality\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_unitary_term\cf0 \ulnone >\
+<thf_atomic_formula>\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_plain_atomic\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_defined_atomic\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_system_atomic\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_fof_function\cf0 \ulnone >\
+<thf_plain_atomic>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_tuple\cf0 \ulnone >\'a0\
+%----Tuples\'a0can't\'a0be\'a0formulae.\'a0See\'a0TFF.\'a0FIX\'a0HERE.\
+<thf_defined_atomic>\'a0\'a0\'a0::=\'a0<\cf3 \ul defined_constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_conditional\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_let\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul thf_conn_term\cf0 \ulnone >)\'a0|\'a0<\cf3 \ul defined_term\cf0 \ulnone >\
+<thf_defined_infix>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_term\cf0 \ulnone >\'a0<\cf3 \ul defined_infix_pred\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_unitary_term\cf0 \ulnone >\
+%----Defined\'a0terms\'a0can't\'a0be\'a0formulae.\'a0See\'a0TFF.\'a0FIX\'a0HERE.\
+<thf_system_atomic>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul system_constant\cf0 \ulnone >\
+%----Allows\'a0first-order\'a0style\'a0in\'a0THF.\
+<thf_fof_function>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul functor\cf0 \ulnone >(<\cf3 \ul thf_arguments\cf0 \ulnone >)\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul defined_functor\cf0 \ulnone >(<\cf3 \ul thf_arguments\cf0 \ulnone >)\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul system_functor\cf0 \ulnone >(<\cf3 \ul thf_arguments\cf0 \ulnone >)\
+\
+<thf_conditional>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0$ite(<\cf3 \ul thf_logic_formula\cf0 \ulnone >,<\cf3 \ul thf_logic_formula\cf0 \ulnone >,\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_logic_formula\cf0 \ulnone >)\
+<thf_let>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0$let(<\cf3 \ul thf_let_types\cf0 \ulnone >,<\cf3 \ul thf_let_defns\cf0 \ulnone >,<\cf3 \ul thf_formula\cf0 \ulnone >)\
+<thf_let_types>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_atom_typing\cf0 \ulnone >\'a0|\'a0[<\cf3 \ul thf_atom_typing_list\cf0 \ulnone >]\
+<thf_atom_typing_list>\'a0::=\'a0<\cf3 \ul thf_atom_typing\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_atom_typing\cf0 \ulnone >,<\cf3 \ul thf_atom_typing_list\cf0 \ulnone >\
+<thf_let_defns>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_let_defn\cf0 \ulnone >\'a0|\'a0[<\cf3 \ul thf_let_defn_list\cf0 \ulnone >]\
+<thf_let_defn>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_logic_formula\cf0 \ulnone >\'a0<\cf3 \ul assignment\cf0 \ulnone >\'a0<\cf3 \ul thf_logic_formula\cf0 \ulnone >\
+<thf_let_defn_list>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_let_defn\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_let_defn\cf0 \ulnone >,<\cf3 \ul thf_let_defn_list\cf0 \ulnone >\
+\
+<thf_unitary_term>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_atomic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul thf_logic_formula\cf0 \ulnone >)\
+<thf_tuple>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0[]\'a0|\'a0[<\cf3 \ul thf_formula_list\cf0 \ulnone >]\
+<thf_formula_list>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_logic_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_logic_formula\cf0 \ulnone >,<\cf3 \ul thf_formula_list\cf0 \ulnone >\
+<thf_conn_term>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul nonassoc_connective\cf0 \ulnone >\'a0|\'a0<\cf3 \ul assoc_connective\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul infix_equality\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_unary_connective\cf0 \ulnone >\
+%----Note\'a0that\'a0syntactically\'a0this\'a0allows\'a0(p\'a0@\'a0=),\'a0but\'a0for\'a0=\'a0the\'a0first\
+%----argument\'a0must\'a0be\'a0known\'a0to\'a0infer\'a0the\'a0type\'a0of\'a0=,\'a0so\'a0that's\'a0not\
+%----allowed,\'a0i.e.,\'a0only\'a0(=\'a0@\'a0p).\
+\
+%----Arguments\'a0recurse\'a0back\'a0up\'a0to\'a0formulae\'a0(this\'a0is\'a0the\'a0THF\'a0world\'a0here)\
+<thf_arguments>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_formula_list\cf0 \ulnone >\
+\
+%----<thf_top_level_type>\'a0appears\'a0after\'a0":",\'a0where\'a0a\'a0type\'a0is\'a0being\'a0specified\
+%----for\'a0a\'a0term\'a0or\'a0variable.\'a0<thf_unitary_type>\'a0includes\'a0<thf_unitary_formula>,\
+%----so\'a0the\'a0syntax\'a0is\'a0very\'a0loose,\'a0but\'a0trying\'a0to\'a0be\'a0more\'a0specific\'a0about\'a0\
+%----<thf_unitary_type>s\'a0(ala\'a0the\'a0semantic\'a0rule)\'a0leads\'a0to\'a0reduce/reduce\'a0\
+%----conflicts.\
+<thf_atom_typing>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul untyped_atom\cf0 \ulnone >\'a0:\'a0<\cf3 \ul thf_top_level_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul thf_atom_typing\cf0 \ulnone >)\
+<thf_top_level_type>\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_mapping_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_apply_type\cf0 \ulnone >\
+%----Removed\'a0along\'a0with\'a0adding\'a0<thf_binary_type>\'a0to\'a0<thf_binary_formula>,\'a0for\
+%----TH1\'a0polymorphic\'a0types\'a0with\'a0binary\'a0after\'a0quantification.\
+%----\'a0\'a0\'a0\'a0\'a0\'a0|\'a0(<thf_binary_type>)\
+<thf_unitary_type>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_formula\cf0 \ulnone >\
+<thf_unitary_type>\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul thf_atomic_type\cf0 \ulnone >\'a0|\'a0<\cf3 \ul th1_quantified_type\cf0 \ulnone >\
+<thf_atomic_type>\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul type_constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul defined_type\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_mapping_type\cf0 \ulnone >\'a0|\'a0(\'a0<\cf3 \ul thf_atomic_type\cf0 \ulnone >\'a0)\
+<th1_quantified_type>\'a0\'a0:==\'a0!>\'a0[<\cf3 \ul thf_variable_list\cf0 \ulnone >]\'a0:\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\
+\
+<thf_apply_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_apply_formula\cf0 \ulnone >\
+<thf_binary_type>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_mapping_type\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_xprod_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_union_type\cf0 \ulnone >\'a0\
+%----Mapping\'a0is\'a0right-associative:\'a0o\'a0>\'a0o\'a0>\'a0o\'a0means\'a0o\'a0>\'a0(o\'a0>\'a0o).\
+<thf_mapping_type>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0<\cf3 \ul arrow\cf0 \ulnone >\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0<\cf3 \ul arrow\cf0 \ulnone >\'a0<\cf3 \ul thf_mapping_type\cf0 \ulnone >\
+%----Xproduct\'a0is\'a0left-associative:\'a0o\'a0*\'a0o\'a0*\'a0o\'a0means\'a0(o\'a0*\'a0o)\'a0*\'a0o.\'a0Xproduct\
+%----can\'a0be\'a0replaced\'a0by\'a0tuple\'a0types.\
+<thf_xprod_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0<\cf3 \ul star\cf0 \ulnone >\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_xprod_type\cf0 \ulnone >\'a0<\cf3 \ul star\cf0 \ulnone >\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\
+%----Union\'a0is\'a0left-associative:\'a0o\'a0+\'a0o\'a0+\'a0o\'a0means\'a0(o\'a0+\'a0o)\'a0+\'a0o.\
+<thf_union_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0<\cf3 \ul plus\cf0 \ulnone >\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul thf_union_type\cf0 \ulnone >\'a0<\cf3 \ul plus\cf0 \ulnone >\'a0<\cf3 \ul thf_unitary_type\cf0 \ulnone >\
+%----Tuple\'a0types,\'a0e.g.,\'a0[a,b,c],\'a0are\'a0allowed\'a0(by\'a0the\'a0loose\'a0syntax)\'a0as\'a0tuples.\
+<thf_subtype>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul untyped_atom\cf0 \ulnone >\'a0<\cf3 \ul subtype_sign\cf0 \ulnone >\'a0<\cf3 \ul atom\cf0 \ulnone >\
+\
+<thf_sequent>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul thf_tuple\cf0 \ulnone >\'a0<\cf3 \ul gentzen_arrow\cf0 \ulnone >\'a0<\cf3 \ul thf_tuple\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul thf_sequent\cf0 \ulnone >)\
+\
+%----New\'a0material\'a0for\'a0modal\'a0logic\'a0semantics,\'a0not\'a0integrated\'a0yet\
+<logic_defn_rule>\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul logic_defn_LHS\cf0 \ulnone >\'a0<\cf3 \ul assignment\cf0 \ulnone >\'a0<\cf3 \ul logic_defn_RHS\cf0 \ulnone >\
+<logic_defn_LHS>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul logic_defn_value\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_top_level_type\cf0 \ulnone >\'a0\'a0|\'a0<\cf3 \ul name\cf0 \ulnone >\
+<logic_defn_LHS>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0$constants\'a0|\'a0$quantification\'a0|\'a0$consequence\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$modalities\
+%----The\'a0$constants,\'a0$quantification,\'a0and\'a0$consequence\'a0apply\'a0to\'a0all\'a0of\'a0the\
+%----$modalities.\'a0Each\'a0of\'a0these\'a0may\'a0be\'a0specified\'a0only\'a0once,\'a0but\'a0not\'a0necessarily\
+%----all\'a0in\'a0a\'a0single\'a0annotated\'a0formula.\
+<logic_defn_RHS>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul logic_defn_value\cf0 \ulnone >\'a0|\'a0<\cf3 \ul thf_unitary_formula\cf0 \ulnone >\
+<logic_defn_value>\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul defined_constant\cf0 \ulnone >\
+<logic_defn_value>\'a0\'a0\'a0\'a0\'a0:==\'a0$rigid\'a0|\'a0$flexible\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$constant\'a0|\'a0$varying\'a0|\'a0$cumulative\'a0|\'a0$decreasing\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$local\'a0|\'a0$global\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$modal_system_K\'a0|\'a0$modal_system_T\'a0|\'a0$modal_system_D\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$modal_system_S4\'a0|\'a0$modal_system_S5\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$modal_axiom_K\'a0|\'a0$modal_axiom_T\'a0|\'a0$modal_axiom_B\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$modal_axiom_D\'a0|\'a0$modal_axiom_4\'a0|\'a0$modal_axiom_5\
+\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----TFF\'a0formulae.\
+<tff_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_logic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_atom_typing\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_subtype\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tfx_sequent\cf0 \ulnone >\
+<tff_logic_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_unary_formula\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_binary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_defined_infix\cf0 \ulnone >\
+%----<tff_defined_infix>\'a0up\'a0here\'a0to\'a0avoid\'a0confusion\'a0in\'a0a\'a0=\'a0b\'a0|\'a0p,\'a0for\'a0TFX.\
+%----For\'a0plain\'a0TFF\'a0it\'a0can\'a0be\'a0in\'a0<tff_defined_atomic>\
+\
+<tff_binary_formula>\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_binary_nonassoc\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_binary_assoc\cf0 \ulnone >\
+<tff_binary_nonassoc>\'a0\'a0::=\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\'a0<\cf3 \ul nonassoc_connective\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\
+<tff_binary_assoc>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_or_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_and_formula\cf0 \ulnone >\
+<tff_or_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_or_formula\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\
+<tff_and_formula>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\'a0&\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_and_formula\cf0 \ulnone >\'a0&\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\
+<tff_unit_formula>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_unary_formula\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_defined_infix\cf0 \ulnone >\
+<tff_preunit_formula>\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_prefix_unary\cf0 \ulnone >\
+<tff_unitary_formula>\'a0\'a0::=\'a0<\cf3 \ul tff_quantified_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_atomic_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tfx_unitary_formula\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul tff_logic_formula\cf0 \ulnone >)\
+<tfx_unitary_formula>\'a0\'a0::=\'a0<\cf3 \ul variable\cf0 \ulnone >\
+<tff_quantified_formula>\'a0::=\'a0<\cf3 \ul fof_quantifier\cf0 \ulnone >\'a0[<\cf3 \ul tff_variable_list\cf0 \ulnone >]\'a0:\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_unit_formula\cf0 \ulnone >\
+%----Quantified\'a0formulae\'a0bind\'a0tightly,\'a0so\'a0cannot\'a0include\'a0infix\'a0formulae\
+\
+<tff_variable_list>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_variable\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_variable\cf0 \ulnone >,<\cf3 \ul tff_variable_list\cf0 \ulnone >\
+<tff_variable>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_typed_variable\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\
+<tff_typed_variable>\'a0\'a0\'a0::=\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0:\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\
+<tff_unary_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_prefix_unary\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_infix_unary\cf0 \ulnone >\
+%FOR\'a0PLAIN\'a0TFF\'a0<fof_infix_unary>\
+<tff_prefix_unary>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul unary_connective\cf0 \ulnone >\'a0<\cf3 \ul tff_preunit_formula\cf0 \ulnone >\
+<tff_infix_unary>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_term\cf0 \ulnone >\'a0<\cf3 \ul infix_inequality\cf0 \ulnone >\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_unitary_term\cf0 \ulnone >\
+\
+%FOR\'a0PLAIN\'a0TFF\'a0<tff_atomic_formula>\'a0\'a0\'a0::=\'a0<fof_atomic_formula>\
+<tff_atomic_formula>\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_plain_atomic\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_defined_atomic\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_system_atomic\cf0 \ulnone >\
+<tff_plain_atomic>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul functor\cf0 \ulnone >(<\cf3 \ul tff_arguments\cf0 \ulnone >)\
+<tff_plain_atomic>\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul proposition\cf0 \ulnone >\'a0|\'a0<\cf3 \ul predicate\cf0 \ulnone >(<\cf3 \ul tff_arguments\cf0 \ulnone >)\
+<tff_defined_atomic>\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_defined_plain\cf0 \ulnone >\'a0\
+%---To\'a0avoid\'a0confusion\'a0in\'a0TFX\'a0mode\'a0a\'a0=\'a0b\'a0|\'a0p\'a0\'a0\'a0|\'a0<tff_defined_infix>\
+<tff_defined_plain>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul defined_constant\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul defined_functor\cf0 \ulnone >(<\cf3 \ul tff_arguments\cf0 \ulnone >)\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tfx_conditional\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tfx_let\cf0 \ulnone >\
+<tff_defined_plain>\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul defined_proposition\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul defined_predicate\cf0 \ulnone >(<\cf3 \ul tff_arguments\cf0 \ulnone >)\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tfx_conditional\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tfx_let\cf0 \ulnone >\
+%----This\'a0is\'a0the\'a0only\'a0one\'a0that\'a0is\'a0strictly\'a0a\'a0formula,\'a0type\'a0$o\
+<tff_defined_infix>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_term\cf0 \ulnone >\'a0<\cf3 \ul defined_infix_pred\cf0 \ulnone >\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_unitary_term\cf0 \ulnone >\
+<tff_system_atomic>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul system_constant\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul system_functor\cf0 \ulnone >(<\cf3 \ul tff_arguments\cf0 \ulnone >)\
+<tff_system_atomic>\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul system_proposition\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul system_predicate\cf0 \ulnone >(<\cf3 \ul tff_arguments\cf0 \ulnone >)\
+<tfx_conditional>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0$ite(<\cf3 \ul tff_logic_formula\cf0 \ulnone >,<\cf3 \ul tff_term\cf0 \ulnone >,<\cf3 \ul tff_term\cf0 \ulnone >)\
+<tfx_let>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0$let(<\cf3 \ul tfx_let_types\cf0 \ulnone >,<\cf3 \ul tfx_let_defns\cf0 \ulnone >,<\cf3 \ul tff_term\cf0 \ulnone >)\
+<tfx_let_types>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_atom_typing\cf0 \ulnone >\'a0|\'a0[<\cf3 \ul tff_atom_typing_list\cf0 \ulnone >]\
+<tff_atom_typing_list>\'a0::=\'a0<\cf3 \ul tff_atom_typing\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_atom_typing\cf0 \ulnone >,<\cf3 \ul tff_atom_typing_list\cf0 \ulnone >\
+<tfx_let_defns>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tfx_let_defn\cf0 \ulnone >\'a0|\'a0[<\cf3 \ul tfx_let_defn_list\cf0 \ulnone >]\
+<tfx_let_defn>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tfx_let_LHS\cf0 \ulnone >\'a0<\cf3 \ul assignment\cf0 \ulnone >\'a0<\cf3 \ul tff_term\cf0 \ulnone >\
+<tfx_let_LHS>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_plain_atomic\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tfx_tuple\cf0 \ulnone >\
+<tfx_let_defn_list>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tfx_let_defn\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tfx_let_defn\cf0 \ulnone >,<\cf3 \ul tfx_let_defn_list\cf0 \ulnone >\
+\
+<tff_term>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_logic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul defined_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tfx_tuple\cf0 \ulnone >\
+<tff_unitary_term>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_atomic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul defined_term\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tfx_tuple\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul tff_logic_formula\cf0 \ulnone >)\
+<tfx_tuple>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0[]\'a0|\'a0[<\cf3 \ul tff_arguments\cf0 \ulnone >]\
+\
+<tff_arguments>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_term\cf0 \ulnone >,<\cf3 \ul tff_arguments\cf0 \ulnone >\
+\
+%----<tff_atom_typing>\'a0can\'a0appear\'a0only\'a0at\'a0top\'a0level.\
+<tff_atom_typing>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul untyped_atom\cf0 \ulnone >\'a0:\'a0<\cf3 \ul tff_top_level_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul tff_atom_typing\cf0 \ulnone >)\
+<tff_top_level_type>\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_non_atomic_type\cf0 \ulnone >\
+<tff_non_atomic_type>\'a0\'a0::=\'a0<\cf3 \ul tff_mapping_type\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tf1_quantified_type\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul tff_non_atomic_type\cf0 \ulnone >)\
+<tf1_quantified_type>\'a0\'a0::=\'a0!>\'a0[<\cf3 \ul tff_variable_list\cf0 \ulnone >]\'a0:\'a0<\cf3 \ul tff_monotype\cf0 \ulnone >\
+<tff_monotype>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul tff_mapping_type\cf0 \ulnone >)\
+<tff_unitary_type>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul tff_xprod_type\cf0 \ulnone >)\
+<tff_atomic_type>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul type_constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul defined_type\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul type_functor\cf0 \ulnone >(<\cf3 \ul tff_type_arguments\cf0 \ulnone >)\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tfx_tuple_type\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul tff_atomic_type\cf0 \ulnone >)\'a0\
+<tff_type_arguments>\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >,<\cf3 \ul tff_type_arguments\cf0 \ulnone >\
+<tff_mapping_type>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_type\cf0 \ulnone >\'a0<\cf3 \ul arrow\cf0 \ulnone >\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\
+<tff_xprod_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_unitary_type\cf0 \ulnone >\'a0<\cf3 \ul star\cf0 \ulnone >\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_xprod_type\cf0 \ulnone >\'a0<\cf3 \ul star\cf0 \ulnone >\'a0<\cf3 \ul tff_atomic_type\cf0 \ulnone >\
+%----For\'a0TFX\'a0only\
+<tfx_tuple_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0[<\cf3 \ul tff_type_list\cf0 \ulnone >]\
+<tff_type_list>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tff_top_level_type\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul tff_top_level_type\cf0 \ulnone >,<\cf3 \ul tff_type_list\cf0 \ulnone >\
+\
+<tff_subtype>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul untyped_atom\cf0 \ulnone >\'a0<\cf3 \ul subtype_sign\cf0 \ulnone >\'a0<\cf3 \ul atom\cf0 \ulnone >\'a0\
+\
+<tfx_sequent>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tfx_tuple\cf0 \ulnone >\'a0<\cf3 \ul gentzen_arrow\cf0 \ulnone >\'a0<\cf3 \ul tfx_tuple\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul tfx_sequent\cf0 \ulnone >)\
+\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----TCF\'a0formulae.\
+<tcf_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tcf_logic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul tff_atom_typing\cf0 \ulnone >\
+<tcf_logic_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul tcf_quantified_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul cnf_formula\cf0 \ulnone >\
+<tcf_quantified_formula>\'a0::=\'a0!\'a0[<\cf3 \ul tff_variable_list\cf0 \ulnone >]\'a0:\'a0<\cf3 \ul cnf_formula\cf0 \ulnone >\
+\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----FOF\'a0formulae.\
+<fof_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_logic_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_sequent\cf0 \ulnone >\
+<fof_logic_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_binary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_unary_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_unitary_formula\cf0 \ulnone >\
+%----Future\'a0answer\'a0variable\'a0ideas\'a0|\'a0<answer_formula>\
+<fof_binary_formula>\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_binary_nonassoc\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_binary_assoc\cf0 \ulnone >\
+%----Only\'a0some\'a0binary\'a0connectives\'a0are\'a0associative\
+%----There's\'a0no\'a0precedence\'a0among\'a0binary\'a0connectives\
+<fof_binary_nonassoc>\'a0\'a0::=\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\'a0<\cf3 \ul nonassoc_connective\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\
+%----Associative\'a0connectives\'a0&\'a0and\'a0|\'a0are\'a0in\'a0<binary_assoc>\
+<fof_binary_assoc>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_or_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_and_formula\cf0 \ulnone >\
+<fof_or_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_or_formula\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\
+<fof_and_formula>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\'a0&\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_and_formula\cf0 \ulnone >\'a0&\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\
+<fof_unary_formula>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul unary_connective\cf0 \ulnone >\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_infix_unary\cf0 \ulnone >\
+%----<fof_term>\'a0!=\'a0<fof_term>\'a0is\'a0equivalent\'a0to\'a0~\'a0<fof_term>\'a0=\'a0<fof_term>\
+<fof_infix_unary>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_term\cf0 \ulnone >\'a0<\cf3 \ul infix_inequality\cf0 \ulnone >\'a0<\cf3 \ul fof_term\cf0 \ulnone >\
+%----<fof_unitary_formula>\'a0are\'a0in\'a0()s\'a0or\'a0do\'a0not\'a0have\'a0a\'a0connective\
+<fof_unit_formula>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_unitary_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_unary_formula\cf0 \ulnone >\
+<fof_unitary_formula>\'a0\'a0::=\'a0<\cf3 \ul fof_quantified_formula\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_atomic_formula\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0(<\cf3 \ul fof_logic_formula\cf0 \ulnone >)\
+%----All\'a0variables\'a0must\'a0be\'a0quantified\
+<fof_quantified_formula>\'a0::=\'a0<\cf3 \ul fof_quantifier\cf0 \ulnone >\'a0[<\cf3 \ul fof_variable_list\cf0 \ulnone >]\'a0:\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_unit_formula\cf0 \ulnone >\
+<fof_variable_list>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >,<\cf3 \ul fof_variable_list\cf0 \ulnone >\
+<fof_atomic_formula>\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_plain_atomic_formula\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_defined_atomic_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_system_atomic_formula\cf0 \ulnone >\
+<fof_plain_atomic_formula>\'a0::=\'a0<\cf3 \ul fof_plain_term\cf0 \ulnone >\
+<fof_plain_atomic_formula>\'a0:==\'a0<\cf3 \ul proposition\cf0 \ulnone >\'a0|\'a0<\cf3 \ul predicate\cf0 \ulnone >(<\cf3 \ul fof_arguments\cf0 \ulnone >)\
+<fof_defined_atomic_formula>\'a0::=\'a0<\cf3 \ul fof_defined_plain_formula\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_defined_infix_formula\cf0 \ulnone >\
+<fof_defined_plain_formula>\'a0::=\'a0<\cf3 \ul fof_defined_plain_term\cf0 \ulnone >\
+<fof_defined_plain_formula>\'a0:==\'a0<\cf3 \ul defined_proposition\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul defined_predicate\cf0 \ulnone >(<\cf3 \ul fof_arguments\cf0 \ulnone >)\
+<fof_defined_infix_formula>\'a0::=\'a0<\cf3 \ul fof_term\cf0 \ulnone >\'a0<\cf3 \ul defined_infix_pred\cf0 \ulnone >\'a0<\cf3 \ul fof_term\cf0 \ulnone >\
+%----System\'a0terms\'a0have\'a0system\'a0specific\'a0interpretations\
+<fof_system_atomic_formula>\'a0::=\'a0<\cf3 \ul fof_system_term\cf0 \ulnone >\
+%----<fof_system_atomic_formula>s\'a0are\'a0used\'a0for\'a0evaluable\'a0predicates\'a0that\'a0are\
+%----available\'a0in\'a0particular\'a0tools.\'a0The\'a0predicate\'a0names\'a0are\'a0not\'a0controlled\'a0by\'a0\
+%----the\'a0TPTP\'a0syntax,\'a0so\'a0use\'a0with\'a0due\'a0care.\'a0Same\'a0for\'a0<fof_system_term>s.\
+\
+%----FOF\'a0terms.\
+<fof_plain_term>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul functor\cf0 \ulnone >(<\cf3 \ul fof_arguments\cf0 \ulnone >)\
+%----Defined\'a0terms\'a0have\'a0TPTP\'a0specific\'a0interpretations\
+<fof_defined_term>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul defined_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_defined_atomic_term\cf0 \ulnone >\
+<fof_defined_atomic_term>\'a0\'a0::=\'a0<\cf3 \ul fof_defined_plain_term\cf0 \ulnone >\
+%----None\'a0yet\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0|\'a0<defined_infix_term>\
+%----None\'a0yet\'a0<defined_infix_term>\'a0::=\'a0<fof_term>\'a0<defined_infix_func>\'a0<fof_term>\
+%----None\'a0yet\'a0<defined_infix_func>\'a0::=\
+<fof_defined_plain_term>\'a0\'a0\'a0::=\'a0<\cf3 \ul defined_constant\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul defined_functor\cf0 \ulnone >(<\cf3 \ul fof_arguments\cf0 \ulnone >)\
+%----System\'a0terms\'a0have\'a0system\'a0specific\'a0interpretations\
+<fof_system_term>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul system_constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul system_functor\cf0 \ulnone >(<\cf3 \ul fof_arguments\cf0 \ulnone >)\
+%----Arguments\'a0recurse\'a0back\'a0to\'a0terms\'a0(this\'a0is\'a0the\'a0FOF\'a0world\'a0here)\
+<fof_arguments>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_term\cf0 \ulnone >,<\cf3 \ul fof_arguments\cf0 \ulnone >\
+%----These\'a0are\'a0terms\'a0used\'a0as\'a0arguments.\'a0Not\'a0the\'a0entry\'a0point\'a0for\'a0terms\'a0because\
+%----<fof_plain_term>\'a0is\'a0also\'a0used\'a0as\'a0<fof_plain_atomic_formula>.\'a0The\'a0<tff_\
+%----options\'a0are\'a0for\'a0only\'a0TFF,\'a0but\'a0are\'a0here\'a0because\'a0<fof_plain_atomic_formula>\'a0\
+%----is\'a0used\'a0in\'a0<fof_atomic_formula>,\'a0which\'a0is\'a0also\'a0used\'a0as\'a0\
+%----<tff_atomic_formula>.\
+<fof_term>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_function_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\
+<fof_function_term>\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_plain_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul fof_defined_term\cf0 \ulnone >\'a0|\'a0\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_system_term\cf0 \ulnone >\
+\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----This\'a0section\'a0is\'a0the\'a0FOFX\'a0syntax.\'a0Not\'a0yet\'a0in\'a0use.\
+<fof_sequent>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_formula_tuple\cf0 \ulnone >\'a0<\cf3 \ul gentzen_arrow\cf0 \ulnone >\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_formula_tuple\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul fof_sequent\cf0 \ulnone >)\
+\
+<fof_formula_tuple>\'a0\'a0\'a0\'a0::=\'a0\{\}\'a0|\'a0\{<\cf3 \ul fof_formula_tuple_list\cf0 \ulnone >\}\
+<fof_formula_tuple_list>\'a0::=\'a0<\cf3 \ul fof_logic_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_logic_formula\cf0 \ulnone >,<\cf3 \ul fof_formula_tuple_list\cf0 \ulnone >\
+\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----CNF\'a0formulae\'a0(variables\'a0implicitly\'a0universally\'a0quantified)\
+<cnf_formula>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul disjunction\cf0 \ulnone >\'a0|\'a0(<\cf3 \ul disjunction\cf0 \ulnone >)\
+<disjunction>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul literal\cf0 \ulnone >\'a0|\'a0<\cf3 \ul disjunction\cf0 \ulnone >\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0<\cf3 \ul literal\cf0 \ulnone >\
+<literal>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_atomic_formula\cf0 \ulnone >\'a0|\'a0~\'a0<\cf3 \ul fof_atomic_formula\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul fof_infix_unary\cf0 \ulnone >\
+\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----Connectives\'a0-\'a0THF\
+<thf_quantifier>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul fof_quantifier\cf0 \ulnone >\'a0|\'a0<\cf3 \ul th0_quantifier\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul th1_quantifier\cf0 \ulnone >\
+%----TH0\'a0quantifiers\'a0are\'a0also\'a0available\'a0in\'a0TH1\
+<th1_quantifier>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0!>\'a0|\'a0?*\
+<th0_quantifier>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0^\'a0|\'a0@+\'a0|\'a0@-\
+<thf_unary_connective>\'a0::=\'a0<\cf3 \ul unary_connective\cf0 \ulnone >\'a0|\'a0<\cf3 \ul th1_unary_connective\cf0 \ulnone >\
+<th1_unary_connective>\'a0::=\'a0!!\'a0|\'a0??\'a0|\'a0@@+\'a0|\'a0@@-\'a0|\'a0@=\
+%----Connectives\'a0-\'a0THF\'a0and\'a0TFF\
+<subtype_sign>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<<\
+%----Connectives\'a0-\'a0TFF\
+%----Connectives\'a0-\'a0FOF\
+<fof_quantifier>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0!\'a0|\'a0?\
+<nonassoc_connective>\'a0\'a0::=\'a0<=>\'a0|\'a0=>\'a0|\'a0<=\'a0|\'a0<~>\'a0|\'a0~<\cf3 \ul vline\cf0 \ulnone >\'a0|\'a0~&\
+<assoc_connective>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul vline\cf0 \ulnone >\'a0|\'a0&\
+<unary_connective>\'a0\'a0\'a0\'a0\'a0::=\'a0~\
+%----The\'a0seqent\'a0arrow\
+<gentzen_arrow>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0-->\
+<assignment>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0:=\
+\
+%----Types\'a0for\'a0THF\'a0and\'a0TFF\
+<type_constant>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul type_functor\cf0 \ulnone >\
+<type_functor>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\
+<defined_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_defined_word\cf0 \ulnone >\
+<defined_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0$oType\'a0|\'a0$o\'a0|\'a0$iType\'a0|\'a0$i\'a0|\'a0$tType\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$real\'a0|\'a0$rat\'a0|\'a0$int\
+%----$oType/$o\'a0is\'a0the\'a0Boolean\'a0type,\'a0i.e.,\'a0the\'a0type\'a0of\'a0$true\'a0and\'a0$false.\
+%----$iType/$i\'a0is\'a0non-empty\'a0type\'a0of\'a0individuals,\'a0which\'a0may\'a0be\'a0finite\'a0or\
+%----infinite.\'a0$tType\'a0is\'a0the\'a0type\'a0of\'a0all\'a0types.\'a0$real\'a0is\'a0the\'a0type\'a0of\'a0<real>s.\
+%----$rat\'a0is\'a0the\'a0type\'a0of\'a0<rational>s.\'a0$int\'a0is\'a0the\'a0type\'a0of\'a0<signed_integer>s\
+%----and\'a0<unsigned_integer>s.\
+<system_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul atomic_system_word\cf0 \ulnone >\
+\
+%----For\'a0all\'a0language\'a0types\
+<atom>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul untyped_atom\cf0 \ulnone >\'a0|\'a0<\cf3 \ul defined_constant\cf0 \ulnone >\
+<untyped_atom>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul constant\cf0 \ulnone >\'a0|\'a0<\cf3 \ul system_constant\cf0 \ulnone >\
+\
+<proposition>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul predicate\cf0 \ulnone >\
+<predicate>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\
+<defined_proposition>\'a0\'a0:==\'a0<\cf3 \ul defined_predicate\cf0 \ulnone >\
+<defined_proposition>\'a0\'a0:==\'a0$true\'a0|\'a0$false\
+<defined_predicate>\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul atomic_defined_word\cf0 \ulnone >\
+<defined_predicate>\'a0\'a0\'a0\'a0:==\'a0$distinct\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$less\'a0|\'a0$lesseq\'a0|\'a0$greater\'a0|\'a0$greatereq\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$is_int\'a0|\'a0$is_rat\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$box_P\'a0|\'a0$box_i\'a0|\'a0$box_int\'a0|\'a0$box\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$dia_P\'a0|\'a0$dia_i\'a0|\'a0$dia_int\'a0|\'a0$dia\
+%----$distinct\'a0means\'a0that\'a0each\'a0of\'a0it's\'a0constant\'a0arguments\'a0are\'a0pairwise\'a0!=.\'a0It\
+%----is\'a0part\'a0of\'a0the\'a0TFF\'a0syntax.\'a0It\'a0can\'a0be\'a0used\'a0only\'a0as\'a0a\'a0fact\'a0in\'a0an\'a0axiom\'a0(not\
+%----a\'a0conjecture),\'a0and\'a0not\'a0under\'a0any\'a0connective.\
+<defined_infix_pred>\'a0\'a0\'a0::=\'a0<\cf3 \ul infix_equality\cf0 \ulnone >\
+<system_proposition>\'a0\'a0\'a0:==\'a0<\cf3 \ul system_predicate\cf0 \ulnone >\
+<system_predicate>\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul atomic_system_word\cf0 \ulnone >\
+<infix_equality>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0=\
+<infix_inequality>\'a0\'a0\'a0\'a0\'a0::=\'a0!=\
+\
+<constant>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul functor\cf0 \ulnone >\
+<functor>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\
+<system_constant>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul system_functor\cf0 \ulnone >\
+<system_functor>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_system_word\cf0 \ulnone >\
+<defined_constant>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul defined_functor\cf0 \ulnone >\
+<defined_functor>\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_defined_word\cf0 \ulnone >\
+<defined_functor>\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0$uminus\'a0|\'a0$sum\'a0|\'a0$difference\'a0|\'a0$product\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$quotient\'a0|\'a0$quotient_e\'a0|\'a0$quotient_t\'a0|\'a0$quotient_f\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$remainder_e\'a0|\'a0$remainder_t\'a0|\'a0$remainder_f\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$floor\'a0|\'a0$ceiling\'a0|\'a0$truncate\'a0|\'a0$round\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$to_int\'a0|\'a0$to_rat\'a0|\'a0$to_real\
+<defined_term>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul number\cf0 \ulnone >\'a0|\'a0<\cf3 \ul distinct_object\cf0 \ulnone >\
+<variable>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul upper_word\cf0 \ulnone >\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----Formula\'a0sources\
+<source>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul general_term\cf0 \ulnone >\
+<source>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul dag_source\cf0 \ulnone >\'a0|\'a0<\cf3 \ul internal_source\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul external_source\cf0 \ulnone >\'a0|\'a0unknown\'a0|\'a0[<\cf3 \ul sources\cf0 \ulnone >]\
+%----Alternative\'a0sources\'a0are\'a0recorded\'a0like\'a0this,\'a0thus\'a0allowing\'a0representation\
+%----of\'a0alternative\'a0derivations\'a0with\'a0shared\'a0parts.\
+<sources>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul source\cf0 \ulnone >\'a0|\'a0<\cf3 \ul source\cf0 \ulnone >,<\cf3 \ul sources\cf0 \ulnone >\
+%----Only\'a0a\'a0<dag_source>\'a0can\'a0be\'a0a\'a0<name>,\'a0i.e.,\'a0derived\'a0formulae\'a0can\'a0be\
+%----identified\'a0by\'a0a\'a0<name>\'a0or\'a0an\'a0<inference_record>\
+<dag_source>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul name\cf0 \ulnone >\'a0|\'a0<\cf3 \ul inference_record\cf0 \ulnone >\
+<inference_record>\'a0\'a0\'a0\'a0\'a0:==\'a0inference(<\cf3 \ul inference_rule\cf0 \ulnone >,<\cf3 \ul useful_info\cf0 \ulnone >,\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul inference_parents\cf0 \ulnone >)\
+<inference_rule>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\
+%----Examples\'a0are\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0deduction\'a0|\'a0modus_tollens\'a0|\'a0modus_ponens\'a0|\'a0rewrite\'a0|\
+%\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0resolution\'a0|\'a0paramodulation\'a0|\'a0factorization\'a0|\
+%\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0cnf_conversion\'a0|\'a0cnf_refutation\'a0|\'a0...\
+%----<inference_parents>\'a0can\'a0be\'a0empty\'a0in\'a0cases\'a0when\'a0there\'a0is\'a0a\'a0justification\
+%----for\'a0a\'a0tautologous\'a0theorem.\'a0In\'a0case\'a0when\'a0a\'a0tautology\'a0is\'a0introduced\'a0as\
+%----a\'a0leaf,\'a0e.g.,\'a0for\'a0splitting,\'a0then\'a0use\'a0an\'a0<internal_source>.\
+<inference_parents>\'a0\'a0\'a0\'a0:==\'a0[]\'a0|\'a0[<\cf3 \ul parent_list\cf0 \ulnone >]\
+<parent_list>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul parent_info\cf0 \ulnone >\'a0|\'a0<\cf3 \ul parent_info\cf0 \ulnone >,<\cf3 \ul parent_list\cf0 \ulnone >\
+<parent_info>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul source\cf0 \ulnone ><\cf3 \ul parent_details\cf0 \ulnone >\
+<parent_details>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0:<\cf3 \ul general_list\cf0 \ulnone >\'a0|\'a0<\cf3 \ul null\cf0 \ulnone >\
+<internal_source>\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0introduced(<\cf3 \ul intro_type\cf0 \ulnone ><\cf3 \ul optional_info\cf0 \ulnone >)\
+<intro_type>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0definition\'a0|\'a0axiom_of_choice\'a0|\'a0tautology\'a0|\'a0assumption\
+%----This\'a0should\'a0be\'a0used\'a0to\'a0record\'a0the\'a0symbol\'a0being\'a0defined,\'a0or\'a0the\'a0function\
+%----for\'a0the\'a0axiom\'a0of\'a0choice\
+<external_source>\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul file_source\cf0 \ulnone >\'a0|\'a0<\cf3 \ul theory\cf0 \ulnone >\'a0|\'a0<\cf3 \ul creator_source\cf0 \ulnone >\
+<file_source>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0file(<\cf3 \ul file_name\cf0 \ulnone ><\cf3 \ul file_info\cf0 \ulnone >)\
+<file_info>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0,<\cf3 \ul name\cf0 \ulnone >\'a0|\'a0<\cf3 \ul null\cf0 \ulnone >\
+<theory>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0theory(<\cf3 \ul theory_name\cf0 \ulnone ><\cf3 \ul optional_info\cf0 \ulnone >)\
+<theory_name>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0equality\'a0|\'a0ac\
+%----More\'a0theory\'a0names\'a0may\'a0be\'a0added\'a0in\'a0the\'a0future.\'a0The\'a0<optional_info>\'a0is\
+%----used\'a0to\'a0store,\'a0e.g.,\'a0which\'a0axioms\'a0of\'a0equality\'a0have\'a0been\'a0implicitly\'a0used,\
+%----e.g.,\'a0theory(equality,[rst]).\'a0Standard\'a0format\'a0still\'a0to\'a0be\'a0decided.\
+<creator_source>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0creator(<\cf3 \ul creator_name\cf0 \ulnone ><\cf3 \ul optional_info\cf0 \ulnone >)\
+<creator_name>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\
+\
+%----Useful\'a0info\'a0fields\
+<optional_info>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0,<\cf3 \ul useful_info\cf0 \ulnone >\'a0|\'a0<\cf3 \ul null\cf0 \ulnone >\
+<useful_info>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul general_list\cf0 \ulnone >\
+<useful_info>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0[]\'a0|\'a0[<\cf3 \ul info_items\cf0 \ulnone >]\
+<info_items>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul info_item\cf0 \ulnone >\'a0|\'a0<\cf3 \ul info_item\cf0 \ulnone >,<\cf3 \ul info_items\cf0 \ulnone >\
+<info_item>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul formula_item\cf0 \ulnone >\'a0|\'a0<\cf3 \ul inference_item\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul general_function\cf0 \ulnone >\
+%----Useful\'a0info\'a0for\'a0formula\'a0records\
+<formula_item>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul description_item\cf0 \ulnone >\'a0|\'a0<\cf3 \ul iquote_item\cf0 \ulnone >\
+<description_item>\'a0\'a0\'a0\'a0\'a0:==\'a0description(<\cf3 \ul atomic_word\cf0 \ulnone >)\
+<iquote_item>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0iquote(<\cf3 \ul atomic_word\cf0 \ulnone >)\
+%----<iquote_item>s\'a0are\'a0used\'a0for\'a0recording\'a0exactly\'a0what\'a0the\'a0system\'a0output\'a0about\
+%----the\'a0inference\'a0step.\'a0In\'a0the\'a0future\'a0it\'a0is\'a0planned\'a0to\'a0encode\'a0this\'a0information\
+%----in\'a0standardized\'a0forms\'a0as\'a0<parent_details>\'a0in\'a0each\'a0<inference_record>.\
+%----Useful\'a0info\'a0for\'a0inference\'a0records\
+<inference_item>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul inference_status\cf0 \ulnone >\'a0|\'a0<\cf3 \ul assumptions_record\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul new_symbol_record\cf0 \ulnone >\'a0|\'a0<\cf3 \ul refutation\cf0 \ulnone >\
+<inference_status>\'a0\'a0\'a0\'a0\'a0:==\'a0status(<\cf3 \ul status_value\cf0 \ulnone >)\'a0|\'a0<\cf3 \ul inference_info\cf0 \ulnone >\
+%----These\'a0are\'a0the\'a0success\'a0status\'a0values\'a0from\'a0the\'a0{\field{\*\fldinst{HYPERLINK "http://www.tptp.org/cgi-bin/SeeTPTP?Category=Documents&File=SZSOntology"}}{\fldrslt \cf3 \ul SZS\'a0ontology}}.\'a0The\'a0most\
+%----commonly\'a0used\'a0values\'a0are:\
+%----\'a0\'a0thm\'a0-\'a0Every\'a0model\'a0of\'a0the\'a0parent\'a0formulae\'a0is\'a0a\'a0model\'a0of\'a0the\'a0inferred\
+%----\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0formula.\'a0Regular\'a0logical\'a0consequences.\
+%----\'a0\'a0cth\'a0-\'a0Every\'a0model\'a0of\'a0the\'a0parent\'a0formulae\'a0is\'a0a\'a0model\'a0of\'a0the\'a0negation\'a0of\
+%----\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0the\'a0inferred\'a0formula.\'a0Used\'a0for\'a0negation\'a0of\'a0conjectures\'a0in\'a0FOF\'a0to\
+%----\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0CNF\'a0conversion.\
+%----\'a0\'a0esa\'a0-\'a0There\'a0exists\'a0a\'a0model\'a0of\'a0the\'a0parent\'a0formulae\'a0iff\'a0there\'a0exists\'a0a\
+%----\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0model\'a0of\'a0the\'a0inferred\'a0formula.\'a0Used\'a0for\'a0Skolemization\'a0steps.\
+%----For\'a0the\'a0full\'a0hierarchy\'a0see\'a0the\'a0SZSOntology\'a0file\'a0distributed\'a0with\'a0the\'a0TPTP.\
+<status_value>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0suc\'a0|\'a0unp\'a0|\'a0sap\'a0|\'a0esa\'a0|\'a0sat\'a0|\'a0fsa\'a0|\'a0thm\'a0|\'a0eqv\'a0|\'a0tac\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0wec\'a0|\'a0eth\'a0|\'a0tau\'a0|\'a0wtc\'a0|\'a0wth\'a0|\'a0cax\'a0|\'a0sca\'a0|\'a0tca\'a0|\'a0wca\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0cup\'a0|\'a0csp\'a0|\'a0ecs\'a0|\'a0csa\'a0|\'a0cth\'a0|\'a0ceq\'a0|\'a0unc\'a0|\'a0wcc\'a0|\'a0ect\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0fun\'a0|\'a0uns\'a0|\'a0wuc\'a0|\'a0wct\'a0|\'a0scc\'a0|\'a0uca\'a0|\'a0noc\
+%----<inference_info>\'a0is\'a0used\'a0to\'a0record\'a0standard\'a0information\'a0associated\'a0with\'a0an\
+%----arbitrary\'a0inference\'a0rule.\'a0The\'a0<inference_rule>\'a0is\'a0the\'a0same\'a0as\'a0the\
+%----<inference_rule>\'a0of\'a0the\'a0<inference_record>.\'a0The\'a0<atomic_word>\'a0indicates\
+%----the\'a0information\'a0being\'a0recorded\'a0in\'a0the\'a0<general_list>.\'a0The\'a0<atomic_word>\
+%----are\'a0(loosely)\'a0set\'a0by\'a0TPTP\'a0conventions,\'a0and\'a0include\'a0esplit,\'a0sr_split,\'a0and\
+%----discharge.\
+<inference_info>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul inference_rule\cf0 \ulnone >(<\cf3 \ul atomic_word\cf0 \ulnone >,<\cf3 \ul general_list\cf0 \ulnone >)\
+%----An\'a0<assumptions_record>\'a0lists\'a0the\'a0names\'a0of\'a0assumptions\'a0upon\'a0which\'a0this\
+%----inferred\'a0formula\'a0depends.\'a0These\'a0must\'a0be\'a0discharged\'a0in\'a0a\'a0completed\'a0proof.\
+<assumptions_record>\'a0\'a0\'a0:==\'a0assumptions([<\cf3 \ul name_list\cf0 \ulnone >])\
+%----A\'a0<refutation>\'a0record\'a0names\'a0a\'a0file\'a0in\'a0which\'a0the\'a0inference\'a0recorded\'a0here\
+%----is\'a0recorded\'a0as\'a0a\'a0proof\'a0by\'a0refutation.\
+<refutation>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0refutation(<\cf3 \ul file_source\cf0 \ulnone >)\
+%----A\'a0<new_symbol_record>\'a0provides\'a0information\'a0about\'a0a\'a0newly\'a0introduced\'a0symbol.\
+<new_symbol_record>\'a0\'a0\'a0\'a0:==\'a0new_symbols(<\cf3 \ul atomic_word\cf0 \ulnone >,[<\cf3 \ul new_symbol_list\cf0 \ulnone >])\
+<new_symbol_list>\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0<\cf3 \ul principal_symbol\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul principal_symbol\cf0 \ulnone >,<\cf3 \ul new_symbol_list\cf0 \ulnone >\
+%----Principal\'a0symbols\'a0are\'a0predicates,\'a0functions,\'a0variables\
+<principal_symbol>\'a0\'a0\'a0:==\'a0<\cf3 \ul functor\cf0 \ulnone >\'a0|\'a0<\cf3 \ul variable\cf0 \ulnone >\
+\
+%----Include\'a0directives\
+<include>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0include(<\cf3 \ul file_name\cf0 \ulnone ><\cf3 \ul formula_selection\cf0 \ulnone >).\
+<formula_selection>\'a0\'a0\'a0\'a0::=\'a0,[<\cf3 \ul name_list\cf0 \ulnone >]\'a0|\'a0<\cf3 \ul null\cf0 \ulnone >\
+<name_list>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul name\cf0 \ulnone >\'a0|\'a0<\cf3 \ul name\cf0 \ulnone >,<\cf3 \ul name_list\cf0 \ulnone >\
+\
+%----Non-logical\'a0data\
+<general_term>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul general_data\cf0 \ulnone >\'a0|\'a0<\cf3 \ul general_data\cf0 \ulnone >:<\cf3 \ul general_term\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul general_list\cf0 \ulnone >\
+<general_data>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\'a0|\'a0<\cf3 \ul general_function\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul variable\cf0 \ulnone >\'a0|\'a0<\cf3 \ul number\cf0 \ulnone >\'a0|\'a0<\cf3 \ul distinct_object\cf0 \ulnone >\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0<\cf3 \ul formula_data\cf0 \ulnone >\
+<general_function>\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_word\cf0 \ulnone >(<\cf3 \ul general_terms\cf0 \ulnone >)\
+%----A\'a0<general_data>\'a0bind()\'a0term\'a0is\'a0used\'a0to\'a0record\'a0a\'a0variable\'a0binding\'a0in\'a0an\
+%----inference,\'a0as\'a0an\'a0element\'a0of\'a0the\'a0<parent_details>\'a0list.\
+<general_data>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:==\'a0bind(<\cf3 \ul variable\cf0 \ulnone >,<\cf3 \ul formula_data\cf0 \ulnone >)\
+<formula_data>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0$thf(<\cf3 \ul thf_formula\cf0 \ulnone >)\'a0|\'a0$tff(<\cf3 \ul tff_formula\cf0 \ulnone >)\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$fof(<\cf3 \ul fof_formula\cf0 \ulnone >)\'a0|\'a0$cnf(<\cf3 \ul cnf_formula\cf0 \ulnone >)\'a0|\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0$fot(<\cf3 \ul fof_term\cf0 \ulnone >)\
+<general_list>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0[]\'a0|\'a0[<\cf3 \ul general_terms\cf0 \ulnone >]\
+<general_terms>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul general_term\cf0 \ulnone >\'a0|\'a0<\cf3 \ul general_term\cf0 \ulnone >,<\cf3 \ul general_terms\cf0 \ulnone >\
+\
+%----General\'a0purpose\
+<name>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul atomic_word\cf0 \ulnone >\'a0|\'a0<\cf3 \ul integer\cf0 \ulnone >\
+%----Integer\'a0names\'a0are\'a0expected\'a0to\'a0be\'a0unsigned\
+<atomic_word>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul lower_word\cf0 \ulnone >\'a0|\'a0<\cf3 \ul single_quoted\cf0 \ulnone >\
+%----<single_quoted>\'a0tokens\'a0do\'a0not\'a0include\'a0their\'a0outer\'a0quotes,\'a0therefore\'a0the\
+%----<lower_word>\'a0<atomic_word>\'a0cat\'a0and\'a0the\'a0<single_quoted>\'a0<atomic_word>\'a0'cat'\
+%----are\'a0the\'a0same.\'a0Quotes\'a0must\'a0be\'a0removed\'a0from\'a0a\'a0<single_quoted>\'a0<atomic_word>\
+%----if\'a0doing\'a0so\'a0produces\'a0a\'a0<lower_word>\'a0<atomic_word>.\'a0Note\'a0that\'a0<numbers>s\
+%----and\'a0<variable>s\'a0are\'a0not\'a0<lower_word>s,\'a0so\'a0'123'\'a0and\'a0123,\'a0and\'a0'X'\'a0and\'a0X,\
+%----are\'a0different.\
+<atomic_defined_word>\'a0\'a0::=\'a0<\cf3 \ul dollar_word\cf0 \ulnone >\
+<atomic_system_word>\'a0\'a0\'a0::=\'a0<\cf3 \ul dollar_dollar_word\cf0 \ulnone >\
+<number>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul integer\cf0 \ulnone >\'a0|\'a0<\cf3 \ul rational\cf0 \ulnone >\'a0|\'a0<\cf3 \ul real\cf0 \ulnone >\
+%----Numbers\'a0are\'a0always\'a0interpreted\'a0as\'a0themselves,\'a0and\'a0are\'a0thus\'a0implicitly\
+%----distinct\'a0if\'a0they\'a0have\'a0different\'a0values,\'a0e.g.,\'a01\'a0!=\'a02\'a0is\'a0an\'a0implicit\'a0axiom.\
+%----All\'a0numbers\'a0are\'a0base\'a010\'a0at\'a0the\'a0moment.\
+<file_name>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\'a0<\cf3 \ul single_quoted\cf0 \ulnone >\
+<null>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::=\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+%----Rules\'a0from\'a0here\'a0on\'a0down\'a0are\'a0for\'a0defining\'a0tokens\'a0(terminal\'a0symbols)\'a0of\'a0the\
+%----grammar,\'a0assuming\'a0they\'a0will\'a0be\'a0recognized\'a0by\'a0a\'a0lexical\'a0scanner.\
+%----A\'a0::-\'a0rule\'a0defines\'a0a\'a0token,\'a0a\'a0:::\'a0rule\'a0defines\'a0a\'a0macro\'a0that\'a0is\'a0not\'a0a\
+%----token.\'a0Usual\'a0regexp\'a0notation\'a0is\'a0used.\'a0Single\'a0characters\'a0are\'a0always\'a0placed\
+%----in\'a0[]s\'a0to\'a0disable\'a0any\'a0special\'a0meanings\'a0(for\'a0uniformity\'a0this\'a0is\'a0done\'a0to\
+%----all\'a0characters,\'a0not\'a0only\'a0those\'a0with\'a0special\'a0meanings).\
+\
+%----These\'a0are\'a0tokens\'a0that\'a0appear\'a0in\'a0the\'a0syntax\'a0rules\'a0above.\'a0No\'a0rules\
+%----defined\'a0here\'a0because\'a0they\'a0appear\'a0explicitly\'a0in\'a0the\'a0syntax\'a0rules,\
+%----except\'a0that\'a0<vline>,\'a0<star>,\'a0<plus>\'a0denote\'a0"|",\'a0"*",\'a0"+",\'a0respectively.\
+%----Keywords:\'a0\'a0\'a0\'a0fof\'a0cnf\'a0thf\'a0tff\'a0include\
+%----Punctuation:\'a0(\'a0)\'a0,\'a0.\'a0[\'a0]\'a0:\
+%----Operators:\'a0\'a0\'a0!\'a0?\'a0~\'a0&\'a0|\'a0<=>\'a0=>\'a0<=\'a0<~>\'a0~|\'a0~&\'a0*\'a0+\
+%----Predicates:\'a0\'a0=\'a0!=\'a0$true\'a0$false\
+\
+%----For\'a0lex/yacc\'a0there\'a0cannot\'a0be\'a0spaces\'a0on\'a0either\'a0side\'a0of\'a0the\'a0|\'a0here\
+<comment>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul comment_line\cf0 \ulnone >|<\cf3 \ul comment_block\cf0 \ulnone >\
+<comment_line>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0[%]<\cf3 \ul printable_char\cf0 \ulnone >*\
+<comment_block>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[/][*]<\cf3 \ul not_star_slash\cf0 \ulnone >[*][*]*[/]\
+<not_star_slash>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0([^*]*[*][*]*[^/*])*[^*]*\
+%----Defined\'a0comments\'a0are\'a0a\'a0convention\'a0used\'a0for\'a0annotations\'a0that\'a0are\'a0used\'a0as\
+%----additional\'a0input\'a0for\'a0systems.\'a0They\'a0look\'a0like\'a0comments,\'a0but\'a0start\'a0with\'a0%$\
+%----or\'a0/*$.\'a0A\'a0wily\'a0user\'a0of\'a0the\'a0syntax\'a0can\'a0notice\'a0the\'a0$\'a0and\'a0extract\'a0information\
+%----from\'a0the\'a0"comment"\'a0and\'a0pass\'a0that\'a0on\'a0as\'a0input\'a0to\'a0the\'a0system.\'a0They\'a0are\
+%----analogous\'a0to\'a0pragmas\'a0in\'a0programming\'a0languages.\'a0To\'a0extract\'a0these\'a0separately\
+%----from\'a0regular\'a0comments,\'a0the\'a0rules\'a0are:\
+%----\'a0\'a0<defined_comment>\'a0\'a0\'a0\'a0::-\'a0<def_comment_line>|<def_comment_block>\
+%----\'a0\'a0<def_comment_line>\'a0\'a0\'a0:::\'a0[%]<dollar><printable_char>*\
+%----\'a0\'a0<def_comment_block>\'a0\'a0:::\'a0[/][*]<dollar><not_star_slash>[*][*]*[/]\
+%----A\'a0string\'a0that\'a0matches\'a0both\'a0<defined_comment>\'a0and\'a0<comment>\'a0should\'a0be\
+%----recognized\'a0as\'a0<defined_comment>,\'a0so\'a0put\'a0these\'a0before\'a0<comment>.\
+%----Defined\'a0comments\'a0that\'a0are\'a0in\'a0use\'a0include:\
+%----\'a0\'a0\'a0\'a0TO\'a0BE\'a0ANNOUNCED\
+%----System\'a0comments\'a0are\'a0a\'a0convention\'a0used\'a0for\'a0annotations\'a0that\'a0may\'a0used\'a0as\
+%----additional\'a0input\'a0to\'a0a\'a0specific\'a0system.\'a0They\'a0look\'a0like\'a0comments,\'a0but\'a0start\
+%----with\'a0%$$\'a0or\'a0/*$$.\'a0A\'a0wily\'a0user\'a0of\'a0the\'a0syntax\'a0can\'a0notice\'a0the\'a0$$\'a0and\'a0extract\
+%----information\'a0from\'a0the\'a0"comment"\'a0and\'a0pass\'a0that\'a0on\'a0as\'a0input\'a0to\'a0the\'a0system.\
+%----The\'a0specific\'a0system\'a0for\'a0which\'a0the\'a0information\'a0is\'a0intended\'a0should\'a0be\
+%----identified\'a0after\'a0the\'a0$$,\'a0e.g.,\'a0/*$$Otter\'a03.3:\'a0Demodulator\'a0*/\
+%----To\'a0extract\'a0these\'a0separately\'a0from\'a0regular\'a0comments,\'a0the\'a0rules\'a0are:\
+%----\'a0\'a0<system_comment>\'a0\'a0\'a0\'a0\'a0::-\'a0<sys_comment_line>|<sys_comment_block>\
+%----\'a0\'a0<sys_comment_line>\'a0\'a0\'a0:::\'a0[%]<dollar><dollar><printable_char>*\
+%----\'a0\'a0<sys_comment_block>\'a0\'a0:::\'a0[/][*]<dollar><dollar><not_star_slash>[*][*]*[/]\
+%----A\'a0string\'a0that\'a0matches\'a0both\'a0<system_comment>\'a0and\'a0<defined_comment>\'a0should\
+%----be\'a0recognized\'a0as\'a0<system_comment>,\'a0so\'a0put\'a0these\'a0before\'a0<defined_comment>.\
+\
+<single_quoted>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul single_quote\cf0 \ulnone ><\cf3 \ul sq_char\cf0 \ulnone ><\cf3 \ul sq_char\cf0 \ulnone >*<\cf3 \ul single_quote\cf0 \ulnone >\
+%----<single_quoted>s\'a0contain\'a0visible\'a0characters.\'a0\\\'a0is\'a0the\'a0escape\'a0character\'a0for\
+%----'\'a0and\'a0\\,\'a0i.e.,\'a0\\'\'a0is\'a0not\'a0the\'a0end\'a0of\'a0the\'a0<single_quoted>.\
+%----The\'a0token\'a0does\'a0not\'a0include\'a0the\'a0outer\'a0quotes,\'a0e.g.,\'a0'cat'\'a0and\'a0cat\'a0are\'a0the\
+%----same.\'a0See\'a0<atomic_word>\'a0for\'a0information\'a0about\'a0stripping\'a0the\'a0quotes.\
+\
+<distinct_object>\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul double_quote\cf0 \ulnone ><\cf3 \ul do_char\cf0 \ulnone >*<\cf3 \ul double_quote\cf0 \ulnone >\
+%---Space\'a0and\'a0visible\'a0characters\'a0upto\'a0~,\'a0except\'a0"\'a0and\'a0\\\
+%----<distinct_object>s\'a0contain\'a0visible\'a0characters.\'a0\\\'a0is\'a0the\'a0escape\'a0character\
+%----for\'a0"\'a0and\'a0\\,\'a0i.e.,\'a0\\"\'a0is\'a0not\'a0the\'a0end\'a0of\'a0the\'a0<distinct_object>.\
+%----<distinct_object>s\'a0are\'a0different\'a0from\'a0(but\'a0may\'a0be\'a0equal\'a0to)\'a0other\'a0tokens,\
+%----e.g.,\'a0"cat"\'a0is\'a0different\'a0from\'a0'cat'\'a0and\'a0cat.\'a0Distinct\'a0objects\'a0are\'a0always\
+%----interpreted\'a0as\'a0themselves,\'a0so\'a0if\'a0they\'a0are\'a0different\'a0they\'a0are\'a0unequal,\
+%----e.g.,\'a0"Apple"\'a0!=\'a0"Microsoft"\'a0is\'a0implicit.\
+\
+<dollar_word>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul dollar\cf0 \ulnone ><\cf3 \ul lower_word\cf0 \ulnone >\
+<dollar_dollar_word>\'a0\'a0\'a0::-\'a0<\cf3 \ul dollar\cf0 \ulnone ><\cf3 \ul dollar\cf0 \ulnone ><\cf3 \ul lower_word\cf0 \ulnone >\
+<upper_word>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul upper_alpha\cf0 \ulnone ><\cf3 \ul alpha_numeric\cf0 \ulnone >*\
+<lower_word>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul lower_alpha\cf0 \ulnone ><\cf3 \ul alpha_numeric\cf0 \ulnone >*\
+\
+%----Tokens\'a0used\'a0in\'a0syntax,\'a0and\'a0cannot\'a0be\'a0character\'a0classes\
+<vline>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0[|]\
+<star>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0[*]\
+<plus>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0[+]\
+<arrow>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0[>]\
+<less_sign>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0[<]\
+\
+%----Numbers.\'a0Signs\'a0are\'a0made\'a0part\'a0of\'a0the\'a0same\'a0token\'a0here.\
+<real>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul signed_real\cf0 \ulnone >|<\cf3 \ul unsigned_real\cf0 \ulnone >)\
+<signed_real>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul sign\cf0 \ulnone ><\cf3 \ul unsigned_real\cf0 \ulnone >\
+<unsigned_real>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul decimal_fraction\cf0 \ulnone >|<\cf3 \ul decimal_exponent\cf0 \ulnone >)\
+<rational>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul signed_rational\cf0 \ulnone >|<\cf3 \ul unsigned_rational\cf0 \ulnone >)\
+<signed_rational>\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul sign\cf0 \ulnone ><\cf3 \ul unsigned_rational\cf0 \ulnone >\
+<unsigned_rational>\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul decimal\cf0 \ulnone ><\cf3 \ul slash\cf0 \ulnone ><\cf3 \ul positive_decimal\cf0 \ulnone >\
+<integer>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul signed_integer\cf0 \ulnone >|<\cf3 \ul unsigned_integer\cf0 \ulnone >)\
+<signed_integer>\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul sign\cf0 \ulnone ><\cf3 \ul unsigned_integer\cf0 \ulnone >\
+<unsigned_integer>\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul decimal\cf0 \ulnone >\
+<decimal>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul zero_numeric\cf0 \ulnone >|<\cf3 \ul positive_decimal\cf0 \ulnone >)\
+<positive_decimal>\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul non_zero_numeric\cf0 \ulnone ><\cf3 \ul numeric\cf0 \ulnone >*\
+<decimal_exponent>\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul decimal\cf0 \ulnone >|<\cf3 \ul decimal_fraction\cf0 \ulnone >)<\cf3 \ul exponent\cf0 \ulnone ><\cf3 \ul exp_integer\cf0 \ulnone >\
+<decimal_fraction>\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul decimal\cf0 \ulnone ><\cf3 \ul dot_decimal\cf0 \ulnone >\
+<dot_decimal>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0<\cf3 \ul dot\cf0 \ulnone ><\cf3 \ul numeric\cf0 \ulnone ><\cf3 \ul numeric\cf0 \ulnone >*\
+<exp_integer>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0::-\'a0(<\cf3 \ul signed_exp_integer\cf0 \ulnone >|<\cf3 \ul unsigned_exp_integer\cf0 \ulnone >)\
+<signed_exp_integer>\'a0\'a0\'a0::-\'a0<\cf3 \ul sign\cf0 \ulnone ><\cf3 \ul unsigned_exp_integer\cf0 \ulnone >\
+<unsigned_exp_integer>\'a0::-\'a0<\cf3 \ul numeric\cf0 \ulnone ><\cf3 \ul numeric\cf0 \ulnone >*\
+\
+%----Character\'a0classes\
+<percentage_sign>\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[%]\
+<double_quote>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0["]\
+<do_char>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0([\\40-\\41\\43-\\133\\135-\\176]|[\\\\]["\\\\])\
+<single_quote>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[']\
+%---Space\'a0and\'a0visible\'a0characters\'a0upto\'a0~,\'a0except\'a0'\'a0and\'a0\\\
+<sq_char>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0([\\40-\\46\\50-\\133\\135-\\176]|[\\\\]['\\\\])\
+<sign>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[+-]\
+<dot>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[.]\
+<exponent>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[Ee]\
+<slash>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[/]\
+<zero_numeric>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[0]\
+<non_zero_numeric>\'a0\'a0\'a0\'a0\'a0:::\'a0[1-9]\
+<numeric>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[0-9]\
+<lower_alpha>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[a-z]\
+<upper_alpha>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[A-Z]\
+<alpha_numeric>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0(<\cf3 \ul lower_alpha\cf0 \ulnone >|<\cf3 \ul upper_alpha\cf0 \ulnone >|<\cf3 \ul numeric\cf0 \ulnone >|[_])\
+<dollar>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[$]\
+<printable_char>\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0.\
+%----<printable_char>\'a0is\'a0any\'a0printable\'a0ASCII\'a0character,\'a0codes\'a032\'a0(space)\'a0to\'a0126\
+%----(tilde).\'a0<printable_char>\'a0does\'a0not\'a0include\'a0tabs,\'a0newlines,\'a0bells,\'a0etc.\'a0The\
+%----use\'a0of\'a0.\'a0does\'a0not\'a0not\'a0exclude\'a0tab,\'a0so\'a0this\'a0is\'a0a\'a0bit\'a0loose.\
+<viewable_char>\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0:::\'a0[.\\n]\
+%----\cf3 \ul Top of Page\cf0 \ulnone ---------------------------------------------------------------\
+\'a0}
