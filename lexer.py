@@ -10,9 +10,10 @@ tokens = (
     'NT_SYMBOL',
     'IDENTIFIER',
     'COMMENT',
-    'LEFT_PARENTHESIS',
-    'RIGHT_PARENTHESIS',
-    'OR',
+    'OPEN_PARENTHESIS',
+    'CLOSE_PARENTHESIS',
+    'ALTERNATIVE_SYMBOL',
+    'REPETITION_SYMBOL',
     'T_SYMBOL'
 )
 
@@ -26,9 +27,10 @@ literals = ['[',']',',','*','.']
 #t_NT_OPEN_SYMBOL   = r'<'
 #t_NT_CLOSE_SYMBOL  = r'>'
 #t_OR  = r'\|'
-t_LEFT_PARENTHESIS = r'\('
-t_RIGHT_PARENTHESIS = r'\)'
-t_OR = r'\|'
+t_OPEN_PARENTHESIS = r'\('
+t_CLOSE_PARENTHESIS = r'\)'
+t_ALTERNATIVE_SYMBOL = r'\|'
+t_REPETITION_SYMBOL = r'\*'
 
 t_ignore = ' \t\n'
 
@@ -55,10 +57,12 @@ def t_MACRO_SYMBOL(t):
 
 def t_NT_SYMBOL(t):
     r'<[a-zA-Z_][a-zA-Z_0-9]*>'
+    #r'<..*?>'
     return t
 
 def t_T_SYMBOL(t):
-    r'[a-zA-Z_0-9\-][a-zA-Z_0-9\-]*'
+    #r'[a-zA-Z_0-9\-][a-zA-Z_0-9\-]*'
+    r'..*'
     return t
 
 def t_error(t):
