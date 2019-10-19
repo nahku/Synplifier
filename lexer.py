@@ -12,12 +12,14 @@ tokens = (
     'COMMENT',
     'OPEN_PARENTHESIS',
     'CLOSE_PARENTHESIS',
+    'OPEN_SQUARE_BRACKET',
+    'CLOSE_SQUARE_BRACKET',
     'ALTERNATIVE_SYMBOL',
     'REPETITION_SYMBOL',
     'T_SYMBOL'
 )
 
-literals = ['[',']',',','*','.']
+literals = []
 
 # Regular expression rules for simple tokens
 #t_GRAMMAR_SYMBOL = r'::='
@@ -27,16 +29,40 @@ literals = ['[',']',',','*','.']
 #t_NT_OPEN_SYMBOL   = r'<'
 #t_NT_CLOSE_SYMBOL  = r'>'
 #t_OR  = r'\|'
-t_OPEN_PARENTHESIS = r'\('
-t_CLOSE_PARENTHESIS = r'\)'
-t_ALTERNATIVE_SYMBOL = r'\|'
-t_REPETITION_SYMBOL = r'\*'
+#t_OPEN_PARENTHESIS = r'\('
+#t_CLOSE_PARENTHESIS = r'\)'
+#t_ALTERNATIVE_SYMBOL = r'\|'
+#t_REPETITION_SYMBOL = r'\*'
 
 t_ignore = ' \t\n'
 
 def t_COMMENT(t):
     r'%.*'
     #t.value = t.value.rstrip('\n')
+    return t
+
+def t_OPEN_SQUARE_BRACKET(t):
+    r'\['
+    return t
+
+def t_CLOSE_SQUARE_BRACKET(t):
+    r'\]'
+    return t
+
+def t_REPETITION_SYMBOL(t):
+    r'\*'
+    return t
+
+def t_ALTERNATIVE_SYMBOL(t):
+    r'\|'
+    return t
+
+def t_OPEN_PARENTHESIS(t):
+    r'\('
+    return t
+
+def t_CLOSE_PARENTHESIS(t):
+    r'\)'
     return t
 
 def t_GRAMMAR_SYMBOL(t):
@@ -61,8 +87,9 @@ def t_NT_SYMBOL(t):
     return t
 
 def t_T_SYMBOL(t):
-    #r'[a-zA-Z_0-9\-][a-zA-Z_0-9\-]*'
-    r'..*'
+    #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
+    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}~?^+=/"][$\'\\\.,a-zA-Z\_0-9\-<>&+=/"]*'
+    #r'..*'
     return t
 
 def t_error(t):
@@ -70,23 +97,28 @@ def t_error(t):
     t.lexer.skip(1)
 
 #lex.lex(debug=1)
-lex.lex()
-
-#data = '::=::::==||     ||><bl a:==bla%----'
+#lex.lex()
 
 
-THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-my_file = os.path.join(THIS_FOLDER, 'tptp_bnf.txt')
-file = open(my_file, "r", encoding='UTF-8')
-data = file.read()
+def lexer():
+    lex.lex()
+
+lexer()
+
+def import_tptp_file(filename):
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    my_file = os.path.join(THIS_FOLDER, filename)
+    file = open(my_file, "r", encoding='UTF-8')
+    data = file.read()
+    return data
+
+#data = ',<source><optional_info> | <null>'
+data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)
-
-
 
 if __name__ ==  "__main__" :
     while 1:
         tok = lex.token()
         if not tok: break  # No more input
         print(tok)
-
