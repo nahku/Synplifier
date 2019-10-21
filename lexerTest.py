@@ -1,7 +1,7 @@
 import unittest
 import lexer
 
-class MyTestCase(unittest.TestCase):
+class TestExpressions(unittest.TestCase):
     def test_comment(self):
         lexer.lexer()
         lexer.lex.input(lexer.import_tptp_file('TestCaseComment.txt'))
