@@ -44,10 +44,10 @@ def p_production(p):
 parser = yacc.yacc()
 
 while True:
-   #try:
-   #    s = raw_input('calc > ')
-   #except EOFError:
-   #    break
-   #if not s: continue
+   try:
+       s = raw_input('calc > ')
+   except EOFError:
+       break
+   if not s: continue
    result = parser.parse()
    print(result)
