@@ -1,0 +1,312 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    CLOSE_PARENTHESIS
+    CLOSE_SQUARE_BRACKET
+    IDENTIFIER
+    MACRO_SYMBOL
+    OPEN_PARENTHESIS
+    OPEN_SQUARE_BRACKET
+    REPETITION_SYMBOL
+    STRICT_SYMBOL
+    TOKEN_SYMBOL
+
+Grammar
+
+Rule 0     S' -> grammar_list
+Rule 1     grammar_list -> comment_block
+Rule 2     grammar_list -> grammar_list grammar_expression
+Rule 3     grammar_list -> grammar_list token_expression
+Rule 4     grammar_list -> grammar_list strict_expression
+Rule 5     grammar_list -> grammar_list macro_expression
+Rule 6     comment_block -> COMMENT
+Rule 7     comment_block -> comment_block COMMENT
+Rule 8     grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list
+Rule 9     token_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list
+Rule 10    strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list
+Rule 11    macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list
+Rule 12    productions_list -> production
+Rule 13    productions_list -> productions_list ALTERNATIVE_SYMBOL production
+Rule 14    production -> NT_SYMBOL
+Rule 15    production -> T_SYMBOL
+Rule 16    production -> production NT_SYMBOL
+Rule 17    production -> production T_SYMBOL
+
+Terminals, with rules where they appear
+
+ALTERNATIVE_SYMBOL   : 13
+CLOSE_PARENTHESIS    : 
+CLOSE_SQUARE_BRACKET : 
+COMMENT              : 6 7
+GRAMMAR_SYMBOL       : 8 9 10 11
+IDENTIFIER           : 
+MACRO_SYMBOL         : 
+NT_SYMBOL            : 8 9 10 11 14 16
+OPEN_PARENTHESIS     : 
+OPEN_SQUARE_BRACKET  : 
+REPETITION_SYMBOL    : 
+STRICT_SYMBOL        : 
+TOKEN_SYMBOL         : 
+T_SYMBOL             : 15 17
+error                : 
+
+Nonterminals, with rules where they appear
+
+comment_block        : 1 7
+grammar_expression   : 2
+grammar_list         : 2 3 4 5 0
+macro_expression     : 5
+production           : 12 13 16 17
+productions_list     : 8 9 10 11 13
+strict_expression    : 4
+token_expression     : 3
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . grammar_list
+    (1) grammar_list -> . comment_block
+    (2) grammar_list -> . grammar_list grammar_expression
+    (3) grammar_list -> . grammar_list token_expression
+    (4) grammar_list -> . grammar_list strict_expression
+    (5) grammar_list -> . grammar_list macro_expression
+    (6) comment_block -> . COMMENT
+    (7) comment_block -> . comment_block COMMENT
+
+    COMMENT         shift and go to state 3
+
+    grammar_list                   shift and go to state 1
+    comment_block                  shift and go to state 2
+
+state 1
+
+    (0) S' -> grammar_list .
+    (2) grammar_list -> grammar_list . grammar_expression
+    (3) grammar_list -> grammar_list . token_expression
+    (4) grammar_list -> grammar_list . strict_expression
+    (5) grammar_list -> grammar_list . macro_expression
+    (8) grammar_expression -> . NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    (9) token_expression -> . NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    (10) strict_expression -> . NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    (11) macro_expression -> . NT_SYMBOL GRAMMAR_SYMBOL productions_list
+
+    NT_SYMBOL       shift and go to state 8
+
+    grammar_expression             shift and go to state 4
+    token_expression               shift and go to state 5
+    strict_expression              shift and go to state 6
+    macro_expression               shift and go to state 7
+
+state 2
+
+    (1) grammar_list -> comment_block .
+    (7) comment_block -> comment_block . COMMENT
+
+    NT_SYMBOL       reduce using rule 1 (grammar_list -> comment_block .)
+    $end            reduce using rule 1 (grammar_list -> comment_block .)
+    COMMENT         shift and go to state 9
+
+
+state 3
+
+    (6) comment_block -> COMMENT .
+
+    COMMENT         reduce using rule 6 (comment_block -> COMMENT .)
+    NT_SYMBOL       reduce using rule 6 (comment_block -> COMMENT .)
+    $end            reduce using rule 6 (comment_block -> COMMENT .)
+
+
+state 4
+
+    (2) grammar_list -> grammar_list grammar_expression .
+
+    NT_SYMBOL       reduce using rule 2 (grammar_list -> grammar_list grammar_expression .)
+    $end            reduce using rule 2 (grammar_list -> grammar_list grammar_expression .)
+
+
+state 5
+
+    (3) grammar_list -> grammar_list token_expression .
+
+    NT_SYMBOL       reduce using rule 3 (grammar_list -> grammar_list token_expression .)
+    $end            reduce using rule 3 (grammar_list -> grammar_list token_expression .)
+
+
+state 6
+
+    (4) grammar_list -> grammar_list strict_expression .
+
+    NT_SYMBOL       reduce using rule 4 (grammar_list -> grammar_list strict_expression .)
+    $end            reduce using rule 4 (grammar_list -> grammar_list strict_expression .)
+
+
+state 7
+
+    (5) grammar_list -> grammar_list macro_expression .
+
+    NT_SYMBOL       reduce using rule 5 (grammar_list -> grammar_list macro_expression .)
+    $end            reduce using rule 5 (grammar_list -> grammar_list macro_expression .)
+
+
+state 8
+
+    (8) grammar_expression -> NT_SYMBOL . GRAMMAR_SYMBOL productions_list
+    (9) token_expression -> NT_SYMBOL . GRAMMAR_SYMBOL productions_list
+    (10) strict_expression -> NT_SYMBOL . GRAMMAR_SYMBOL productions_list
+    (11) macro_expression -> NT_SYMBOL . GRAMMAR_SYMBOL productions_list
+
+    GRAMMAR_SYMBOL  shift and go to state 10
+
+
+state 9
+
+    (7) comment_block -> comment_block COMMENT .
+
+    COMMENT         reduce using rule 7 (comment_block -> comment_block COMMENT .)
+    NT_SYMBOL       reduce using rule 7 (comment_block -> comment_block COMMENT .)
+    $end            reduce using rule 7 (comment_block -> comment_block COMMENT .)
+
+
+state 10
+
+    (8) grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL . productions_list
+    (9) token_expression -> NT_SYMBOL GRAMMAR_SYMBOL . productions_list
+    (10) strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL . productions_list
+    (11) macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL . productions_list
+    (12) productions_list -> . production
+    (13) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
+    (14) production -> . NT_SYMBOL
+    (15) production -> . T_SYMBOL
+    (16) production -> . production NT_SYMBOL
+    (17) production -> . production T_SYMBOL
+
+    NT_SYMBOL       shift and go to state 11
+    T_SYMBOL        shift and go to state 14
+
+    productions_list               shift and go to state 12
+    production                     shift and go to state 13
+
+state 11
+
+    (14) production -> NT_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 14 (production -> NT_SYMBOL .)
+    T_SYMBOL        reduce using rule 14 (production -> NT_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 14 (production -> NT_SYMBOL .)
+    $end            reduce using rule 14 (production -> NT_SYMBOL .)
+
+
+state 12
+
+    (8) grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .
+    (9) token_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .
+    (10) strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .
+    (11) macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .
+    (13) productions_list -> productions_list . ALTERNATIVE_SYMBOL production
+
+  ! reduce/reduce conflict for NT_SYMBOL resolved using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+  ! reduce/reduce conflict for $end resolved using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+  ! reduce/reduce conflict for NT_SYMBOL resolved using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+  ! reduce/reduce conflict for $end resolved using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+  ! reduce/reduce conflict for NT_SYMBOL resolved using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+  ! reduce/reduce conflict for $end resolved using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+    NT_SYMBOL       reduce using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+    $end            reduce using rule 8 (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .)
+    ALTERNATIVE_SYMBOL shift and go to state 15
+
+  ! NT_SYMBOL       [ reduce using rule 9 (token_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .) ]
+  ! $end            [ reduce using rule 9 (token_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .) ]
+  ! NT_SYMBOL       [ reduce using rule 10 (strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .) ]
+  ! $end            [ reduce using rule 10 (strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .) ]
+  ! NT_SYMBOL       [ reduce using rule 11 (macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .) ]
+  ! $end            [ reduce using rule 11 (macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list .) ]
+
+
+state 13
+
+    (12) productions_list -> production .
+    (16) production -> production . NT_SYMBOL
+    (17) production -> production . T_SYMBOL
+
+  ! shift/reduce conflict for NT_SYMBOL resolved as shift
+    ALTERNATIVE_SYMBOL reduce using rule 12 (productions_list -> production .)
+    $end            reduce using rule 12 (productions_list -> production .)
+    NT_SYMBOL       shift and go to state 16
+    T_SYMBOL        shift and go to state 17
+
+  ! NT_SYMBOL       [ reduce using rule 12 (productions_list -> production .) ]
+
+
+state 14
+
+    (15) production -> T_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 15 (production -> T_SYMBOL .)
+    T_SYMBOL        reduce using rule 15 (production -> T_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 15 (production -> T_SYMBOL .)
+    $end            reduce using rule 15 (production -> T_SYMBOL .)
+
+
+state 15
+
+    (13) productions_list -> productions_list ALTERNATIVE_SYMBOL . production
+    (14) production -> . NT_SYMBOL
+    (15) production -> . T_SYMBOL
+    (16) production -> . production NT_SYMBOL
+    (17) production -> . production T_SYMBOL
+
+    NT_SYMBOL       shift and go to state 11
+    T_SYMBOL        shift and go to state 14
+
+    production                     shift and go to state 18
+
+state 16
+
+    (16) production -> production NT_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 16 (production -> production NT_SYMBOL .)
+    T_SYMBOL        reduce using rule 16 (production -> production NT_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 16 (production -> production NT_SYMBOL .)
+    $end            reduce using rule 16 (production -> production NT_SYMBOL .)
+
+
+state 17
+
+    (17) production -> production T_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 17 (production -> production T_SYMBOL .)
+    T_SYMBOL        reduce using rule 17 (production -> production T_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 17 (production -> production T_SYMBOL .)
+    $end            reduce using rule 17 (production -> production T_SYMBOL .)
+
+
+state 18
+
+    (13) productions_list -> productions_list ALTERNATIVE_SYMBOL production .
+    (16) production -> production . NT_SYMBOL
+    (17) production -> production . T_SYMBOL
+
+  ! shift/reduce conflict for NT_SYMBOL resolved as shift
+    ALTERNATIVE_SYMBOL reduce using rule 13 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
+    $end            reduce using rule 13 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
+    NT_SYMBOL       shift and go to state 16
+    T_SYMBOL        shift and go to state 17
+
+  ! NT_SYMBOL       [ reduce using rule 13 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .) ]
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for NT_SYMBOL in state 13 resolved as shift
+WARNING: shift/reduce conflict for NT_SYMBOL in state 18 resolved as shift
+WARNING: reduce/reduce conflict in state 12 resolved using rule (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list)
+WARNING: rejected rule (token_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list) in state 12
+WARNING: reduce/reduce conflict in state 12 resolved using rule (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list)
+WARNING: rejected rule (strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list) in state 12
+WARNING: reduce/reduce conflict in state 12 resolved using rule (grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list)
+WARNING: rejected rule (macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list) in state 12
+WARNING: Rule (token_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list) is never reduced
+WARNING: Rule (strict_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list) is never reduced
+WARNING: Rule (macro_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list) is never reduced
