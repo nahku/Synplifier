@@ -88,7 +88,7 @@ def t_NT_SYMBOL(t):
 
 def t_T_SYMBOL(t):
     #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
-    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}~?^+=/"][$\'\\\.,a-zA-Z\_0-9\-<>&+=/"]*'
+    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}~?^+=/"][$\'\\\.,a-zA-Z\_0-9\->&+=/"]*'
     #r'..*'
     return t
 
@@ -112,8 +112,8 @@ def import_tptp_file(filename):
     data = file.read()
     return data
 
-#data = ',<source><optional_info> | <null>'
-data = import_tptp_file('tptp_bnf.txt')
+data = '%HALLO\n%Test\n<rule1> ::= ,<rule2> abcd <rule3> | <rule4>'
+#data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)
 
