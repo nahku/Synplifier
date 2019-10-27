@@ -116,7 +116,8 @@ def import_tptp_file(filename):
     data = file.read()
     return data
 
-data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
+#data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
+data = '<tfx_let_types>        ::= <tff_atom_typing> | [<tff_atom_typing_list>]'
 #data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)

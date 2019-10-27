@@ -3,11 +3,8 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     CLOSE_PARENTHESIS
-    CLOSE_SQUARE_BRACKET
     IDENTIFIER
     OPEN_PARENTHESIS
-    OPEN_SQUARE_BRACKET
-    REPETITION_SYMBOL
 
 Grammar
 
@@ -25,28 +22,31 @@ Rule 10    token_expression -> LTOKEN_EXPRESSION productions_list
 Rule 11    strict_expression -> LSTRICT_EXPRESSION productions_list
 Rule 12    macro_expression -> LMACRO_EXPRESSION productions_list
 Rule 13    productions_list -> production
-Rule 14    productions_list -> productions_list ALTERNATIVE_SYMBOL production
-Rule 15    production -> NT_SYMBOL
-Rule 16    production -> T_SYMBOL
-Rule 17    production -> production NT_SYMBOL
-Rule 18    production -> production T_SYMBOL
+Rule 14    productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+Rule 15    productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list
+Rule 16    production -> NT_SYMBOL
+Rule 17    production -> T_SYMBOL
+Rule 18    production -> NT_SYMBOL REPETITION_SYMBOL
+Rule 19    production -> production NT_SYMBOL
+Rule 20    production -> production T_SYMBOL
+Rule 21    production -> production NT_SYMBOL REPETITION_SYMBOL
 
 Terminals, with rules where they appear
 
-ALTERNATIVE_SYMBOL   : 14
+ALTERNATIVE_SYMBOL   : 15
 CLOSE_PARENTHESIS    : 
-CLOSE_SQUARE_BRACKET : 
+CLOSE_SQUARE_BRACKET : 14
 COMMENT              : 7 8
 IDENTIFIER           : 
 LGRAMMAR_EXPRESSION  : 9
 LMACRO_EXPRESSION    : 12
 LSTRICT_EXPRESSION   : 11
 LTOKEN_EXPRESSION    : 10
-NT_SYMBOL            : 15 17
+NT_SYMBOL            : 16 18 19 21
 OPEN_PARENTHESIS     : 
-OPEN_SQUARE_BRACKET  : 
-REPETITION_SYMBOL    : 
-T_SYMBOL             : 16 18
+OPEN_SQUARE_BRACKET  : 14
+REPETITION_SYMBOL    : 18 21
+T_SYMBOL             : 17 20
 error                : 
 
 Nonterminals, with rules where they appear
@@ -55,8 +55,8 @@ comment_block        : 1 6 8
 grammar_expression   : 2
 grammar_list         : 2 3 4 5 6 0
 macro_expression     : 5
-production           : 13 14 17 18
-productions_list     : 9 10 11 12 14
+production           : 13 14 19 20 21
+productions_list     : 9 10 11 12 15 15
 strict_expression    : 4
 token_expression     : 3
 
@@ -202,14 +202,18 @@ state 9
 
     (9) grammar_expression -> LGRAMMAR_EXPRESSION . productions_list
     (13) productions_list -> . production
-    (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (15) production -> . NT_SYMBOL
-    (16) production -> . T_SYMBOL
-    (17) production -> . production NT_SYMBOL
-    (18) production -> . production T_SYMBOL
+    (14) productions_list -> . OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+    (15) productions_list -> . productions_list ALTERNATIVE_SYMBOL productions_list
+    (16) production -> . NT_SYMBOL
+    (17) production -> . T_SYMBOL
+    (18) production -> . NT_SYMBOL REPETITION_SYMBOL
+    (19) production -> . production NT_SYMBOL
+    (20) production -> . production T_SYMBOL
+    (21) production -> . production NT_SYMBOL REPETITION_SYMBOL
 
-    NT_SYMBOL       shift and go to state 16
-    T_SYMBOL        shift and go to state 17
+    OPEN_SQUARE_BRACKET shift and go to state 16
+    NT_SYMBOL       shift and go to state 17
+    T_SYMBOL        shift and go to state 18
 
     productions_list               shift and go to state 14
     production                     shift and go to state 15
@@ -218,48 +222,60 @@ state 10
 
     (10) token_expression -> LTOKEN_EXPRESSION . productions_list
     (13) productions_list -> . production
-    (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (15) production -> . NT_SYMBOL
-    (16) production -> . T_SYMBOL
-    (17) production -> . production NT_SYMBOL
-    (18) production -> . production T_SYMBOL
+    (14) productions_list -> . OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+    (15) productions_list -> . productions_list ALTERNATIVE_SYMBOL productions_list
+    (16) production -> . NT_SYMBOL
+    (17) production -> . T_SYMBOL
+    (18) production -> . NT_SYMBOL REPETITION_SYMBOL
+    (19) production -> . production NT_SYMBOL
+    (20) production -> . production T_SYMBOL
+    (21) production -> . production NT_SYMBOL REPETITION_SYMBOL
 
-    NT_SYMBOL       shift and go to state 16
-    T_SYMBOL        shift and go to state 17
+    OPEN_SQUARE_BRACKET shift and go to state 16
+    NT_SYMBOL       shift and go to state 17
+    T_SYMBOL        shift and go to state 18
 
-    productions_list               shift and go to state 18
+    productions_list               shift and go to state 19
     production                     shift and go to state 15
 
 state 11
 
     (11) strict_expression -> LSTRICT_EXPRESSION . productions_list
     (13) productions_list -> . production
-    (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (15) production -> . NT_SYMBOL
-    (16) production -> . T_SYMBOL
-    (17) production -> . production NT_SYMBOL
-    (18) production -> . production T_SYMBOL
+    (14) productions_list -> . OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+    (15) productions_list -> . productions_list ALTERNATIVE_SYMBOL productions_list
+    (16) production -> . NT_SYMBOL
+    (17) production -> . T_SYMBOL
+    (18) production -> . NT_SYMBOL REPETITION_SYMBOL
+    (19) production -> . production NT_SYMBOL
+    (20) production -> . production T_SYMBOL
+    (21) production -> . production NT_SYMBOL REPETITION_SYMBOL
 
-    NT_SYMBOL       shift and go to state 16
-    T_SYMBOL        shift and go to state 17
+    OPEN_SQUARE_BRACKET shift and go to state 16
+    NT_SYMBOL       shift and go to state 17
+    T_SYMBOL        shift and go to state 18
 
-    productions_list               shift and go to state 19
+    productions_list               shift and go to state 20
     production                     shift and go to state 15
 
 state 12
 
     (12) macro_expression -> LMACRO_EXPRESSION . productions_list
     (13) productions_list -> . production
-    (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (15) production -> . NT_SYMBOL
-    (16) production -> . T_SYMBOL
-    (17) production -> . production NT_SYMBOL
-    (18) production -> . production T_SYMBOL
+    (14) productions_list -> . OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+    (15) productions_list -> . productions_list ALTERNATIVE_SYMBOL productions_list
+    (16) production -> . NT_SYMBOL
+    (17) production -> . T_SYMBOL
+    (18) production -> . NT_SYMBOL REPETITION_SYMBOL
+    (19) production -> . production NT_SYMBOL
+    (20) production -> . production T_SYMBOL
+    (21) production -> . production NT_SYMBOL REPETITION_SYMBOL
 
-    NT_SYMBOL       shift and go to state 16
-    T_SYMBOL        shift and go to state 17
+    OPEN_SQUARE_BRACKET shift and go to state 16
+    NT_SYMBOL       shift and go to state 17
+    T_SYMBOL        shift and go to state 18
 
-    productions_list               shift and go to state 20
+    productions_list               shift and go to state 21
     production                     shift and go to state 15
 
 state 13
@@ -277,7 +293,7 @@ state 13
 state 14
 
     (9) grammar_expression -> LGRAMMAR_EXPRESSION productions_list .
-    (14) productions_list -> productions_list . ALTERNATIVE_SYMBOL production
+    (15) productions_list -> productions_list . ALTERNATIVE_SYMBOL productions_list
 
     LGRAMMAR_EXPRESSION reduce using rule 9 (grammar_expression -> LGRAMMAR_EXPRESSION productions_list .)
     LTOKEN_EXPRESSION reduce using rule 9 (grammar_expression -> LGRAMMAR_EXPRESSION productions_list .)
@@ -285,14 +301,15 @@ state 14
     LMACRO_EXPRESSION reduce using rule 9 (grammar_expression -> LGRAMMAR_EXPRESSION productions_list .)
     COMMENT         reduce using rule 9 (grammar_expression -> LGRAMMAR_EXPRESSION productions_list .)
     $end            reduce using rule 9 (grammar_expression -> LGRAMMAR_EXPRESSION productions_list .)
-    ALTERNATIVE_SYMBOL shift and go to state 21
+    ALTERNATIVE_SYMBOL shift and go to state 22
 
 
 state 15
 
     (13) productions_list -> production .
-    (17) production -> production . NT_SYMBOL
-    (18) production -> production . T_SYMBOL
+    (19) production -> production . NT_SYMBOL
+    (20) production -> production . T_SYMBOL
+    (21) production -> production . NT_SYMBOL REPETITION_SYMBOL
 
     ALTERNATIVE_SYMBOL reduce using rule 13 (productions_list -> production .)
     LGRAMMAR_EXPRESSION reduce using rule 13 (productions_list -> production .)
@@ -301,44 +318,63 @@ state 15
     LMACRO_EXPRESSION reduce using rule 13 (productions_list -> production .)
     COMMENT         reduce using rule 13 (productions_list -> production .)
     $end            reduce using rule 13 (productions_list -> production .)
-    NT_SYMBOL       shift and go to state 22
-    T_SYMBOL        shift and go to state 23
+    NT_SYMBOL       shift and go to state 23
+    T_SYMBOL        shift and go to state 24
 
 
 state 16
 
-    (15) production -> NT_SYMBOL .
+    (14) productions_list -> OPEN_SQUARE_BRACKET . production CLOSE_SQUARE_BRACKET
+    (16) production -> . NT_SYMBOL
+    (17) production -> . T_SYMBOL
+    (18) production -> . NT_SYMBOL REPETITION_SYMBOL
+    (19) production -> . production NT_SYMBOL
+    (20) production -> . production T_SYMBOL
+    (21) production -> . production NT_SYMBOL REPETITION_SYMBOL
 
-    NT_SYMBOL       reduce using rule 15 (production -> NT_SYMBOL .)
-    T_SYMBOL        reduce using rule 15 (production -> NT_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 15 (production -> NT_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 15 (production -> NT_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 15 (production -> NT_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 15 (production -> NT_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 15 (production -> NT_SYMBOL .)
-    COMMENT         reduce using rule 15 (production -> NT_SYMBOL .)
-    $end            reduce using rule 15 (production -> NT_SYMBOL .)
+    NT_SYMBOL       shift and go to state 17
+    T_SYMBOL        shift and go to state 18
 
+    production                     shift and go to state 25
 
 state 17
 
-    (16) production -> T_SYMBOL .
+    (16) production -> NT_SYMBOL .
+    (18) production -> NT_SYMBOL . REPETITION_SYMBOL
 
-    NT_SYMBOL       reduce using rule 16 (production -> T_SYMBOL .)
-    T_SYMBOL        reduce using rule 16 (production -> T_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 16 (production -> T_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 16 (production -> T_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 16 (production -> T_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 16 (production -> T_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 16 (production -> T_SYMBOL .)
-    COMMENT         reduce using rule 16 (production -> T_SYMBOL .)
-    $end            reduce using rule 16 (production -> T_SYMBOL .)
+    NT_SYMBOL       reduce using rule 16 (production -> NT_SYMBOL .)
+    T_SYMBOL        reduce using rule 16 (production -> NT_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 16 (production -> NT_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 16 (production -> NT_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 16 (production -> NT_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 16 (production -> NT_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 16 (production -> NT_SYMBOL .)
+    COMMENT         reduce using rule 16 (production -> NT_SYMBOL .)
+    $end            reduce using rule 16 (production -> NT_SYMBOL .)
+    CLOSE_SQUARE_BRACKET reduce using rule 16 (production -> NT_SYMBOL .)
+    REPETITION_SYMBOL shift and go to state 26
 
 
 state 18
 
+    (17) production -> T_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 17 (production -> T_SYMBOL .)
+    T_SYMBOL        reduce using rule 17 (production -> T_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 17 (production -> T_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 17 (production -> T_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 17 (production -> T_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 17 (production -> T_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 17 (production -> T_SYMBOL .)
+    COMMENT         reduce using rule 17 (production -> T_SYMBOL .)
+    $end            reduce using rule 17 (production -> T_SYMBOL .)
+    CLOSE_SQUARE_BRACKET reduce using rule 17 (production -> T_SYMBOL .)
+
+
+state 19
+
     (10) token_expression -> LTOKEN_EXPRESSION productions_list .
-    (14) productions_list -> productions_list . ALTERNATIVE_SYMBOL production
+    (15) productions_list -> productions_list . ALTERNATIVE_SYMBOL productions_list
 
     LGRAMMAR_EXPRESSION reduce using rule 10 (token_expression -> LTOKEN_EXPRESSION productions_list .)
     LTOKEN_EXPRESSION reduce using rule 10 (token_expression -> LTOKEN_EXPRESSION productions_list .)
@@ -346,13 +382,13 @@ state 18
     LMACRO_EXPRESSION reduce using rule 10 (token_expression -> LTOKEN_EXPRESSION productions_list .)
     COMMENT         reduce using rule 10 (token_expression -> LTOKEN_EXPRESSION productions_list .)
     $end            reduce using rule 10 (token_expression -> LTOKEN_EXPRESSION productions_list .)
-    ALTERNATIVE_SYMBOL shift and go to state 21
+    ALTERNATIVE_SYMBOL shift and go to state 22
 
 
-state 19
+state 20
 
     (11) strict_expression -> LSTRICT_EXPRESSION productions_list .
-    (14) productions_list -> productions_list . ALTERNATIVE_SYMBOL production
+    (15) productions_list -> productions_list . ALTERNATIVE_SYMBOL productions_list
 
     LGRAMMAR_EXPRESSION reduce using rule 11 (strict_expression -> LSTRICT_EXPRESSION productions_list .)
     LTOKEN_EXPRESSION reduce using rule 11 (strict_expression -> LSTRICT_EXPRESSION productions_list .)
@@ -360,13 +396,13 @@ state 19
     LMACRO_EXPRESSION reduce using rule 11 (strict_expression -> LSTRICT_EXPRESSION productions_list .)
     COMMENT         reduce using rule 11 (strict_expression -> LSTRICT_EXPRESSION productions_list .)
     $end            reduce using rule 11 (strict_expression -> LSTRICT_EXPRESSION productions_list .)
-    ALTERNATIVE_SYMBOL shift and go to state 21
+    ALTERNATIVE_SYMBOL shift and go to state 22
 
 
-state 20
+state 21
 
     (12) macro_expression -> LMACRO_EXPRESSION productions_list .
-    (14) productions_list -> productions_list . ALTERNATIVE_SYMBOL production
+    (15) productions_list -> productions_list . ALTERNATIVE_SYMBOL productions_list
 
     LGRAMMAR_EXPRESSION reduce using rule 12 (macro_expression -> LMACRO_EXPRESSION productions_list .)
     LTOKEN_EXPRESSION reduce using rule 12 (macro_expression -> LMACRO_EXPRESSION productions_list .)
@@ -374,70 +410,139 @@ state 20
     LMACRO_EXPRESSION reduce using rule 12 (macro_expression -> LMACRO_EXPRESSION productions_list .)
     COMMENT         reduce using rule 12 (macro_expression -> LMACRO_EXPRESSION productions_list .)
     $end            reduce using rule 12 (macro_expression -> LMACRO_EXPRESSION productions_list .)
-    ALTERNATIVE_SYMBOL shift and go to state 21
+    ALTERNATIVE_SYMBOL shift and go to state 22
 
-
-state 21
-
-    (14) productions_list -> productions_list ALTERNATIVE_SYMBOL . production
-    (15) production -> . NT_SYMBOL
-    (16) production -> . T_SYMBOL
-    (17) production -> . production NT_SYMBOL
-    (18) production -> . production T_SYMBOL
-
-    NT_SYMBOL       shift and go to state 16
-    T_SYMBOL        shift and go to state 17
-
-    production                     shift and go to state 24
 
 state 22
 
-    (17) production -> production NT_SYMBOL .
+    (15) productions_list -> productions_list ALTERNATIVE_SYMBOL . productions_list
+    (13) productions_list -> . production
+    (14) productions_list -> . OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+    (15) productions_list -> . productions_list ALTERNATIVE_SYMBOL productions_list
+    (16) production -> . NT_SYMBOL
+    (17) production -> . T_SYMBOL
+    (18) production -> . NT_SYMBOL REPETITION_SYMBOL
+    (19) production -> . production NT_SYMBOL
+    (20) production -> . production T_SYMBOL
+    (21) production -> . production NT_SYMBOL REPETITION_SYMBOL
 
-    NT_SYMBOL       reduce using rule 17 (production -> production NT_SYMBOL .)
-    T_SYMBOL        reduce using rule 17 (production -> production NT_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 17 (production -> production NT_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 17 (production -> production NT_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 17 (production -> production NT_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 17 (production -> production NT_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 17 (production -> production NT_SYMBOL .)
-    COMMENT         reduce using rule 17 (production -> production NT_SYMBOL .)
-    $end            reduce using rule 17 (production -> production NT_SYMBOL .)
+    OPEN_SQUARE_BRACKET shift and go to state 16
+    NT_SYMBOL       shift and go to state 17
+    T_SYMBOL        shift and go to state 18
 
+    productions_list               shift and go to state 27
+    production                     shift and go to state 15
 
 state 23
 
-    (18) production -> production T_SYMBOL .
+    (19) production -> production NT_SYMBOL .
+    (21) production -> production NT_SYMBOL . REPETITION_SYMBOL
 
-    NT_SYMBOL       reduce using rule 18 (production -> production T_SYMBOL .)
-    T_SYMBOL        reduce using rule 18 (production -> production T_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 18 (production -> production T_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 18 (production -> production T_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 18 (production -> production T_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 18 (production -> production T_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 18 (production -> production T_SYMBOL .)
-    COMMENT         reduce using rule 18 (production -> production T_SYMBOL .)
-    $end            reduce using rule 18 (production -> production T_SYMBOL .)
+    NT_SYMBOL       reduce using rule 19 (production -> production NT_SYMBOL .)
+    T_SYMBOL        reduce using rule 19 (production -> production NT_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 19 (production -> production NT_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 19 (production -> production NT_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 19 (production -> production NT_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 19 (production -> production NT_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 19 (production -> production NT_SYMBOL .)
+    COMMENT         reduce using rule 19 (production -> production NT_SYMBOL .)
+    $end            reduce using rule 19 (production -> production NT_SYMBOL .)
+    CLOSE_SQUARE_BRACKET reduce using rule 19 (production -> production NT_SYMBOL .)
+    REPETITION_SYMBOL shift and go to state 28
 
 
 state 24
 
-    (14) productions_list -> productions_list ALTERNATIVE_SYMBOL production .
-    (17) production -> production . NT_SYMBOL
-    (18) production -> production . T_SYMBOL
+    (20) production -> production T_SYMBOL .
 
-    ALTERNATIVE_SYMBOL reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    LGRAMMAR_EXPRESSION reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    LTOKEN_EXPRESSION reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    LSTRICT_EXPRESSION reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    LMACRO_EXPRESSION reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    COMMENT         reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    $end            reduce using rule 14 (productions_list -> productions_list ALTERNATIVE_SYMBOL production .)
-    NT_SYMBOL       shift and go to state 22
-    T_SYMBOL        shift and go to state 23
+    NT_SYMBOL       reduce using rule 20 (production -> production T_SYMBOL .)
+    T_SYMBOL        reduce using rule 20 (production -> production T_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 20 (production -> production T_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 20 (production -> production T_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 20 (production -> production T_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 20 (production -> production T_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 20 (production -> production T_SYMBOL .)
+    COMMENT         reduce using rule 20 (production -> production T_SYMBOL .)
+    $end            reduce using rule 20 (production -> production T_SYMBOL .)
+    CLOSE_SQUARE_BRACKET reduce using rule 20 (production -> production T_SYMBOL .)
+
+
+state 25
+
+    (14) productions_list -> OPEN_SQUARE_BRACKET production . CLOSE_SQUARE_BRACKET
+    (19) production -> production . NT_SYMBOL
+    (20) production -> production . T_SYMBOL
+    (21) production -> production . NT_SYMBOL REPETITION_SYMBOL
+
+    CLOSE_SQUARE_BRACKET shift and go to state 29
+    NT_SYMBOL       shift and go to state 23
+    T_SYMBOL        shift and go to state 24
+
+
+state 26
+
+    (18) production -> NT_SYMBOL REPETITION_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    T_SYMBOL        reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    COMMENT         reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    $end            reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+    CLOSE_SQUARE_BRACKET reduce using rule 18 (production -> NT_SYMBOL REPETITION_SYMBOL .)
+
+
+state 27
+
+    (15) productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .
+    (15) productions_list -> productions_list . ALTERNATIVE_SYMBOL productions_list
+
+  ! shift/reduce conflict for ALTERNATIVE_SYMBOL resolved as shift
+    LGRAMMAR_EXPRESSION reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .)
+    LTOKEN_EXPRESSION reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .)
+    LSTRICT_EXPRESSION reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .)
+    LMACRO_EXPRESSION reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .)
+    COMMENT         reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .)
+    $end            reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .)
+    ALTERNATIVE_SYMBOL shift and go to state 22
+
+  ! ALTERNATIVE_SYMBOL [ reduce using rule 15 (productions_list -> productions_list ALTERNATIVE_SYMBOL productions_list .) ]
+
+
+state 28
+
+    (21) production -> production NT_SYMBOL REPETITION_SYMBOL .
+
+    NT_SYMBOL       reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    T_SYMBOL        reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    COMMENT         reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    $end            reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+    CLOSE_SQUARE_BRACKET reduce using rule 21 (production -> production NT_SYMBOL REPETITION_SYMBOL .)
+
+
+state 29
+
+    (14) productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .
+
+    ALTERNATIVE_SYMBOL reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
+    LGRAMMAR_EXPRESSION reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
+    LTOKEN_EXPRESSION reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
+    LSTRICT_EXPRESSION reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
+    LMACRO_EXPRESSION reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
+    COMMENT         reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
+    $end            reduce using rule 14 (productions_list -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
 WARNING: shift/reduce conflict for COMMENT in state 2 resolved as shift
 WARNING: shift/reduce conflict for COMMENT in state 8 resolved as shift
+WARNING: shift/reduce conflict for ALTERNATIVE_SYMBOL in state 27 resolved as shift
