@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ALTERNATIVE_SYMBOL CLOSE_PARENTHESIS CLOSE_SQUARE_BRACKET COMMENT GRAMMAR_SYMBOL IDENTIFIER MACRO_SYMBOL NT_SYMBOL OPEN_PARENTHESIS OPEN_SQUARE_BRACKET REPETITION_SYMBOL STRICT_SYMBOL TOKEN_SYMBOL T_SYMBOL\n    grammar_list : comment_block\n                |  grammar_list grammar_expression\n                |  grammar_list token_expression\n                |  grammar_list strict_expression\n                |  grammar_list macro_expression\n                |  grammar_list comment_block\n    \n    comment_block : COMMENT\n                |   comment_block COMMENT\n    \n    grammar_expression : NT_SYMBOL GRAMMAR_SYMBOL productions_list\n    \n    token_expression : NT_SYMBOL TOKEN_SYMBOL productions_list\n    \n    strict_expression : NT_SYMBOL STRICT_SYMBOL productions_list\n    \n    macro_expression : NT_SYMBOL MACRO_SYMBOL productions_list\n    \n    productions_list : production\n                    | productions_list ALTERNATIVE_SYMBOL production\n    \n    production : NT_SYMBOL\n            |    T_SYMBOL\n            |    production NT_SYMBOL\n            |    production T_SYMBOL\n    '
+_lr_signature = 'ALTERNATIVE_SYMBOL CLOSE_PARENTHESIS CLOSE_SQUARE_BRACKET COMMENT IDENTIFIER LGRAMMAR_EXPRESSION LMACRO_EXPRESSION LSTRICT_EXPRESSION LTOKEN_EXPRESSION NT_SYMBOL OPEN_PARENTHESIS OPEN_SQUARE_BRACKET REPETITION_SYMBOL T_SYMBOL\n    grammar_list : comment_block\n                |  grammar_list grammar_expression\n                |  grammar_list token_expression\n                |  grammar_list strict_expression\n                |  grammar_list macro_expression\n                |  grammar_list comment_block\n    \n    comment_block : COMMENT\n                |   comment_block COMMENT\n    \n    grammar_expression : LGRAMMAR_EXPRESSION productions_list\n    \n    token_expression : LTOKEN_EXPRESSION productions_list\n    \n    strict_expression : LSTRICT_EXPRESSION productions_list\n    \n    macro_expression : LMACRO_EXPRESSION productions_list\n    \n    productions_list : production\n                    | productions_list ALTERNATIVE_SYMBOL production\n    \n    production : NT_SYMBOL\n            |    T_SYMBOL\n            |    production NT_SYMBOL\n            |    production T_SYMBOL\n    '
     
-_lr_action_items = {'COMMENT':([0,1,2,3,4,5,6,7,8,10,15,16,17,18,19,20,21,23,24,25,],[3,3,10,-7,-2,-3,-4,-5,10,-8,-15,-9,-13,-16,-10,-11,-12,-17,-18,-14,]),'$end':([1,2,3,4,5,6,7,8,10,15,16,17,18,19,20,21,23,24,25,],[0,-1,-7,-2,-3,-4,-5,-6,-8,-15,-9,-13,-16,-10,-11,-12,-17,-18,-14,]),'NT_SYMBOL':([1,2,3,4,5,6,7,8,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,],[9,-1,-7,-2,-3,-4,-5,-6,-8,15,15,15,15,-15,-9,23,-16,-10,-11,-12,15,-17,-18,23,]),'GRAMMAR_SYMBOL':([9,],[11,]),'TOKEN_SYMBOL':([9,],[12,]),'STRICT_SYMBOL':([9,],[13,]),'MACRO_SYMBOL':([9,],[14,]),'T_SYMBOL':([11,12,13,14,15,17,18,22,23,24,25,],[18,18,18,18,-15,24,-16,18,-17,-18,24,]),'ALTERNATIVE_SYMBOL':([15,16,17,18,19,20,21,23,24,25,],[-15,22,-13,-16,22,22,22,-17,-18,-14,]),}
+_lr_action_items = {'COMMENT':([0,1,2,3,4,5,6,7,8,13,14,15,16,17,18,19,20,22,23,24,],[3,3,13,-7,-2,-3,-4,-5,13,-8,-9,-13,-15,-16,-10,-11,-12,-17,-18,-14,]),'$end':([1,2,3,4,5,6,7,8,13,14,15,16,17,18,19,20,22,23,24,],[0,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-15,-16,-10,-11,-12,-17,-18,-14,]),'LGRAMMAR_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,18,19,20,22,23,24,],[9,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-15,-16,-10,-11,-12,-17,-18,-14,]),'LTOKEN_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,18,19,20,22,23,24,],[10,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-15,-16,-10,-11,-12,-17,-18,-14,]),'LSTRICT_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,18,19,20,22,23,24,],[11,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-15,-16,-10,-11,-12,-17,-18,-14,]),'LMACRO_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,18,19,20,22,23,24,],[12,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-15,-16,-10,-11,-12,-17,-18,-14,]),'NT_SYMBOL':([9,10,11,12,15,16,17,21,22,23,24,],[16,16,16,16,22,-15,-16,16,-17,-18,22,]),'T_SYMBOL':([9,10,11,12,15,16,17,21,22,23,24,],[17,17,17,17,23,-15,-16,17,-17,-18,23,]),'ALTERNATIVE_SYMBOL':([14,15,16,17,18,19,20,22,23,24,],[21,-13,-15,-16,21,21,21,-17,-18,-14,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'grammar_list':([0,],[1,]),'comment_block':([0,1,],[2,8,]),'grammar_expression':([1,],[4,]),'token_expression':([1,],[5,]),'strict_expression':([1,],[6,]),'macro_expression':([1,],[7,]),'productions_list':([11,12,13,14,],[16,19,20,21,]),'production':([11,12,13,14,22,],[17,17,17,17,25,]),}
+_lr_goto_items = {'grammar_list':([0,],[1,]),'comment_block':([0,1,],[2,8,]),'grammar_expression':([1,],[4,]),'token_expression':([1,],[5,]),'strict_expression':([1,],[6,]),'macro_expression':([1,],[7,]),'productions_list':([9,10,11,12,],[14,18,19,20,]),'production':([9,10,11,12,21,],[15,15,15,15,24,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -35,10 +35,10 @@ _lr_productions = [
   ('grammar_list -> grammar_list comment_block','grammar_list',2,'p_grammar_list','yacc.py',50),
   ('comment_block -> COMMENT','comment_block',1,'p_comment_block','yacc.py',60),
   ('comment_block -> comment_block COMMENT','comment_block',2,'p_comment_block','yacc.py',61),
-  ('grammar_expression -> NT_SYMBOL GRAMMAR_SYMBOL productions_list','grammar_expression',3,'p_grammar_expression','yacc.py',72),
-  ('token_expression -> NT_SYMBOL TOKEN_SYMBOL productions_list','token_expression',3,'p_token_expression','yacc.py',78),
-  ('strict_expression -> NT_SYMBOL STRICT_SYMBOL productions_list','strict_expression',3,'p_strict_expression','yacc.py',84),
-  ('macro_expression -> NT_SYMBOL MACRO_SYMBOL productions_list','macro_expression',3,'p_macro_expression','yacc.py',90),
+  ('grammar_expression -> LGRAMMAR_EXPRESSION productions_list','grammar_expression',2,'p_grammar_expression','yacc.py',72),
+  ('token_expression -> LTOKEN_EXPRESSION productions_list','token_expression',2,'p_token_expression','yacc.py',78),
+  ('strict_expression -> LSTRICT_EXPRESSION productions_list','strict_expression',2,'p_strict_expression','yacc.py',84),
+  ('macro_expression -> LMACRO_EXPRESSION productions_list','macro_expression',2,'p_macro_expression','yacc.py',90),
   ('productions_list -> production','productions_list',1,'p_productions_list','yacc.py',96),
   ('productions_list -> productions_list ALTERNATIVE_SYMBOL production','productions_list',3,'p_productions_list','yacc.py',97),
   ('production -> NT_SYMBOL','production',1,'p_production','yacc.py',107),

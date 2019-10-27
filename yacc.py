@@ -69,27 +69,27 @@ def p_comment_block(p):
 
 def p_grammar_expression(p):
     """
-    grammar_expression : NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    grammar_expression : LGRAMMAR_EXPRESSION productions_list
     """
-    p[0] = GRAMMAR_EXPRESSION(p[1],p[3])
+    p[0] = GRAMMAR_EXPRESSION(p[1],p[2])
 
 def p_token_expression(p):
     """
-    token_expression : NT_SYMBOL TOKEN_SYMBOL productions_list
+    token_expression : LTOKEN_EXPRESSION productions_list
     """
-    p[0] = TOKEN_EXPRESSION(p[1],p[3])
+    p[0] = TOKEN_EXPRESSION(p[1],p[2])
 
 def p_strict_expression(p):
     """
-    strict_expression : NT_SYMBOL STRICT_SYMBOL productions_list
+    strict_expression : LSTRICT_EXPRESSION productions_list
     """
-    p[0] = STRICT_EXPRESSION(p[1],p[3])
+    p[0] = STRICT_EXPRESSION(p[1],p[2])
 
 def p_macro_expression(p):
     """
-    macro_expression : NT_SYMBOL MACRO_SYMBOL productions_list
+    macro_expression : LMACRO_EXPRESSION productions_list
     """
-    p[0] = MACRO_EXPRESSION(p[1],p[3])
+    p[0] = MACRO_EXPRESSION(p[1],p[2])
 
 def p_productions_list(p):
     """
