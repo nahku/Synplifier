@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 import os
 from lexer import tokens
+import lexer
 
 class GRAMMAR_EXPRESSION:
   def __init__(self, name, productions_list):
@@ -24,7 +25,7 @@ class MACRO_EXPRESSION:
 
 class GRAMMAR_LIST:
   def __init__(self, grammar_list):
-    self.list = list
+    self.list = grammar_list
 
 class PRODUCTIONS_LIST:
   def __init__(self, productions_list):
@@ -42,10 +43,11 @@ class COMMENT_BLOCK:
 def p_grammar_list(p):
     """
     grammar_list : comment_block
-    grammar_list : grammar_list grammar_expression
-    grammar_list : grammar_list token_expression
-    grammar_list : grammar_list strict_expression
-    grammar_list : grammar_list macro_expression
+                |  grammar_list grammar_expression
+                |  grammar_list token_expression
+                |  grammar_list strict_expression
+                |  grammar_list macro_expression
+                |  grammar_list comment_block
     """
     if len(p) == 2:
         p[0]  = GRAMMAR_LIST([p[1]])
@@ -56,7 +58,7 @@ def p_grammar_list(p):
 def p_comment_block(p):
     """
     comment_block : COMMENT
-    comment_block : comment_block COMMENT
+                |   comment_block COMMENT
     """
 
     if len(p) == 2:
@@ -64,7 +66,6 @@ def p_comment_block(p):
     elif len(p) == 3:
         p[1].list.append(p[2])
         p[0] = p[1]
-    #{ 'name': p[2], 'content': p[4] }
 
 def p_grammar_expression(p):
     """
@@ -74,26 +75,26 @@ def p_grammar_expression(p):
 
 def p_token_expression(p):
     """
-    token_expression : NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    token_expression : NT_SYMBOL TOKEN_SYMBOL productions_list
     """
     p[0] = TOKEN_EXPRESSION(p[1],p[3])
 
 def p_strict_expression(p):
     """
-    strict_expression : NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    strict_expression : NT_SYMBOL STRICT_SYMBOL productions_list
     """
     p[0] = STRICT_EXPRESSION(p[1],p[3])
 
 def p_macro_expression(p):
     """
-    macro_expression : NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    macro_expression : NT_SYMBOL MACRO_SYMBOL productions_list
     """
     p[0] = MACRO_EXPRESSION(p[1],p[3])
 
 def p_productions_list(p):
     """
     productions_list : production
-    productions_list : productions_list ALTERNATIVE_SYMBOL production
+                    | productions_list ALTERNATIVE_SYMBOL production
     """
     if len(p) == 2:
         p[0] = PRODUCTIONS_LIST([p[1]])
@@ -105,9 +106,9 @@ def p_production(p):
     #missing optional production
     """
     production : NT_SYMBOL
-    production : T_SYMBOL
-    production : production NT_SYMBOL
-    production : production T_SYMBOL
+            |    T_SYMBOL
+            |    production NT_SYMBOL
+            |    production T_SYMBOL
     """
     if len(p) == 2:
         p[0] = PRODUCTION([p[1]])
@@ -168,5 +169,7 @@ result = parser.parse("""%----v7.3.0.0 (TPTP version.internal development number
 %----Top of Page---------------------------------------------------------------
 %----Files. Empty file is OK.
 <TPTP_file>            ::= <TPTP_input>
-<TPTP_input>           ::= <annotated_formula> | <include>""")
+%----hallo
+<TPTP_input>           ::= <annotated_formula> | <include>
+<TPTP_file>            ::= <TPTP_input>""")
 print(result)
