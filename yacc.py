@@ -94,10 +94,13 @@ def p_macro_expression(p):
 def p_productions_list(p):
     """
     productions_list : production
-                    | productions_list ALTERNATIVE_SYMBOL production
+                    | OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+                    | productions_list ALTERNATIVE_SYMBOL productions_list
     """
     if len(p) == 2:
         p[0] = PRODUCTIONS_LIST([p[1]])
+    elif len(p) == 4 and p[1] == "[":
+        p[0] = PRODUCTIONS_LIST([p[1], p[2], p[3]])
     elif len(p) == 4:
         p[1].list.append(p[3])
         p[0] = p[1]
@@ -107,13 +110,20 @@ def p_production(p):
     """
     production : NT_SYMBOL
             |    T_SYMBOL
+            |    NT_SYMBOL REPETITION_SYMBOL
             |    production NT_SYMBOL
             |    production T_SYMBOL
+            |    production NT_SYMBOL REPETITION_SYMBOL
     """
     if len(p) == 2:
         p[0] = PRODUCTION([p[1]])
-    elif len(p) == 3:
+    elif len(p) == 3 and p[2] != "*":
         p[1].list.append(p[2])
+        p[0] = p[1]
+    elif len(p) == 3:
+        p[0] = PRODUCTION([p[1], p[2]])
+    elif len(p) == 4:
+        p[1].list.append(p[2], p[3])
         p[0] = p[1]
 
 def p_error(t):
@@ -168,8 +178,7 @@ result = parser.parse("""%----v7.3.0.0 (TPTP version.internal development number
 %----languages.
 %----Top of Page---------------------------------------------------------------
 %----Files. Empty file is OK.
-<TPTP_file>            ::= <TPTP_input>
-%----hallo
-<TPTP_input>           ::= <annotated_formula> | <include>
-<TPTP_file>            ::= <TPTP_input>""")
+<TPTP_file>            ::= <TPTP_input>*
+<tfx_let_types>        ::= <tff_atom_typing> | [<tff_atom_typing_list>] | <tff>
+""")
 print(result)
