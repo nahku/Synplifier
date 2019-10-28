@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 import os
+from enum import Enum
 from lexer import tokens
 import lexer
 
@@ -32,8 +33,10 @@ class PRODUCTIONS_LIST:
     self.list = productions_list
 
 class PRODUCTION:
-  def __init__(self, list):
+  def __init__(self, list, attribut):
     self.list = list
+    #enumAttribut = Enum('enumAttribut', 'none repetition optional')
+    self.attribut = attribut #none, repetition or optional
 
 class COMMENT_BLOCK:
   def __init__(self, list):
@@ -94,13 +97,10 @@ def p_macro_expression(p):
 def p_productions_list(p):
     """
     productions_list : production
-                    | OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
-                    | productions_list ALTERNATIVE_SYMBOL productions_list
+                    | productions_list ALTERNATIVE_SYMBOL production
     """
     if len(p) == 2:
         p[0] = PRODUCTIONS_LIST([p[1]])
-    elif len(p) == 4 and p[1] == "[":
-        p[0] = PRODUCTIONS_LIST([p[1], p[2], p[3]])
     elif len(p) == 4:
         p[1].list.append(p[3])
         p[0] = p[1]
@@ -111,20 +111,24 @@ def p_production(p):
     production : NT_SYMBOL
             |    T_SYMBOL
             |    NT_SYMBOL REPETITION_SYMBOL
+            |    OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
             |    production NT_SYMBOL
             |    production T_SYMBOL
-            |    production NT_SYMBOL REPETITION_SYMBOL
+
     """
     if len(p) == 2:
-        p[0] = PRODUCTION([p[1]])
+        p[0] = PRODUCTION([p[1]], 'none')
     elif len(p) == 3 and p[2] != "*":
         p[1].list.append(p[2])
         p[0] = p[1]
     elif len(p) == 3:
-        p[0] = PRODUCTION([p[1], p[2]])
-    elif len(p) == 4:
-        p[1].list.append(p[2], p[3])
-        p[0] = p[1]
+        p[0] = PRODUCTION([p[1]], 'repetition')
+    elif len(p) == 4 and p[1] == '[':
+        p[0] = PRODUCTION([p[2]], 'optional')
+    #elif len(p) == 4:
+    #    p[1].list.append(p[2])
+    #    p[1].attribut = 'optional'
+    #    p[0] = p[1]
 
 def p_error(t):
     print("Syntax error at '%s'" % t.value)
@@ -179,6 +183,6 @@ result = parser.parse("""%----v7.3.0.0 (TPTP version.internal development number
 %----Top of Page---------------------------------------------------------------
 %----Files. Empty file is OK.
 <TPTP_file>            ::= <TPTP_input>*
-<tfx_let_types>        ::= <tff_atom_typing> | [<tff_atom_typing_list>] | <tff>
+<tfx_let_types>        ::= <tff_atom_typing> | [<tff_atom_typing_list>] | <tff>*
 """)
 print(result)
