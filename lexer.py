@@ -10,8 +10,8 @@ tokens = (
     'NT_SYMBOL',
     'IDENTIFIER',
     'COMMENT',
-    'OPEN_PARENTHESIS',
-    'CLOSE_PARENTHESIS',
+#    'OPEN_PARENTHESIS',
+#    'CLOSE_PARENTHESIS',
     'OPEN_SQUARE_BRACKET',
     'CLOSE_SQUARE_BRACKET',
     'ALTERNATIVE_SYMBOL',
@@ -37,7 +37,7 @@ literals = []
 t_ignore = ' \t\n'
 
 def t_COMMENT(t):
-    r'%.*'
+    r'%-.*'
     #t.value = t.value.rstrip('\n')
     return t
 
@@ -57,32 +57,36 @@ def t_ALTERNATIVE_SYMBOL(t):
     r'\|'
     return t
 
-def t_OPEN_PARENTHESIS(t):
-    r'\('
-    return t
+# def t_OPEN_PARENTHESIS(t):
+#     r'\('
+#     return t
 
-def t_CLOSE_PARENTHESIS(t):
-    r'\)'
-    return t
+# def t_CLOSE_PARENTHESIS(t):
+#     r'\)'
+#     return t
 
 def t_LGRAMMAR_EXPRESSION(t):
     r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::='
-    t.value = t.value[:-4]
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
 def t_LTOKEN_EXPRESSION(t):
     r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::-'
-    t.value = t.value[:-4]
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
 def t_LSTRICT_EXPRESSION(t):
     r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*:=='
-    t.value = t.value[:-4]
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
 def t_LMACRO_EXPRESSION(t):
     r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*:::'
-    t.value = t.value[:-4]
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
 def t_NT_SYMBOL(t):
@@ -92,7 +96,7 @@ def t_NT_SYMBOL(t):
 
 def t_T_SYMBOL(t):
     #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
-    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}~?^+=/"][$\'\\\.,a-zA-Z\_0-9\->&+=/"]*'
+    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}()~?^+=/"!^^/@/+-/%][$\'\\\.,a-zA-Z\_0-9\->()&+=/"!?/@/+-/*/%]*'
     #r'..*'
     return t
 
@@ -117,7 +121,7 @@ def import_tptp_file(filename):
     return data
 
 #data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
-data = '<tfx_let_types>        ::= <tff_atom_typing> | [<tff_atom_typing_list>]'
+data = '<tfx_let_types>        ::= <tff_atom_typing> | (<tff_atom_typing_list>)'
 #data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)

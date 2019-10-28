@@ -4,6 +4,11 @@ from enum import Enum
 from lexer import tokens
 import lexer
 
+class ProductionProperty(Enum):
+    NONE = 1
+    REPETITION = 2
+    OPTIONAL = 3
+
 class GRAMMAR_EXPRESSION:
   def __init__(self, name, productions_list):
     self.name = name
@@ -33,10 +38,9 @@ class PRODUCTIONS_LIST:
     self.list = productions_list
 
 class PRODUCTION:
-  def __init__(self, list, attribut):
+  def __init__(self, list, productionProperty):
     self.list = list
-    #enumAttribut = Enum('enumAttribut', 'none repetition optional')
-    self.attribut = attribut #none, repetition or optional
+    self.productionProperty = productionProperty #none, repetition or optional
 
 class COMMENT_BLOCK:
   def __init__(self, list):
@@ -111,20 +115,37 @@ def p_production(p):
     production : NT_SYMBOL
             |    T_SYMBOL
             |    NT_SYMBOL REPETITION_SYMBOL
+            |    OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
             |    OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+            |    production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
+            |    production NT_SYMBOL REPETITION_SYMBOL
             |    production NT_SYMBOL
             |    production T_SYMBOL
+            |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+            |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+
 
     """
     if len(p) == 2:
-        p[0] = PRODUCTION([p[1]], 'none')
+        p[0] = PRODUCTION([p[1]], ProductionProperty.NONE)
+    elif len(p) == 3 and p[1] == "[":
+        p[0] = PRODUCTION([], ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
     elif len(p) == 3 and p[2] != "*":
-        p[1].list.append(p[2])
+        p[1].list.append(PRODUCTION([p[2]], ProductionProperty.REPETITION))
         p[0] = p[1]
     elif len(p) == 3:
-        p[0] = PRODUCTION([p[1]], 'repetition')
+        p[0] = PRODUCTION([p[1]], ProductionProperty.REPETITION)
+    elif len(p) == 4 and p[3] == '*':
+        p[1].list.append(PRODUCTION([p[2]], ProductionProperty.REPETITION))
+        p[0] = p[1]
+    elif len(p) == 4 and p[1] == '[' and p[2] == '*':
+        print('blub')
     elif len(p) == 4 and p[1] == '[':
-        p[0] = PRODUCTION([p[2]], 'optional')
+        p[0] = PRODUCTION([p[2]], ProductionProperty.OPTIONAL)
+    elif len(p) == 5:
+        p[1].list.append(p[3])
+        p[3].productionProperty = ProductionProperty.OPTIONAL
+        p[0] = p[1]
     #elif len(p) == 4:
     #    p[1].list.append(p[2])
     #    p[1].attribut = 'optional'
@@ -132,13 +153,6 @@ def p_production(p):
 
 def p_error(t):
     print("Syntax error at '%s'" % t.value)
-
-def import_tptp_file(filename):
-    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-    my_file = os.path.join(THIS_FOLDER, filename)
-    file = open(my_file, "r", encoding='UTF-8')
-    data = file.read()
-    return data
 
 parser = yacc.yacc()
 
@@ -148,41 +162,19 @@ parser = yacc.yacc()
    #except EOFError:
    #    break
    #if not s: continue
-#result = parser.parse('%HALLO\n%Test\n<rule1> ::= ,<rule2> a <rule3> | <rule4>')
-#error nt is not porduction
-result = parser.parse("""%----v7.3.0.0 (TPTP version.internal development number)
-%------------------------------------------------------------------------------
-%----README ... this header provides important meta- and usage information
-%----
-%----Intended uses of the various parts of the TPTP syntax are explained
-%----in the TPTP technical manual, linked from www.tptp.org.
-%----
-%----Four kinds of separators are used, to indicate different types of rules:
-%----  ::= is used for regular grammar rules, for syntactic parsing.
-%----  :== is used for semantic grammar rules. These define specific values
-%----      that make semantic sense when more general syntactic rules apply.
-%----  ::- is used for rules that produce tokens.
-%----  ::: is used for rules that define character classes used in the
-%----       construction of tokens.
-%----
-%----White space may occur between any two tokens. White space is not specified
-%----in the grammar, but there are some restrictions to ensure that the grammar
-%----is compatible with standard Prolog: a <TPTP_file> should be readable with
-%----read/1.
-%----
-%----The syntax of comments is defined by the <comment> rule. Comments may
-%----occur between any two tokens, but do not act as white space. Comments
-%----will normally be discarded at the lexical level, but may be processed
-%----by systems that understand them (e.g., if the system comment convention
-%----is followed).
-%----
-%----Multiple languages are defined. Depending on your need, you can implement 
-%----just the one(s) you need. The common rules for atoms, terms, etc, come 
-%----after the definitions of the languages, and mostly all needed for all the 
-%----languages.
-%----Top of Page---------------------------------------------------------------
-%----Files. Empty file is OK.
-<TPTP_file>            ::= <TPTP_input>*
-<tfx_let_types>        ::= <tff_atom_typing> | [<tff_atom_typing_list>] | <tff>*
+#result = parser.parse('%HALLO\n%Test\n<rule1> ::= a(<rule3>) | <rule4>')
+#result = parser.parse(lexer.import_tptp_file('TestCaseComment.txt'))
+result = parser.parse("""%----defined here because they appear explicitly in the syntax rules,
+%----except that <vline>, <star>, <plus> denote "|", "*", "+", respectively.
+%----Keywords:    fof cnf thf tff include
+%----Punctuation: ( ) , . [ ] :
+%----Operators:   ! ? ~ & | <=> => <= <~> ~| ~& * +
+%----Predicates:  = != $true $false
+
+%----For lex/yacc there cannot be spaces on either side of the | here
+<comment>              ::- <comment_line>|<comment_block>
+<comment_line>         ::- [%]<printable_char>*
+
+
 """)
 print(result)
