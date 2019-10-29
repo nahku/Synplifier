@@ -138,7 +138,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yacc.py</url>
-          <line>202</line>
+          <line>201</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>

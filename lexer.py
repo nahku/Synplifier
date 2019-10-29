@@ -10,8 +10,8 @@ tokens = (
     'NT_SYMBOL',
     'IDENTIFIER',
     'COMMENT',
-#    'OPEN_PARENTHESIS',
-#    'CLOSE_PARENTHESIS',
+    'OPEN_PARENTHESIS',
+    'CLOSE_PARENTHESIS',
     'OPEN_SQUARE_BRACKET',
     'CLOSE_SQUARE_BRACKET',
     'ALTERNATIVE_SYMBOL',
@@ -57,13 +57,13 @@ def t_ALTERNATIVE_SYMBOL(t):
     r'\|'
     return t
 
-# def t_OPEN_PARENTHESIS(t):
-#     r'\('
-#     return t
+def t_OPEN_PARENTHESIS(t):
+    r'\('
+    return t
 
-# def t_CLOSE_PARENTHESIS(t):
-#     r'\)'
-#     return t
+def t_CLOSE_PARENTHESIS(t):
+    r'\)'
+    return t
 
 def t_LGRAMMAR_EXPRESSION(t):
     r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::='
@@ -96,7 +96,7 @@ def t_NT_SYMBOL(t):
 
 def t_T_SYMBOL(t):
     #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
-    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}()~?^+=/"!^^/@/+-/%][$\'\\\.,a-zA-Z\_0-9\->()&+=/"!?/@/+-/*/%]*'
+    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}~?^+=/"!^^/@/+-/%][$\'\\\.,a-zA-Z\_0-9\->&+=/"!?/@/+-/*/%]*'
     #r'..*'
     return t
 

@@ -46,9 +46,13 @@ class PRODUCTIONS_LIST:
     self.list = productions_list
 
 class PRODUCTION:
-  def __init__(self, list, productionProperty = ProductionProperty.NONE):
+  def __init__(self, list):
     self.list = list
-    self.productionProperty = productionProperty #none, repetition or optional
+
+class PRODUCTION_ELEMENT:
+    def __init__(self, name, productionProperty=ProductionProperty.NONE):
+        self.name = name
+        self.productionProperty = productionProperty  # none, repetition or optional
 
 class COMMENT_BLOCK:
   def __init__(self, list):
@@ -128,48 +132,42 @@ def p_t_symbol_production(p):
     elif len(p) == 4:
         p[0] = T_SYMBOL(p[2])
 
-def p_production(p):
-    #missing optional production
+def p_production_element(p):
     """
-    production : NT_SYMBOL
-            |    t_symbol_production
+    production_element : OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
             |    NT_SYMBOL REPETITION_SYMBOL
             |    t_symbol_production REPETITION_SYMBOL
-            |    OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
-            |    production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
-            |    production NT_SYMBOL REPETITION_SYMBOL
-            |    production t_symbol_production REPETITION_SYMBOL
-            |    production NT_SYMBOL
-            |    production t_symbol_production
             |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+            |    NT_SYMBOL
+            |    t_symbol_production
     """
     if len(p) == 2: #NT_SYMBOL|t_symbol_production
         if(type(p[1]) is T_SYMBOL):
-            p[0] = PRODUCTION([p[1]], ProductionProperty.NONE)
+            p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.NONE)
         else:
-            p[0] = PRODUCTION([NT_SYMBOL(p[1])], ProductionProperty.NONE)
+            p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.NONE)
     elif len(p) == 3 and p[1] == "[": #OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-        p[0] = PRODUCTION([], ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
-    elif len(p) == 3 and p[2] != "*": #production NT_SYMBOL|production t_symbol_production
-        if (type(p[2]) is T_SYMBOL):
-            p[0] = PRODUCTION([p[1],PRODUCTION([p[2]])])
-        else:
-            p[0] = PRODUCTION([p[1],PRODUCTION([NT_SYMBOL(p[2])])])
-    elif len(p) == 3: #NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
+        p[0] = PRODUCTION_ELEMENT([], ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
+    elif len(p) == 3:  # NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
         if (type(p[1]) is T_SYMBOL):
-            p[0] = PRODUCTION([p[1]], ProductionProperty.NONE)
+            p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.REPETITION)
         else:
-            p[0] = PRODUCTION([NT_SYMBOL(p[1])], ProductionProperty.REPETITION)
-    elif len(p) == 4 and p[3] == '*': #production NT_SYMBOL REPETITION_SYMBOL|production t_symbol_production REPETITION_SYMBOL
-        if (type(p[2]) is T_SYMBOL):
-            p[0] = PRODUCTION([p[1], PRODUCTION([p[2]], ProductionProperty.REPETITION)])
-        else:
-            p[0] = PRODUCTION([p[1], PRODUCTION([NT_SYMBOL(p[2])], ProductionProperty.REPETITION)])
-    elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
-        p[0] = PRODUCTION([p[2]], ProductionProperty.OPTIONAL)
-    elif len(p) == 5: #production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
-        p[3].productionProperty = ProductionProperty.OPTIONAL
-        p[0] = PRODUCTION([p[1], p[3]])
+            p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.REPETITION)
+    elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+        p[0] = PRODUCTION(NT_SYMBOL(p[2]), ProductionProperty.OPTIONAL)
+
+def p_production(p):
+    #missing optional production
+    """
+    production : production_element
+            |    production production_element
+    """
+
+    if len(p) == 2:
+       p[0] = PRODUCTION([p[1]])
+    elif len(p) == 3:
+        p[1].list.append(p[2])
+        p[0] = p[1]
     #elif len(p) == 4:
     #    p[1].list.append(p[2])
     #    p[1].attribut = 'optional'
@@ -199,5 +197,6 @@ result = parser.parse("""%----defined here because they appear explicitly in the
 <comment>              ::- <comment_line>|<comment_block>
 <comment_line>         ::- [%]<printable_char>*
 <comment_block>        ::: [/][*]<not_star_slash>[*][*]*[/]
+<not_star_slash>       ::: ([^*]*[*][*]*[^/*])*[^*]*
 """)
 print(result)
