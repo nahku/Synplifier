@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET COMMENT IDENTIFIER LGRAMMAR_EXPRESSION LMACRO_EXPRESSION LSTRICT_EXPRESSION LTOKEN_EXPRESSION NT_SYMBOL OPEN_SQUARE_BRACKET REPETITION_SYMBOL T_SYMBOL\n    grammar_list : comment_block\n                |  grammar_list grammar_expression\n                |  grammar_list token_expression\n                |  grammar_list strict_expression\n                |  grammar_list macro_expression\n                |  grammar_list comment_block\n    \n    comment_block : COMMENT\n                |   comment_block COMMENT\n    \n    grammar_expression : LGRAMMAR_EXPRESSION productions_list\n    \n    token_expression : LTOKEN_EXPRESSION productions_list\n    \n    strict_expression : LSTRICT_EXPRESSION productions_list\n    \n    macro_expression : LMACRO_EXPRESSION productions_list\n    \n    productions_list : production\n                    | productions_list ALTERNATIVE_SYMBOL production\n    \n        t_symbol_production : OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET\n                         |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET\n                         |    T_SYMBOL\n        \n    production : NT_SYMBOL\n            |    t_symbol_production\n            |    NT_SYMBOL REPETITION_SYMBOL\n            |    t_symbol_production REPETITION_SYMBOL\n            |    OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET\n            |    production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET\n            |    production NT_SYMBOL REPETITION_SYMBOL\n            |    production t_symbol_production REPETITION_SYMBOL\n            |    production NT_SYMBOL\n            |    production t_symbol_production\n            |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET\n    '
+_lr_signature = 'ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET COMMENT IDENTIFIER LGRAMMAR_EXPRESSION LMACRO_EXPRESSION LSTRICT_EXPRESSION LTOKEN_EXPRESSION NT_SYMBOL OPEN_SQUARE_BRACKET REPETITION_SYMBOL T_SYMBOL\n    grammar_list : comment_block\n                |  grammar_list grammar_expression\n                |  grammar_list token_expression\n                |  grammar_list strict_expression\n                |  grammar_list macro_expression\n                |  grammar_list comment_block\n    \n    comment_block : COMMENT\n                |   comment_block COMMENT\n    \n    grammar_expression : LGRAMMAR_EXPRESSION productions_list\n    \n    token_expression : LTOKEN_EXPRESSION productions_list\n    \n    strict_expression : LSTRICT_EXPRESSION productions_list\n    \n    macro_expression : LMACRO_EXPRESSION productions_list\n    \n    productions_list : production\n                    | productions_list ALTERNATIVE_SYMBOL production\n    \n        t_symbol_production : OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET\n                         |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET\n                         |    T_SYMBOL\n        \n    production_element : OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET\n            |    NT_SYMBOL REPETITION_SYMBOL\n            |    t_symbol_production REPETITION_SYMBOL\n            |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET\n            |    NT_SYMBOL\n            |    t_symbol_production\n    \n    production : production_element\n            |    production production_element\n    '
     
-_lr_action_items = {'COMMENT':([0,1,2,3,4,5,6,7,8,13,14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[3,3,13,-7,-2,-3,-4,-5,13,-8,-9,-13,-18,-19,-17,-10,-11,-12,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'$end':([1,2,3,4,5,6,7,8,13,14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[0,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-18,-19,-17,-10,-11,-12,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'LGRAMMAR_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[9,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-18,-19,-17,-10,-11,-12,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'LTOKEN_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[10,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-18,-19,-17,-10,-11,-12,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'LSTRICT_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[11,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-18,-19,-17,-10,-11,-12,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'LMACRO_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[12,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-18,-19,-17,-10,-11,-12,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'NT_SYMBOL':([9,10,11,12,15,16,17,18,19,23,24,25,26,27,28,29,30,31,33,34,35,36,37,38,39,40,],[16,16,16,16,25,-18,-19,16,-17,16,16,-26,-27,-20,-21,25,-28,-17,25,25,-24,-25,-22,-15,-16,-23,]),'OPEN_SQUARE_BRACKET':([9,10,11,12,15,16,17,18,19,23,24,25,26,27,28,29,30,31,33,34,35,36,37,38,39,40,],[18,18,18,18,24,-18,-19,18,-17,18,18,-26,-27,-20,-21,24,-28,-17,24,24,-24,-25,-22,-15,-16,-23,]),'T_SYMBOL':([9,10,11,12,15,16,17,18,19,23,24,25,26,27,28,29,30,31,33,34,35,36,37,38,39,40,],[19,19,19,19,19,-18,-19,31,-17,19,31,-26,-27,-20,-21,19,-28,-17,19,19,-24,-25,-22,-15,-16,-23,]),'ALTERNATIVE_SYMBOL':([14,15,16,17,19,20,21,22,25,26,27,28,30,33,35,36,37,38,39,40,],[23,-13,-18,-19,-17,23,23,23,-26,-27,-20,-21,-28,-14,-24,-25,-22,-15,-16,-23,]),'CLOSE_SQUARE_BRACKET':([16,17,18,19,25,26,27,28,29,30,31,32,34,35,36,37,38,39,40,],[-18,-19,30,-17,-26,-27,-20,-21,37,-28,38,39,40,-24,-25,-22,-15,-16,-23,]),'REPETITION_SYMBOL':([16,17,18,19,24,25,26,31,38,39,],[27,28,32,-17,32,35,36,-17,-15,-16,]),}
+_lr_action_items = {'COMMENT':([0,1,2,3,4,5,6,7,8,13,14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[3,3,13,-7,-2,-3,-4,-5,13,-8,-9,-13,-24,-22,-23,-17,-10,-11,-12,-25,-21,-19,-20,-14,-18,-15,-16,]),'$end':([1,2,3,4,5,6,7,8,13,14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[0,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-24,-22,-23,-17,-10,-11,-12,-25,-21,-19,-20,-14,-18,-15,-16,]),'LGRAMMAR_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[9,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-24,-22,-23,-17,-10,-11,-12,-25,-21,-19,-20,-14,-18,-15,-16,]),'LTOKEN_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[10,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-24,-22,-23,-17,-10,-11,-12,-25,-21,-19,-20,-14,-18,-15,-16,]),'LSTRICT_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[11,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-24,-22,-23,-17,-10,-11,-12,-25,-21,-19,-20,-14,-18,-15,-16,]),'LMACRO_EXPRESSION':([1,2,3,4,5,6,7,8,13,14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[12,-1,-7,-2,-3,-4,-5,-6,-8,-9,-13,-24,-22,-23,-17,-10,-11,-12,-25,-21,-19,-20,-14,-18,-15,-16,]),'OPEN_SQUARE_BRACKET':([9,10,11,12,15,16,18,19,20,24,25,27,30,31,32,33,34,35,],[17,17,17,17,17,-24,-22,-23,-17,17,-25,-21,-19,-20,17,-18,-15,-16,]),'NT_SYMBOL':([9,10,11,12,15,16,17,18,19,20,24,25,27,30,31,32,33,34,35,],[18,18,18,18,18,-24,26,-22,-23,-17,18,-25,-21,-19,-20,18,-18,-15,-16,]),'T_SYMBOL':([9,10,11,12,15,16,17,18,19,20,24,25,27,30,31,32,33,34,35,],[20,20,20,20,20,-24,28,-22,-23,-17,20,-25,-21,-19,-20,20,-18,-15,-16,]),'ALTERNATIVE_SYMBOL':([14,15,16,18,19,20,21,22,23,25,27,30,31,32,33,34,35,],[24,-13,-24,-22,-23,-17,24,24,24,-25,-21,-19,-20,-14,-18,-15,-16,]),'CLOSE_SQUARE_BRACKET':([17,26,28,29,],[27,33,34,35,]),'REPETITION_SYMBOL':([17,18,19,20,34,35,],[29,30,31,-17,-15,-16,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'grammar_list':([0,],[1,]),'comment_block':([0,1,],[2,8,]),'grammar_expression':([1,],[4,]),'token_expression':([1,],[5,]),'strict_expression':([1,],[6,]),'macro_expression':([1,],[7,]),'productions_list':([9,10,11,12,],[14,20,21,22,]),'production':([9,10,11,12,18,23,24,],[15,15,15,15,29,33,34,]),'t_symbol_production':([9,10,11,12,15,18,23,24,29,33,34,],[17,17,17,17,26,17,17,17,26,26,26,]),}
+_lr_goto_items = {'grammar_list':([0,],[1,]),'comment_block':([0,1,],[2,8,]),'grammar_expression':([1,],[4,]),'token_expression':([1,],[5,]),'strict_expression':([1,],[6,]),'macro_expression':([1,],[7,]),'productions_list':([9,10,11,12,],[14,21,22,23,]),'production':([9,10,11,12,24,],[15,15,15,15,32,]),'production_element':([9,10,11,12,15,24,32,],[16,16,16,16,25,16,25,]),'t_symbol_production':([9,10,11,12,15,24,32,],[19,19,19,19,19,19,19,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,32 +27,29 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> grammar_list","S'",1,None,None,None),
-  ('grammar_list -> comment_block','grammar_list',1,'p_grammar_list','yacc.py',60),
-  ('grammar_list -> grammar_list grammar_expression','grammar_list',2,'p_grammar_list','yacc.py',61),
-  ('grammar_list -> grammar_list token_expression','grammar_list',2,'p_grammar_list','yacc.py',62),
-  ('grammar_list -> grammar_list strict_expression','grammar_list',2,'p_grammar_list','yacc.py',63),
-  ('grammar_list -> grammar_list macro_expression','grammar_list',2,'p_grammar_list','yacc.py',64),
-  ('grammar_list -> grammar_list comment_block','grammar_list',2,'p_grammar_list','yacc.py',65),
-  ('comment_block -> COMMENT','comment_block',1,'p_comment_block','yacc.py',75),
-  ('comment_block -> comment_block COMMENT','comment_block',2,'p_comment_block','yacc.py',76),
-  ('grammar_expression -> LGRAMMAR_EXPRESSION productions_list','grammar_expression',2,'p_grammar_expression','yacc.py',87),
-  ('token_expression -> LTOKEN_EXPRESSION productions_list','token_expression',2,'p_token_expression','yacc.py',93),
-  ('strict_expression -> LSTRICT_EXPRESSION productions_list','strict_expression',2,'p_strict_expression','yacc.py',99),
-  ('macro_expression -> LMACRO_EXPRESSION productions_list','macro_expression',2,'p_macro_expression','yacc.py',105),
-  ('productions_list -> production','productions_list',1,'p_productions_list','yacc.py',111),
-  ('productions_list -> productions_list ALTERNATIVE_SYMBOL production','productions_list',3,'p_productions_list','yacc.py',112),
-  ('t_symbol_production -> OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET','t_symbol_production',3,'p_t_symbol_production','yacc.py',122),
-  ('t_symbol_production -> OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET','t_symbol_production',3,'p_t_symbol_production','yacc.py',123),
-  ('t_symbol_production -> T_SYMBOL','t_symbol_production',1,'p_t_symbol_production','yacc.py',124),
-  ('production -> NT_SYMBOL','production',1,'p_production','yacc.py',133),
-  ('production -> t_symbol_production','production',1,'p_production','yacc.py',134),
-  ('production -> NT_SYMBOL REPETITION_SYMBOL','production',2,'p_production','yacc.py',135),
-  ('production -> t_symbol_production REPETITION_SYMBOL','production',2,'p_production','yacc.py',136),
-  ('production -> OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET','production',3,'p_production','yacc.py',137),
-  ('production -> production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET','production',4,'p_production','yacc.py',138),
-  ('production -> production NT_SYMBOL REPETITION_SYMBOL','production',3,'p_production','yacc.py',139),
-  ('production -> production t_symbol_production REPETITION_SYMBOL','production',3,'p_production','yacc.py',140),
-  ('production -> production NT_SYMBOL','production',2,'p_production','yacc.py',141),
-  ('production -> production t_symbol_production','production',2,'p_production','yacc.py',142),
-  ('production -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET','production',2,'p_production','yacc.py',143),
+  ('grammar_list -> comment_block','grammar_list',1,'p_grammar_list','yacc.py',64),
+  ('grammar_list -> grammar_list grammar_expression','grammar_list',2,'p_grammar_list','yacc.py',65),
+  ('grammar_list -> grammar_list token_expression','grammar_list',2,'p_grammar_list','yacc.py',66),
+  ('grammar_list -> grammar_list strict_expression','grammar_list',2,'p_grammar_list','yacc.py',67),
+  ('grammar_list -> grammar_list macro_expression','grammar_list',2,'p_grammar_list','yacc.py',68),
+  ('grammar_list -> grammar_list comment_block','grammar_list',2,'p_grammar_list','yacc.py',69),
+  ('comment_block -> COMMENT','comment_block',1,'p_comment_block','yacc.py',79),
+  ('comment_block -> comment_block COMMENT','comment_block',2,'p_comment_block','yacc.py',80),
+  ('grammar_expression -> LGRAMMAR_EXPRESSION productions_list','grammar_expression',2,'p_grammar_expression','yacc.py',91),
+  ('token_expression -> LTOKEN_EXPRESSION productions_list','token_expression',2,'p_token_expression','yacc.py',97),
+  ('strict_expression -> LSTRICT_EXPRESSION productions_list','strict_expression',2,'p_strict_expression','yacc.py',103),
+  ('macro_expression -> LMACRO_EXPRESSION productions_list','macro_expression',2,'p_macro_expression','yacc.py',109),
+  ('productions_list -> production','productions_list',1,'p_productions_list','yacc.py',115),
+  ('productions_list -> productions_list ALTERNATIVE_SYMBOL production','productions_list',3,'p_productions_list','yacc.py',116),
+  ('t_symbol_production -> OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET','t_symbol_production',3,'p_t_symbol_production','yacc.py',126),
+  ('t_symbol_production -> OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET','t_symbol_production',3,'p_t_symbol_production','yacc.py',127),
+  ('t_symbol_production -> T_SYMBOL','t_symbol_production',1,'p_t_symbol_production','yacc.py',128),
+  ('production_element -> OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET','production_element',3,'p_production_element','yacc.py',137),
+  ('production_element -> NT_SYMBOL REPETITION_SYMBOL','production_element',2,'p_production_element','yacc.py',138),
+  ('production_element -> t_symbol_production REPETITION_SYMBOL','production_element',2,'p_production_element','yacc.py',139),
+  ('production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET','production_element',2,'p_production_element','yacc.py',140),
+  ('production_element -> NT_SYMBOL','production_element',1,'p_production_element','yacc.py',141),
+  ('production_element -> t_symbol_production','production_element',1,'p_production_element','yacc.py',142),
+  ('production -> production_element','production',1,'p_production','yacc.py',161),
+  ('production -> production production_element','production',2,'p_production','yacc.py',162),
 ]
