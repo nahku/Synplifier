@@ -9,6 +9,14 @@ class ProductionProperty(Enum):
     REPETITION = 2
     OPTIONAL = 3
 
+class T_SYMBOL:
+    def __init__(self, value):
+        self.value = value
+
+class NT_SYMBOL:
+    def __init__(self, value):
+        self.value = value
+
 class GRAMMAR_EXPRESSION:
   def __init__(self, name, productions_list):
     self.name = name
@@ -38,7 +46,7 @@ class PRODUCTIONS_LIST:
     self.list = productions_list
 
 class PRODUCTION:
-  def __init__(self, list, productionProperty):
+  def __init__(self, list, productionProperty = ProductionProperty.NONE):
     self.list = list
     self.productionProperty = productionProperty #none, repetition or optional
 
@@ -109,43 +117,59 @@ def p_productions_list(p):
         p[1].list.append(p[3])
         p[0] = p[1]
 
+def p_t_symbol_production(p):
+    """
+        t_symbol_production : OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
+                         |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+                         |    T_SYMBOL
+        """
+    if len(p) == 2:
+        p[0] = T_SYMBOL(p[1])
+    elif len(p) == 4:
+        p[0] = T_SYMBOL(p[2])
+
 def p_production(p):
     #missing optional production
     """
     production : NT_SYMBOL
-            |    T_SYMBOL
+            |    t_symbol_production
             |    NT_SYMBOL REPETITION_SYMBOL
-            |    OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
+            |    t_symbol_production REPETITION_SYMBOL
             |    OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
             |    production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
             |    production NT_SYMBOL REPETITION_SYMBOL
+            |    production t_symbol_production REPETITION_SYMBOL
             |    production NT_SYMBOL
-            |    production T_SYMBOL
+            |    production t_symbol_production
             |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-            |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
-
-
     """
-    if len(p) == 2:
-        p[0] = PRODUCTION([p[1]], ProductionProperty.NONE)
-    elif len(p) == 3 and p[1] == "[":
+    if len(p) == 2: #NT_SYMBOL|t_symbol_production
+        if(type(p[1]) is T_SYMBOL):
+            p[0] = PRODUCTION([p[1]], ProductionProperty.NONE)
+        else:
+            p[0] = PRODUCTION([NT_SYMBOL(p[1])], ProductionProperty.NONE)
+    elif len(p) == 3 and p[1] == "[": #OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
         p[0] = PRODUCTION([], ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
-    elif len(p) == 3 and p[2] != "*":
-        p[1].list.append(PRODUCTION([p[2]], ProductionProperty.REPETITION))
-        p[0] = p[1]
-    elif len(p) == 3:
-        p[0] = PRODUCTION([p[1]], ProductionProperty.REPETITION)
-    elif len(p) == 4 and p[3] == '*':
-        p[1].list.append(PRODUCTION([p[2]], ProductionProperty.REPETITION))
-        p[0] = p[1]
-    elif len(p) == 4 and p[1] == '[' and p[2] == '*':
-        print('blub')
-    elif len(p) == 4 and p[1] == '[':
+    elif len(p) == 3 and p[2] != "*": #production NT_SYMBOL|production t_symbol_production
+        if (type(p[2]) is T_SYMBOL):
+            p[0] = PRODUCTION([p[1],PRODUCTION([p[2]])])
+        else:
+            p[0] = PRODUCTION([p[1],PRODUCTION([NT_SYMBOL(p[2])])])
+    elif len(p) == 3: #NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
+        if (type(p[1]) is T_SYMBOL):
+            p[0] = PRODUCTION([p[1]], ProductionProperty.NONE)
+        else:
+            p[0] = PRODUCTION([NT_SYMBOL(p[1])], ProductionProperty.REPETITION)
+    elif len(p) == 4 and p[3] == '*': #production NT_SYMBOL REPETITION_SYMBOL|production t_symbol_production REPETITION_SYMBOL
+        if (type(p[2]) is T_SYMBOL):
+            p[0] = PRODUCTION([p[1], PRODUCTION([p[2]], ProductionProperty.REPETITION)])
+        else:
+            p[0] = PRODUCTION([p[1], PRODUCTION([NT_SYMBOL(p[2])], ProductionProperty.REPETITION)])
+    elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
         p[0] = PRODUCTION([p[2]], ProductionProperty.OPTIONAL)
-    elif len(p) == 5:
-        p[1].list.append(p[3])
+    elif len(p) == 5: #production OPEN_SQUARE_BRACKET production CLOSE_SQUARE_BRACKET
         p[3].productionProperty = ProductionProperty.OPTIONAL
-        p[0] = p[1]
+        p[0] = PRODUCTION([p[1], p[3]])
     #elif len(p) == 4:
     #    p[1].list.append(p[2])
     #    p[1].attribut = 'optional'
@@ -174,7 +198,6 @@ result = parser.parse("""%----defined here because they appear explicitly in the
 %----For lex/yacc there cannot be spaces on either side of the | here
 <comment>              ::- <comment_line>|<comment_block>
 <comment_line>         ::- [%]<printable_char>*
-
-
+<comment_block>        ::: [/][*]<not_star_slash>[*][*]*[/]
 """)
 print(result)
