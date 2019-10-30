@@ -46,8 +46,9 @@ class PRODUCTIONS_LIST:
     self.list = productions_list
 
 class PRODUCTION:
-  def __init__(self, list):
+  def __init__(self, list, productionProperty=ProductionProperty.NONE):
     self.list = list
+    self.productionProperty = productionProperty
 
 class PRODUCTION_ELEMENT:
     def __init__(self, name, productionProperty=ProductionProperty.NONE):
@@ -125,6 +126,7 @@ def p_t_symbol_production(p):
     """
         t_symbol_production : OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
                          |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+                         |    OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
                          |    T_SYMBOL
         """
     if len(p) == 2:
@@ -161,12 +163,33 @@ def p_production(p):
     """
     production : production_element
             |    production production_element
+            |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+            |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+            |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+            |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+            |    OPEN_PARENTHESIS production ALTERNATIVE_SYMBOL production CLOSE_PARENTHESIS
     """
 
     if len(p) == 2:
        p[0] = PRODUCTION([p[1]])
     elif len(p) == 3:
         p[1].list.append(p[2])
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+        p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        p[0] = p[2]
+    elif len(p) == 5 and p[4] == ')':
+        p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+        p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        p[1].list.append(p[3])
+        p[0] = p[1]
+    elif len(p) == 5:
+        p[2].productionProperty = ProductionProperty.REPETITION
+        p[0] = PRODUCTION([p[2]])
+    elif len(p) == 6:
+        p[3].productionProperty = ProductionProperty.REPETITION
+        p[1].list.append(PRODUCTION([p[3]]))
         p[0] = p[1]
     #elif len(p) == 4:
     #    p[1].list.append(p[2])
@@ -186,17 +209,23 @@ parser = yacc.yacc()
    #if not s: continue
 #result = parser.parse('%HALLO\n%Test\n<rule1> ::= a(<rule3>) | <rule4>')
 #result = parser.parse(lexer.import_tptp_file('TestCaseComment.txt'))
-result = parser.parse("""%----defined here because they appear explicitly in the syntax rules,
-%----except that <vline>, <star>, <plus> denote "|", "*", "+", respectively.
-%----Keywords:    fof cnf thf tff include
-%----Punctuation: ( ) , . [ ] :
-%----Operators:   ! ? ~ & | <=> => <= <~> ~| ~& * +
-%----Predicates:  = != $true $false
-
-%----For lex/yacc there cannot be spaces on either side of the | here
-<comment>              ::- <comment_line>|<comment_block>
-<comment_line>         ::- [%]<printable_char>*
-<comment_block>        ::: [/][*]<not_star_slash>[*][*]*[/]
-<not_star_slash>       ::: ([^*]*[*][*]*[^/*])*[^*]*
+result = parser.parse("""%----Numbers. Signs are made part of the same token here.
+<real>                 ::- (<signed_real>|<unsigned_real>)
+<signed_real>          ::- <sign><unsigned_real>
+<unsigned_real>        ::- (<decimal_fraction>|<decimal_exponent>)
+<rational>             ::- (<signed_rational>|<unsigned_rational>)
+<signed_rational>      ::- <sign><unsigned_rational>
+<unsigned_rational>    ::- <decimal><slash><positive_decimal>
+<integer>              ::- (<signed_integer>|<unsigned_integer>)
+<signed_integer>       ::- <sign><unsigned_integer>
+<unsigned_integer>     ::- <decimal>
+<decimal>              ::- (<zero_numeric>|<positive_decimal>)
+<positive_decimal>     ::- <non_zero_numeric><numeric>*
+<decimal_exponent>     ::- (<decimal>|<decimal_fraction>)<exponent><exp_integer>
+<decimal_fraction>     ::- <decimal><dot_decimal>
+<dot_decimal>          ::- <dot><numeric><numeric>*
+<exp_integer>          ::- (<signed_exp_integer>|<unsigned_exp_integer>)
+<signed_exp_integer>   ::- <sign><unsigned_exp_integer>
+<unsigned_exp_integer> ::- <numeric><numeric>*
 """)
 print(result)
