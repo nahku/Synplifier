@@ -11,8 +11,9 @@ class ProductionProperty(Enum):
     XOR = 4
 
 class T_SYMBOL:
-    def __init__(self, value):
+    def __init__(self, value, property = ProductionProperty.NONE):
         self.value = value
+        self.property = property
 
 class NT_SYMBOL:
     def __init__(self, value):
@@ -133,7 +134,10 @@ def p_t_symbol_production(p):
     if len(p) == 2:
         p[0] = T_SYMBOL(p[1])
     elif len(p) == 4:
-        p[0] = T_SYMBOL(p[2])
+        if len(p[2]) == 1:
+            p[0] = T_SYMBOL(p[2])
+        else:
+            p[0] = T_SYMBOL(p[2], ProductionProperty.OPTIONAL)
 
 def p_production_element(p):
     """
@@ -170,7 +174,8 @@ def p_production(p):
             |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
             |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
             |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-            |    production ALTERNATIVE_SYMBOL production_element
+            |    production ALTERNATIVE_SYMBOL production
+            |    production ALTERNATIVE_SYMBOL OPEN_PARENTHESIS production_element CLOSE_PARENTHESIS
 
     """
     if len(p) == 2:
@@ -186,6 +191,9 @@ def p_production(p):
         p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
         p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
         p[0] = p[2]
+    elif len(p) == 5 and p[4] == '*':
+        p[2].productionProperty = ProductionProperty.REPETITION
+        p[0] = PRODUCTION([p[2]])
     elif len(p) == 5 and p[3] == ')':
         p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
         p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
@@ -203,12 +211,10 @@ def p_production(p):
         p[3].productionProperty = ProductionProperty.REPETITION
         p[1].list.append(PRODUCTION([p[3]]))
         p[0] = p[1]
-    #elif len(p) == 6:
-    #    p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
-    #    p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
-    #    p[1].list.append(PRODUCTION(p[2]))
-    #    p[1].list.append(p[5])
-    #    p[0] = p[1]
+    elif len(p) == 6:
+        p[1].productionProperty = ProductionProperty.XOR
+        p[1].list.append(p[4])
+        p[0] = p[1]
 
 
 def p_error(t):
@@ -223,13 +229,12 @@ parser = yacc.yacc()
    #    break
    #if not s: continue
 #result = parser.parse('%HALLO\n%Test\n<rule1> ::= a(<rule3>) | <rule4>')
-#data = '%--blub ' \
-#       '<rule1> ::= ([\40-\46\50-\133\135-\176]|[\\][\'\\])'
+
 result = parser.parse(lexer.import_tptp_file(r'TPTP_BNF_NEW.txt'))
-#result = parser.parse(r'TPTP_BNF.txt')
 #result = parser.parse(r"""
-#%--blub
-#<tcf_annotated>        ::= tcf(<name>,<formula_role>,<tcf_formula>
- #                          <annotations>).
+#%----Top of Page---------------------------------------------------------------
+
+#<sq_char>              ::: ([\40-\46\50-\133\135-\176]|[\\]['\\])
+
 #""")
 print(result)

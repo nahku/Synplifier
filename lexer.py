@@ -96,7 +96,9 @@ def t_NT_SYMBOL(t):
 
 def t_T_SYMBOL(t):
     #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
-    r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][$\'\\\.,a-zA-Z\_0-9\0-9-\->&+=/"!?/@/+-/*/%;]*'
+    r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
+    #r'[a-zA-Z\_0-9\_0-9-\-/"!?/@/+-/*/%;\->&+=$\'\\\.,^^+=^~{}:<>][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
+    #r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][$\'\\\.,a-zA-Z\_0-9\0-9-\->&+=/"!?/@/+-/*/%;]*'
     #r'..*'
     return t
 
@@ -121,7 +123,7 @@ def import_tptp_file(filename):
     return data
 
 #data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
-data = r'<tcf_annotated>        ::= tcf(<name>,<formula_role>,<tcf_formula><annotations>).'
+data = r'<thf_unitary_formula>  ::= <thf_quantified_formula> | <thf_atomic_formula> | <variable> | (<thf_logic_formula>)'
 #data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)
