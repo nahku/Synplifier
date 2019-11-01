@@ -4,8 +4,6 @@
     <list default="true" id="b3d8672f-597d-4c0c-8151-b4e276ccbf3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lexer.py" beforeDir="false" afterPath="$PROJECT_DIR$/lexer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/parser.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsetab.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yacc.py" beforeDir="false" afterPath="$PROJECT_DIR$/yacc.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -139,8 +137,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yacc.py</url>
-          <line>230</line>
-          <option name="timeStamp" value="25" />
+          <line>234</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -150,6 +148,7 @@
         <watch expression="len(p)" language="Python" />
         <watch expression="result" />
         <watch expression="result.list[12].productions_list.list" />
+        <watch expression="result.list" />
       </configuration>
     </watches-manager>
   </component>
