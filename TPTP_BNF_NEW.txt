@@ -249,12 +249,12 @@
 <tff_variable>         ::= <tff_typed_variable> | <variable>
 <tff_typed_variable>   ::= <variable> : <tff_atomic_type>
 <tff_unary_formula>    ::= <tff_prefix_unary> | <tff_infix_unary>
-%FOR PLAIN TFF <fof_infix_unary>
+%---FOR PLAIN TFF <fof_infix_unary>
 <tff_prefix_unary>     ::= <unary_connective> <tff_preunit_formula>
 <tff_infix_unary>      ::= <tff_unitary_term> <infix_inequality> 
                            <tff_unitary_term>
 
-%FOR PLAIN TFF <tff_atomic_formula>   ::= <fof_atomic_formula>
+%---FOR PLAIN TFF <tff_atomic_formula>   ::= <fof_atomic_formula>
 <tff_atomic_formula>   ::= <tff_plain_atomic> | <tff_defined_atomic> |
                            <tff_system_atomic>
 <tff_plain_atomic>     ::= <constant> | <functor>(<tff_arguments>)
@@ -494,8 +494,8 @@
                            <inference_parents>)
 <inference_rule>       :== <atomic_word>
 %----Examples are          deduction | modus_tollens | modus_ponens | rewrite |
-%                          resolution | paramodulation | factorization |
-%                          cnf_conversion | cnf_refutation | ...
+%--                          resolution | paramodulation | factorization |
+%--                          cnf_conversion | cnf_refutation | ...
 %----<inference_parents> can be empty in cases when there is a justification
 %----for a tautologous theorem. In case when a tautology is introduced as
 %----a leaf, e.g., for splitting, then use an <internal_source>.
@@ -608,7 +608,6 @@
 %----distinct if they have different values, e.g., 1 != 2 is an implicit axiom.
 %----All numbers are base 10 at the moment.
 <file_name>            ::= <single_quoted>
-<null>                 ::=
 %----Top of Page---------------------------------------------------------------
 %----Rules from here on down are for defining tokens (terminal symbols) of the
 %----grammar, assuming they will be recognized by a lexical scanner.
