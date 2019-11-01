@@ -8,6 +8,7 @@ class ProductionProperty(Enum):
     NONE = 1
     REPETITION = 2
     OPTIONAL = 3
+    XOR = 4
 
 class T_SYMBOL:
     def __init__(self, value):
@@ -158,6 +159,7 @@ def p_production_element(p):
     elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
         p[0] = PRODUCTION(NT_SYMBOL(p[2]), ProductionProperty.OPTIONAL)
 
+
 def p_production(p):
     #missing optional production
     """
@@ -165,9 +167,11 @@ def p_production(p):
             |    production production_element
             |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS
             |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+            |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
             |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
             |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-            |    OPEN_PARENTHESIS production ALTERNATIVE_SYMBOL production CLOSE_PARENTHESIS
+            |    production ALTERNATIVE_SYMBOL production_element
+
     """
 
     if len(p) == 2:
@@ -175,10 +179,19 @@ def p_production(p):
     elif len(p) == 3:
         p[1].list.append(p[2])
         p[0] = p[1]
+    elif len(p) == 4 and p[2] == '|':
+        p[1].productionProperty = ProductionProperty.XOR
+        p[1].list.append(p[3])
+        p[0] = p[1]
     elif len(p) == 4:
         p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
         p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
         p[0] = p[2]
+    elif len(p) == 5 and p[3] == ')':
+        p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+        p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        p[4].list.insert(0,PRODUCTION(p[2]))
+        p[0] = p[4]
     elif len(p) == 5 and p[4] == ')':
         p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
         p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
@@ -187,14 +200,17 @@ def p_production(p):
     elif len(p) == 5:
         p[2].productionProperty = ProductionProperty.REPETITION
         p[0] = PRODUCTION([p[2]])
-    elif len(p) == 6:
+    elif len(p) == 6 and p[5] == '*':
         p[3].productionProperty = ProductionProperty.REPETITION
         p[1].list.append(PRODUCTION([p[3]]))
         p[0] = p[1]
-    #elif len(p) == 4:
-    #    p[1].list.append(p[2])
-    #    p[1].attribut = 'optional'
+    #elif len(p) == 6:
+    #    p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+    #    p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+    #    p[1].list.append(PRODUCTION(p[2]))
+    #    p[1].list.append(p[5])
     #    p[0] = p[1]
+
 
 def p_error(t):
     print("Syntax error at '%s'" % t.value)
@@ -209,23 +225,7 @@ parser = yacc.yacc()
    #if not s: continue
 #result = parser.parse('%HALLO\n%Test\n<rule1> ::= a(<rule3>) | <rule4>')
 #result = parser.parse(lexer.import_tptp_file('TestCaseComment.txt'))
-result = parser.parse("""%----Numbers. Signs are made part of the same token here.
-<real>                 ::- (<signed_real>|<unsigned_real>)
-<signed_real>          ::- <sign><unsigned_real>
-<unsigned_real>        ::- (<decimal_fraction>|<decimal_exponent>)
-<rational>             ::- (<signed_rational>|<unsigned_rational>)
-<signed_rational>      ::- <sign><unsigned_rational>
-<unsigned_rational>    ::- <decimal><slash><positive_decimal>
-<integer>              ::- (<signed_integer>|<unsigned_integer>)
-<signed_integer>       ::- <sign><unsigned_integer>
-<unsigned_integer>     ::- <decimal>
-<decimal>              ::- (<zero_numeric>|<positive_decimal>)
-<positive_decimal>     ::- <non_zero_numeric><numeric>*
-<decimal_exponent>     ::- (<decimal>|<decimal_fraction>)<exponent><exp_integer>
-<decimal_fraction>     ::- <decimal><dot_decimal>
-<dot_decimal>          ::- <dot><numeric><numeric>*
-<exp_integer>          ::- (<signed_exp_integer>|<unsigned_exp_integer>)
-<signed_exp_integer>   ::- <sign><unsigned_exp_integer>
-<unsigned_exp_integer> ::- <numeric><numeric>*
+result = parser.parse("""%---blub
+<thf_annotated>        ::= thf(<name>,<formula_role>,<thf_formula><annotations>).
 """)
 print(result)
