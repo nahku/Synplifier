@@ -173,7 +173,6 @@ def p_production(p):
             |    production ALTERNATIVE_SYMBOL production_element
 
     """
-
     if len(p) == 2:
        p[0] = PRODUCTION([p[1]])
     elif len(p) == 3:
@@ -224,8 +223,13 @@ parser = yacc.yacc()
    #    break
    #if not s: continue
 #result = parser.parse('%HALLO\n%Test\n<rule1> ::= a(<rule3>) | <rule4>')
-#result = parser.parse(lexer.import_tptp_file('TestCaseComment.txt'))
-result = parser.parse("""%---blub
-<thf_annotated>        ::= thf(<name>,<formula_role>,<thf_formula><annotations>).
-""")
+#data = '%--blub ' \
+#       '<rule1> ::= ([\40-\46\50-\133\135-\176]|[\\][\'\\])'
+result = parser.parse(lexer.import_tptp_file(r'TPTP_BNF_NEW.txt'))
+#result = parser.parse(r'TPTP_BNF.txt')
+#result = parser.parse(r"""
+#%--blub
+#<tcf_annotated>        ::= tcf(<name>,<formula_role>,<tcf_formula>
+ #                          <annotations>).
+#""")
 print(result)

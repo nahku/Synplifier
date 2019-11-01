@@ -121,7 +121,7 @@ def import_tptp_file(filename):
     return data
 
 #data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
-data = '<tfx_let_types>        ::= <tff_atom_typing> | (<tff_atom_typing_list>)'
+data = r'<tcf_annotated>        ::= tcf(<name>,<formula_role>,<tcf_formula><annotations>).'
 #data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)
