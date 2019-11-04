@@ -3,10 +3,10 @@ import os
 
 #List of token names
 tokens = (
-    'GRAMMAR_SYMBOL',
-    'TOKEN_SYMBOL',
-    'STRICT_SYMBOL',
-    'MACRO_SYMBOL',
+    'LGRAMMAR_EXPRESSION',
+    'LTOKEN_EXPRESSION',
+    'LSTRICT_EXPRESSION',
+    'LMACRO_EXPRESSION',
     'NT_SYMBOL',
     'IDENTIFIER',
     'COMMENT',
@@ -37,7 +37,7 @@ literals = []
 t_ignore = ' \t\n'
 
 def t_COMMENT(t):
-    r'%.*'
+    r'%-.*'
     #t.value = t.value.rstrip('\n')
     return t
 
@@ -65,20 +65,28 @@ def t_CLOSE_PARENTHESIS(t):
     r'\)'
     return t
 
-def t_GRAMMAR_SYMBOL(t):
-    r'::='
+def t_LGRAMMAR_EXPRESSION(t):
+    r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::='
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
-def t_TOKEN_SYMBOL(t):
-    r'::-'
+def t_LTOKEN_EXPRESSION(t):
+    r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::-'
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
-def t_STRICT_SYMBOL(t):
-    r':=='
+def t_LSTRICT_EXPRESSION(t):
+    r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*:=='
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
-def t_MACRO_SYMBOL(t):
-    r':::'
+def t_LMACRO_EXPRESSION(t):
+    r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*:::'
+    t.value = t.value[:-3]
+    t.value = t.value.rstrip()
     return t
 
 def t_NT_SYMBOL(t):
@@ -88,7 +96,9 @@ def t_NT_SYMBOL(t):
 
 def t_T_SYMBOL(t):
     #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
-    r'[$\'\\\.,a-zA-Z\_0-9\-<>&@!:{}~?^+=/"][$\'\\\.,a-zA-Z\_0-9\->&+=/"]*'
+    r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
+    #r'[a-zA-Z\_0-9\_0-9-\-/"!?/@/+-/*/%;\->&+=$\'\\\.,^^+=^~{}:<>][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
+    #r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][$\'\\\.,a-zA-Z\_0-9\0-9-\->&+=/"!?/@/+-/*/%;]*'
     #r'..*'
     return t
 
@@ -112,7 +122,8 @@ def import_tptp_file(filename):
     data = file.read()
     return data
 
-data = '%HALLO\n%Test\n<rule1> ::= ,<rule2> abcd <rule3> | <rule4>'
+#data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
+data = r'<thf_unitary_formula>  ::= <thf_quantified_formula> | <thf_atomic_formula> | <variable> | (<thf_logic_formula>)'
 #data = import_tptp_file('tptp_bnf.txt')
 
 lex.input(data)
