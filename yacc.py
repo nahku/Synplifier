@@ -1,7 +1,23 @@
 import ply.yacc as yacc
 import os
+from enum import Enum
 from lexer import tokens
 import lexer
+
+class ProductionProperty(Enum):
+    NONE = 1
+    REPETITION = 2
+    OPTIONAL = 3
+    XOR = 4
+
+class T_SYMBOL:
+    def __init__(self, value, property = ProductionProperty.NONE):
+        self.value = value
+        self.property = property
+
+class NT_SYMBOL:
+    def __init__(self, value):
+        self.value = value
 
 class GRAMMAR_EXPRESSION:
   def __init__(self, name, productions_list):
@@ -32,8 +48,14 @@ class PRODUCTIONS_LIST:
     self.list = productions_list
 
 class PRODUCTION:
-  def __init__(self, list):
+  def __init__(self, list, productionProperty=ProductionProperty.NONE):
     self.list = list
+    self.productionProperty = productionProperty
+
+class PRODUCTION_ELEMENT:
+    def __init__(self, name, productionProperty=ProductionProperty.NONE):
+        self.name = name
+        self.productionProperty = productionProperty  # none, repetition or optional
 
 class COMMENT_BLOCK:
   def __init__(self, list):
@@ -69,27 +91,27 @@ def p_comment_block(p):
 
 def p_grammar_expression(p):
     """
-    grammar_expression : NT_SYMBOL GRAMMAR_SYMBOL productions_list
+    grammar_expression : LGRAMMAR_EXPRESSION productions_list
     """
-    p[0] = GRAMMAR_EXPRESSION(p[1],p[3])
+    p[0] = GRAMMAR_EXPRESSION(p[1],p[2])
 
 def p_token_expression(p):
     """
-    token_expression : NT_SYMBOL TOKEN_SYMBOL productions_list
+    token_expression : LTOKEN_EXPRESSION productions_list
     """
-    p[0] = TOKEN_EXPRESSION(p[1],p[3])
+    p[0] = TOKEN_EXPRESSION(p[1],p[2])
 
 def p_strict_expression(p):
     """
-    strict_expression : NT_SYMBOL STRICT_SYMBOL productions_list
+    strict_expression : LSTRICT_EXPRESSION productions_list
     """
-    p[0] = STRICT_EXPRESSION(p[1],p[3])
+    p[0] = STRICT_EXPRESSION(p[1],p[2])
 
 def p_macro_expression(p):
     """
-    macro_expression : NT_SYMBOL MACRO_SYMBOL productions_list
+    macro_expression : LMACRO_EXPRESSION productions_list
     """
-    p[0] = MACRO_EXPRESSION(p[1],p[3])
+    p[0] = MACRO_EXPRESSION(p[1],p[2])
 
 def p_productions_list(p):
     """
@@ -102,29 +124,101 @@ def p_productions_list(p):
         p[1].list.append(p[3])
         p[0] = p[1]
 
+def p_t_symbol_production(p):
+    """
+        t_symbol_production : OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
+                         |    OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+                         |    OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
+                         |    T_SYMBOL
+        """
+    if len(p) == 2:
+        p[0] = T_SYMBOL(p[1])
+    elif len(p) == 4:
+        if len(p[2]) == 1:
+            p[0] = T_SYMBOL(p[2])
+        else:
+            p[0] = T_SYMBOL(p[2], ProductionProperty.OPTIONAL)
+
+def p_production_element(p):
+    """
+    production_element : OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+            |    NT_SYMBOL REPETITION_SYMBOL
+            |    t_symbol_production REPETITION_SYMBOL
+            |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+            |    NT_SYMBOL
+            |    t_symbol_production
+    """
+    if len(p) == 2: #NT_SYMBOL|t_symbol_production
+        if(type(p[1]) is T_SYMBOL):
+            p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.NONE)
+        else:
+            p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.NONE)
+    elif len(p) == 3 and p[1] == "[": #OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+        p[0] = PRODUCTION_ELEMENT([], ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
+    elif len(p) == 3:  # NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
+        if (type(p[1]) is T_SYMBOL):
+            p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.REPETITION)
+        else:
+            p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.REPETITION)
+    elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+        p[0] = PRODUCTION(NT_SYMBOL(p[2]), ProductionProperty.OPTIONAL)
+
+
 def p_production(p):
     #missing optional production
     """
-    production : NT_SYMBOL
-            |    T_SYMBOL
-            |    production NT_SYMBOL
-            |    production T_SYMBOL
+    production : production_element
+            |    production production_element
+            |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+            |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+            |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+            |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+            |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+            |    production ALTERNATIVE_SYMBOL production
+            |    production ALTERNATIVE_SYMBOL OPEN_PARENTHESIS production_element CLOSE_PARENTHESIS
+
     """
     if len(p) == 2:
-        p[0] = PRODUCTION([p[1]])
+       p[0] = PRODUCTION([p[1]])
     elif len(p) == 3:
         p[1].list.append(p[2])
         p[0] = p[1]
+    elif len(p) == 4 and p[2] == '|':
+        p[1].productionProperty = ProductionProperty.XOR
+        p[1].list.append(p[3])
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+        p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        p[0] = p[2]
+    elif len(p) == 5 and p[4] == '*':
+        p[2].productionProperty = ProductionProperty.REPETITION
+        p[0] = PRODUCTION([p[2]])
+    elif len(p) == 5 and p[3] == ')':
+        p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+        p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        p[4].list.insert(0,PRODUCTION(p[2]))
+        p[0] = p[4]
+    elif len(p) == 5 and p[4] == ')':
+        p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
+        p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        p[1].list.append(p[3])
+        p[0] = p[1]
+    elif len(p) == 5:
+        p[2].productionProperty = ProductionProperty.REPETITION
+        p[0] = PRODUCTION([p[2]])
+    elif len(p) == 6 and p[5] == '*':
+        p[3].productionProperty = ProductionProperty.REPETITION
+        p[1].list.append(PRODUCTION([p[3]]))
+        p[0] = p[1]
+    elif len(p) == 6:
+        p[1].productionProperty = ProductionProperty.XOR
+        p[1].list.append(p[4])
+        p[0] = p[1]
+
 
 def p_error(t):
     print("Syntax error at '%s'" % t.value)
-
-def import_tptp_file(filename):
-    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-    my_file = os.path.join(THIS_FOLDER, filename)
-    file = open(my_file, "r", encoding='UTF-8')
-    data = file.read()
-    return data
 
 parser = yacc.yacc()
 
@@ -134,42 +228,13 @@ parser = yacc.yacc()
    #except EOFError:
    #    break
    #if not s: continue
-#result = parser.parse('%HALLO\n%Test\n<rule1> ::= ,<rule2> a <rule3> | <rule4>')
-#error nt is not porduction
-result = parser.parse("""%----v7.3.0.0 (TPTP version.internal development number)
-%------------------------------------------------------------------------------
-%----README ... this header provides important meta- and usage information
-%----
-%----Intended uses of the various parts of the TPTP syntax are explained
-%----in the TPTP technical manual, linked from www.tptp.org.
-%----
-%----Four kinds of separators are used, to indicate different types of rules:
-%----  ::= is used for regular grammar rules, for syntactic parsing.
-%----  :== is used for semantic grammar rules. These define specific values
-%----      that make semantic sense when more general syntactic rules apply.
-%----  ::- is used for rules that produce tokens.
-%----  ::: is used for rules that define character classes used in the
-%----       construction of tokens.
-%----
-%----White space may occur between any two tokens. White space is not specified
-%----in the grammar, but there are some restrictions to ensure that the grammar
-%----is compatible with standard Prolog: a <TPTP_file> should be readable with
-%----read/1.
-%----
-%----The syntax of comments is defined by the <comment> rule. Comments may
-%----occur between any two tokens, but do not act as white space. Comments
-%----will normally be discarded at the lexical level, but may be processed
-%----by systems that understand them (e.g., if the system comment convention
-%----is followed).
-%----
-%----Multiple languages are defined. Depending on your need, you can implement 
-%----just the one(s) you need. The common rules for atoms, terms, etc, come 
-%----after the definitions of the languages, and mostly all needed for all the 
-%----languages.
-%----Top of Page---------------------------------------------------------------
-%----Files. Empty file is OK.
-<TPTP_file>            ::= <TPTP_input>
-%----hallo
-<TPTP_input>           ::= <annotated_formula> | <include>
-<TPTP_file>            ::= <TPTP_input>""")
+#result = parser.parse('%HALLO\n%Test\n<rule1> ::= a(<rule3>) | <rule4>')
+
+result = parser.parse(lexer.import_tptp_file(r'TPTP_BNF_NEW.txt'))
+#result = parser.parse(r"""
+#%----Top of Page---------------------------------------------------------------
+
+#<sq_char>              ::: ([\40-\46\50-\133\135-\176]|[\\]['\\])
+
+#""")
 print(result)
