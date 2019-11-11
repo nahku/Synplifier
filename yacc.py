@@ -156,7 +156,6 @@ class TPTPParser():
     def p_production_element(self,p):
         """
         production_element : OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-                |    OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
                 |    NT_SYMBOL REPETITION_SYMBOL
                 |    t_symbol_production REPETITION_SYMBOL
                 |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
@@ -177,17 +176,19 @@ class TPTPParser():
                 p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.REPETITION)
         elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
             p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[2]), ProductionProperty.OPTIONAL)
-        elif len(p) == 4 and p[1] == '(':
-            p[0] = PRODUCTION_ELEMENT(p[2])
+
 
     def p_production(self,p):
         #missing optional production
         """
         production : production_element
                 |    production production_element
+                |    OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
                 |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS
                 |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+                |    production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
                 |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+                |    OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
                 |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
                 |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
 
@@ -207,6 +208,8 @@ class TPTPParser():
             p[2].list.insert(0, PRODUCTION_ELEMENT(T_SYMBOL('(')))
             p[2].list.append(PRODUCTION_ELEMENT(T_SYMBOL(')')))
             p[0] = p[2]
+        elif len(p) == 4 and p[1] == '(':
+            p[0] = PRODUCTION([p[2]])
         elif len(p) == 5 and p[4] == '*':
             p[2].productionProperty = ProductionProperty.REPETITION
             p[0] = PRODUCTION([p[2]])
@@ -215,10 +218,16 @@ class TPTPParser():
             p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
             p[4].list.insert(0,PRODUCTION(p[2]))
             p[0] = p[4]
+        elif len(p) == 5 and p[3] == ')' and isinstance(p[2],XOR_PRODUCTIONS_LIST):
+            p[4].list.insert(0,PRODUCTION([p[2]]))
+            p[0] = p[4]
         elif len(p) == 5 and p[4] == ')' and isinstance(p[3], PRODUCTION):
             p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
             p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
             p[1].list.append(p[3])
+            p[0] = p[1]
+        elif len(p) == 5 and p[4] == ')' and isinstance(p[3], XOR_PRODUCTIONS_LIST):
+            p[1].list.append(PRODUCTION([p[3]]))
             p[0] = p[1]
         elif len(p) == 5:
             p[2].productionProperty = ProductionProperty.REPETITION
@@ -234,15 +243,15 @@ class TPTPParser():
         print("Syntax error at '%s'" % t.value)
 
     def run(self,filename):
-        result = self.parser.parse(r"""
-        %----Top of Page---------------------------------------------------------------
-        <TPTP_input>           ::= (<test> | <test2>) kiselina
-         """)
+        #result = self.parser.parse(r"""
+        #%----Top of Page---------------------------------------------------------------
+        #
+        # """)
         #print(result)
 
-        #a=self.parser.parse(self.lexer.import_tptp_file(filename))
-        #return a
-        return result
+        a=self.parser.parse(self.lexer.import_tptp_file(filename))
+        return a
+        #return result
 
     def __init__(self):
         self.tokens = lexer.TPTPLexer.tokens

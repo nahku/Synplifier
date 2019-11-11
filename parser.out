@@ -24,34 +24,36 @@ Rule 18    t_symbol_production -> OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQ
 Rule 19    t_symbol_production -> OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
 Rule 20    t_symbol_production -> T_SYMBOL
 Rule 21    production_element -> OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-Rule 22    production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-Rule 23    production_element -> NT_SYMBOL REPETITION_SYMBOL
-Rule 24    production_element -> t_symbol_production REPETITION_SYMBOL
-Rule 25    production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-Rule 26    production_element -> NT_SYMBOL
-Rule 27    production_element -> t_symbol_production
-Rule 28    production -> production_element
-Rule 29    production -> production production_element
+Rule 22    production_element -> NT_SYMBOL REPETITION_SYMBOL
+Rule 23    production_element -> t_symbol_production REPETITION_SYMBOL
+Rule 24    production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+Rule 25    production_element -> NT_SYMBOL
+Rule 26    production_element -> t_symbol_production
+Rule 27    production -> production_element
+Rule 28    production -> production production_element
+Rule 29    production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
 Rule 30    production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS
 Rule 31    production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-Rule 32    production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-Rule 33    production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-Rule 34    production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+Rule 32    production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+Rule 33    production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+Rule 34    production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+Rule 35    production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+Rule 36    production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
 
 Terminals, with rules where they appear
 
 ALTERNATIVE_SYMBOL   : 14 16 19
-CLOSE_PARENTHESIS    : 22 30 31 32 33 34
-CLOSE_SQUARE_BRACKET : 17 18 19 21 25
+CLOSE_PARENTHESIS    : 29 30 31 32 33 34 35 36
+CLOSE_SQUARE_BRACKET : 17 18 19 21 24
 COMMENT              : 7 8
 LGRAMMAR_EXPRESSION  : 9
 LMACRO_EXPRESSION    : 12
 LSTRICT_EXPRESSION   : 11
 LTOKEN_EXPRESSION    : 10
-NT_SYMBOL            : 21 23 26
-OPEN_PARENTHESIS     : 22 30 31 32 33 34
-OPEN_SQUARE_BRACKET  : 17 18 19 21 25
-REPETITION_SYMBOL    : 18 23 24 33 34
+NT_SYMBOL            : 21 22 25
+OPEN_PARENTHESIS     : 29 30 31 32 33 34 35 36
+OPEN_SQUARE_BRACKET  : 17 18 19 21 24
+REPETITION_SYMBOL    : 18 22 23 35 36
 T_SYMBOL             : 17 20
 error                : 
 
@@ -61,13 +63,13 @@ comment_block        : 1 6 8
 grammar_expression   : 2
 grammar_list         : 2 3 4 5 6 0
 macro_expression     : 5
-production           : 13 14 15 16 29 30 31 31 32 32 33 34 34
-production_element   : 28 29
+production           : 13 14 15 16 28 30 31 31 32 33 33 34 35 36 36
+production_element   : 27 28
 productions_list     : 9 10 11 12 14
 strict_expression    : 4
-t_symbol_production  : 24 27
+t_symbol_production  : 23 26
 token_expression     : 3
-xor_productions_list : 16 22
+xor_productions_list : 16 29 32 34
 
 Parsing method: LALR
 
@@ -212,20 +214,22 @@ state 9
     (9) grammar_expression -> LGRAMMAR_EXPRESSION . productions_list
     (13) productions_list -> . production
     (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -246,20 +250,22 @@ state 10
     (10) token_expression -> LTOKEN_EXPRESSION . productions_list
     (13) productions_list -> . production
     (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -280,20 +286,22 @@ state 11
     (11) strict_expression -> LSTRICT_EXPRESSION . productions_list
     (13) productions_list -> . production
     (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -314,20 +322,22 @@ state 12
     (12) macro_expression -> LMACRO_EXPRESSION . productions_list
     (13) productions_list -> . production
     (14) productions_list -> . productions_list ALTERNATIVE_SYMBOL production
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -372,16 +382,16 @@ state 14
 state 15
 
     (13) productions_list -> production .
-    (29) production -> production . production_element
+    (28) production -> production . production_element
     (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (34) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -404,44 +414,47 @@ state 15
 
 state 16
 
-    (28) production -> production_element .
+    (27) production -> production_element .
 
-    OPEN_PARENTHESIS reduce using rule 28 (production -> production_element .)
-    OPEN_SQUARE_BRACKET reduce using rule 28 (production -> production_element .)
-    NT_SYMBOL       reduce using rule 28 (production -> production_element .)
-    T_SYMBOL        reduce using rule 28 (production -> production_element .)
-    ALTERNATIVE_SYMBOL reduce using rule 28 (production -> production_element .)
-    LGRAMMAR_EXPRESSION reduce using rule 28 (production -> production_element .)
-    LTOKEN_EXPRESSION reduce using rule 28 (production -> production_element .)
-    LSTRICT_EXPRESSION reduce using rule 28 (production -> production_element .)
-    LMACRO_EXPRESSION reduce using rule 28 (production -> production_element .)
-    COMMENT         reduce using rule 28 (production -> production_element .)
-    $end            reduce using rule 28 (production -> production_element .)
-    CLOSE_PARENTHESIS reduce using rule 28 (production -> production_element .)
+    OPEN_PARENTHESIS reduce using rule 27 (production -> production_element .)
+    OPEN_SQUARE_BRACKET reduce using rule 27 (production -> production_element .)
+    NT_SYMBOL       reduce using rule 27 (production -> production_element .)
+    T_SYMBOL        reduce using rule 27 (production -> production_element .)
+    ALTERNATIVE_SYMBOL reduce using rule 27 (production -> production_element .)
+    LGRAMMAR_EXPRESSION reduce using rule 27 (production -> production_element .)
+    LTOKEN_EXPRESSION reduce using rule 27 (production -> production_element .)
+    LSTRICT_EXPRESSION reduce using rule 27 (production -> production_element .)
+    LMACRO_EXPRESSION reduce using rule 27 (production -> production_element .)
+    COMMENT         reduce using rule 27 (production -> production_element .)
+    $end            reduce using rule 27 (production -> production_element .)
+    CLOSE_PARENTHESIS reduce using rule 27 (production -> production_element .)
 
 
 state 17
 
+    (29) production -> OPEN_PARENTHESIS . xor_productions_list CLOSE_PARENTHESIS
     (30) production -> OPEN_PARENTHESIS . production CLOSE_PARENTHESIS
-    (32) production -> OPEN_PARENTHESIS . production CLOSE_PARENTHESIS production
-    (33) production -> OPEN_PARENTHESIS . production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (22) production_element -> OPEN_PARENTHESIS . xor_productions_list CLOSE_PARENTHESIS
-    (28) production -> . production_element
-    (29) production -> . production production_element
-    (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (33) production -> OPEN_PARENTHESIS . production CLOSE_PARENTHESIS production
+    (34) production -> OPEN_PARENTHESIS . xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> OPEN_PARENTHESIS . production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (15) xor_productions_list -> . production
     (16) xor_productions_list -> . xor_productions_list ALTERNATIVE_SYMBOL production
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -452,15 +465,15 @@ state 17
     NT_SYMBOL       shift and go to state 19
     T_SYMBOL        shift and go to state 21
 
-    production                     shift and go to state 28
-    xor_productions_list           shift and go to state 29
+    xor_productions_list           shift and go to state 28
+    production                     shift and go to state 29
     production_element             shift and go to state 16
     t_symbol_production            shift and go to state 20
 
 state 18
 
     (21) production_element -> OPEN_SQUARE_BRACKET . NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (25) production_element -> OPEN_SQUARE_BRACKET . CLOSE_SQUARE_BRACKET
+    (24) production_element -> OPEN_SQUARE_BRACKET . CLOSE_SQUARE_BRACKET
     (17) t_symbol_production -> OPEN_SQUARE_BRACKET . T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> OPEN_SQUARE_BRACKET . REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> OPEN_SQUARE_BRACKET . ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -474,42 +487,42 @@ state 18
 
 state 19
 
-    (23) production_element -> NT_SYMBOL . REPETITION_SYMBOL
-    (26) production_element -> NT_SYMBOL .
+    (22) production_element -> NT_SYMBOL . REPETITION_SYMBOL
+    (25) production_element -> NT_SYMBOL .
 
     REPETITION_SYMBOL shift and go to state 35
-    OPEN_PARENTHESIS reduce using rule 26 (production_element -> NT_SYMBOL .)
-    OPEN_SQUARE_BRACKET reduce using rule 26 (production_element -> NT_SYMBOL .)
-    NT_SYMBOL       reduce using rule 26 (production_element -> NT_SYMBOL .)
-    T_SYMBOL        reduce using rule 26 (production_element -> NT_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 26 (production_element -> NT_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 26 (production_element -> NT_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 26 (production_element -> NT_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 26 (production_element -> NT_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 26 (production_element -> NT_SYMBOL .)
-    COMMENT         reduce using rule 26 (production_element -> NT_SYMBOL .)
-    $end            reduce using rule 26 (production_element -> NT_SYMBOL .)
-    CLOSE_PARENTHESIS reduce using rule 26 (production_element -> NT_SYMBOL .)
+    OPEN_PARENTHESIS reduce using rule 25 (production_element -> NT_SYMBOL .)
+    OPEN_SQUARE_BRACKET reduce using rule 25 (production_element -> NT_SYMBOL .)
+    NT_SYMBOL       reduce using rule 25 (production_element -> NT_SYMBOL .)
+    T_SYMBOL        reduce using rule 25 (production_element -> NT_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 25 (production_element -> NT_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 25 (production_element -> NT_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 25 (production_element -> NT_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 25 (production_element -> NT_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 25 (production_element -> NT_SYMBOL .)
+    COMMENT         reduce using rule 25 (production_element -> NT_SYMBOL .)
+    $end            reduce using rule 25 (production_element -> NT_SYMBOL .)
+    CLOSE_PARENTHESIS reduce using rule 25 (production_element -> NT_SYMBOL .)
 
 
 state 20
 
-    (24) production_element -> t_symbol_production . REPETITION_SYMBOL
-    (27) production_element -> t_symbol_production .
+    (23) production_element -> t_symbol_production . REPETITION_SYMBOL
+    (26) production_element -> t_symbol_production .
 
     REPETITION_SYMBOL shift and go to state 36
-    OPEN_PARENTHESIS reduce using rule 27 (production_element -> t_symbol_production .)
-    OPEN_SQUARE_BRACKET reduce using rule 27 (production_element -> t_symbol_production .)
-    NT_SYMBOL       reduce using rule 27 (production_element -> t_symbol_production .)
-    T_SYMBOL        reduce using rule 27 (production_element -> t_symbol_production .)
-    ALTERNATIVE_SYMBOL reduce using rule 27 (production_element -> t_symbol_production .)
-    LGRAMMAR_EXPRESSION reduce using rule 27 (production_element -> t_symbol_production .)
-    LTOKEN_EXPRESSION reduce using rule 27 (production_element -> t_symbol_production .)
-    LSTRICT_EXPRESSION reduce using rule 27 (production_element -> t_symbol_production .)
-    LMACRO_EXPRESSION reduce using rule 27 (production_element -> t_symbol_production .)
-    COMMENT         reduce using rule 27 (production_element -> t_symbol_production .)
-    $end            reduce using rule 27 (production_element -> t_symbol_production .)
-    CLOSE_PARENTHESIS reduce using rule 27 (production_element -> t_symbol_production .)
+    OPEN_PARENTHESIS reduce using rule 26 (production_element -> t_symbol_production .)
+    OPEN_SQUARE_BRACKET reduce using rule 26 (production_element -> t_symbol_production .)
+    NT_SYMBOL       reduce using rule 26 (production_element -> t_symbol_production .)
+    T_SYMBOL        reduce using rule 26 (production_element -> t_symbol_production .)
+    ALTERNATIVE_SYMBOL reduce using rule 26 (production_element -> t_symbol_production .)
+    LGRAMMAR_EXPRESSION reduce using rule 26 (production_element -> t_symbol_production .)
+    LTOKEN_EXPRESSION reduce using rule 26 (production_element -> t_symbol_production .)
+    LSTRICT_EXPRESSION reduce using rule 26 (production_element -> t_symbol_production .)
+    LMACRO_EXPRESSION reduce using rule 26 (production_element -> t_symbol_production .)
+    COMMENT         reduce using rule 26 (production_element -> t_symbol_production .)
+    $end            reduce using rule 26 (production_element -> t_symbol_production .)
+    CLOSE_PARENTHESIS reduce using rule 26 (production_element -> t_symbol_production .)
 
 
 state 21
@@ -576,20 +589,22 @@ state 24
 state 25
 
     (14) productions_list -> productions_list ALTERNATIVE_SYMBOL . production
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -606,43 +621,45 @@ state 25
 
 state 26
 
-    (29) production -> production production_element .
+    (28) production -> production production_element .
 
-    OPEN_PARENTHESIS reduce using rule 29 (production -> production production_element .)
-    OPEN_SQUARE_BRACKET reduce using rule 29 (production -> production production_element .)
-    NT_SYMBOL       reduce using rule 29 (production -> production production_element .)
-    T_SYMBOL        reduce using rule 29 (production -> production production_element .)
-    ALTERNATIVE_SYMBOL reduce using rule 29 (production -> production production_element .)
-    LGRAMMAR_EXPRESSION reduce using rule 29 (production -> production production_element .)
-    LTOKEN_EXPRESSION reduce using rule 29 (production -> production production_element .)
-    LSTRICT_EXPRESSION reduce using rule 29 (production -> production production_element .)
-    LMACRO_EXPRESSION reduce using rule 29 (production -> production production_element .)
-    COMMENT         reduce using rule 29 (production -> production production_element .)
-    $end            reduce using rule 29 (production -> production production_element .)
-    CLOSE_PARENTHESIS reduce using rule 29 (production -> production production_element .)
+    OPEN_PARENTHESIS reduce using rule 28 (production -> production production_element .)
+    OPEN_SQUARE_BRACKET reduce using rule 28 (production -> production production_element .)
+    NT_SYMBOL       reduce using rule 28 (production -> production production_element .)
+    T_SYMBOL        reduce using rule 28 (production -> production production_element .)
+    ALTERNATIVE_SYMBOL reduce using rule 28 (production -> production production_element .)
+    LGRAMMAR_EXPRESSION reduce using rule 28 (production -> production production_element .)
+    LTOKEN_EXPRESSION reduce using rule 28 (production -> production production_element .)
+    LSTRICT_EXPRESSION reduce using rule 28 (production -> production production_element .)
+    LMACRO_EXPRESSION reduce using rule 28 (production -> production production_element .)
+    COMMENT         reduce using rule 28 (production -> production production_element .)
+    $end            reduce using rule 28 (production -> production production_element .)
+    CLOSE_PARENTHESIS reduce using rule 28 (production -> production production_element .)
 
 
 state 27
 
     (31) production -> production OPEN_PARENTHESIS . production CLOSE_PARENTHESIS
-    (34) production -> production OPEN_PARENTHESIS . production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (22) production_element -> OPEN_PARENTHESIS . xor_productions_list CLOSE_PARENTHESIS
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (32) production -> production OPEN_PARENTHESIS . xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production OPEN_PARENTHESIS . production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (15) xor_productions_list -> . production
     (16) xor_productions_list -> . xor_productions_list ALTERNATIVE_SYMBOL production
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -654,35 +671,45 @@ state 27
     T_SYMBOL        shift and go to state 21
 
     production                     shift and go to state 38
-    xor_productions_list           shift and go to state 29
+    xor_productions_list           shift and go to state 39
     production_element             shift and go to state 16
     t_symbol_production            shift and go to state 20
 
 state 28
 
+    (29) production -> OPEN_PARENTHESIS xor_productions_list . CLOSE_PARENTHESIS
+    (34) production -> OPEN_PARENTHESIS xor_productions_list . CLOSE_PARENTHESIS production
+    (16) xor_productions_list -> xor_productions_list . ALTERNATIVE_SYMBOL production
+
+    CLOSE_PARENTHESIS shift and go to state 40
+    ALTERNATIVE_SYMBOL shift and go to state 41
+
+
+state 29
+
     (30) production -> OPEN_PARENTHESIS production . CLOSE_PARENTHESIS
-    (32) production -> OPEN_PARENTHESIS production . CLOSE_PARENTHESIS production
-    (33) production -> OPEN_PARENTHESIS production . CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (29) production -> production . production_element
-    (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (34) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (33) production -> OPEN_PARENTHESIS production . CLOSE_PARENTHESIS production
+    (35) production -> OPEN_PARENTHESIS production . CLOSE_PARENTHESIS REPETITION_SYMBOL
     (15) xor_productions_list -> production .
+    (28) production -> production . production_element
+    (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
     (20) t_symbol_production -> . T_SYMBOL
 
   ! shift/reduce conflict for CLOSE_PARENTHESIS resolved as shift
-    CLOSE_PARENTHESIS shift and go to state 39
-    OPEN_PARENTHESIS shift and go to state 27
+    CLOSE_PARENTHESIS shift and go to state 42
     ALTERNATIVE_SYMBOL reduce using rule 15 (xor_productions_list -> production .)
+    OPEN_PARENTHESIS shift and go to state 27
     OPEN_SQUARE_BRACKET shift and go to state 18
     NT_SYMBOL       shift and go to state 19
     T_SYMBOL        shift and go to state 21
@@ -692,110 +719,101 @@ state 28
     production_element             shift and go to state 26
     t_symbol_production            shift and go to state 20
 
-state 29
-
-    (22) production_element -> OPEN_PARENTHESIS xor_productions_list . CLOSE_PARENTHESIS
-    (16) xor_productions_list -> xor_productions_list . ALTERNATIVE_SYMBOL production
-
-    CLOSE_PARENTHESIS shift and go to state 40
-    ALTERNATIVE_SYMBOL shift and go to state 41
-
-
 state 30
 
     (21) production_element -> OPEN_SQUARE_BRACKET NT_SYMBOL . CLOSE_SQUARE_BRACKET
 
-    CLOSE_SQUARE_BRACKET shift and go to state 42
+    CLOSE_SQUARE_BRACKET shift and go to state 43
 
 
 state 31
 
-    (25) production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .
+    (24) production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .
 
-    OPEN_PARENTHESIS reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    OPEN_SQUARE_BRACKET reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    NT_SYMBOL       reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    T_SYMBOL        reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    ALTERNATIVE_SYMBOL reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    LGRAMMAR_EXPRESSION reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    LTOKEN_EXPRESSION reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    LSTRICT_EXPRESSION reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    LMACRO_EXPRESSION reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    COMMENT         reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    $end            reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
-    CLOSE_PARENTHESIS reduce using rule 25 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    OPEN_PARENTHESIS reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    OPEN_SQUARE_BRACKET reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    NT_SYMBOL       reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    T_SYMBOL        reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    ALTERNATIVE_SYMBOL reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    LGRAMMAR_EXPRESSION reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    LTOKEN_EXPRESSION reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    LSTRICT_EXPRESSION reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    LMACRO_EXPRESSION reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    COMMENT         reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    $end            reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
+    CLOSE_PARENTHESIS reduce using rule 24 (production_element -> OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET .)
 
 
 state 32
 
     (17) t_symbol_production -> OPEN_SQUARE_BRACKET T_SYMBOL . CLOSE_SQUARE_BRACKET
 
-    CLOSE_SQUARE_BRACKET shift and go to state 43
+    CLOSE_SQUARE_BRACKET shift and go to state 44
 
 
 state 33
 
     (18) t_symbol_production -> OPEN_SQUARE_BRACKET REPETITION_SYMBOL . CLOSE_SQUARE_BRACKET
 
-    CLOSE_SQUARE_BRACKET shift and go to state 44
+    CLOSE_SQUARE_BRACKET shift and go to state 45
 
 
 state 34
 
     (19) t_symbol_production -> OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL . CLOSE_SQUARE_BRACKET
 
-    CLOSE_SQUARE_BRACKET shift and go to state 45
+    CLOSE_SQUARE_BRACKET shift and go to state 46
 
 
 state 35
 
-    (23) production_element -> NT_SYMBOL REPETITION_SYMBOL .
+    (22) production_element -> NT_SYMBOL REPETITION_SYMBOL .
 
-    OPEN_PARENTHESIS reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    OPEN_SQUARE_BRACKET reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    NT_SYMBOL       reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    T_SYMBOL        reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    COMMENT         reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    $end            reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
-    CLOSE_PARENTHESIS reduce using rule 23 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    OPEN_PARENTHESIS reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    OPEN_SQUARE_BRACKET reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    NT_SYMBOL       reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    T_SYMBOL        reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    COMMENT         reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    $end            reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
+    CLOSE_PARENTHESIS reduce using rule 22 (production_element -> NT_SYMBOL REPETITION_SYMBOL .)
 
 
 state 36
 
-    (24) production_element -> t_symbol_production REPETITION_SYMBOL .
+    (23) production_element -> t_symbol_production REPETITION_SYMBOL .
 
-    OPEN_PARENTHESIS reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    OPEN_SQUARE_BRACKET reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    NT_SYMBOL       reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    T_SYMBOL        reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    COMMENT         reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    $end            reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
-    CLOSE_PARENTHESIS reduce using rule 24 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    OPEN_PARENTHESIS reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    OPEN_SQUARE_BRACKET reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    NT_SYMBOL       reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    T_SYMBOL        reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    COMMENT         reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    $end            reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
+    CLOSE_PARENTHESIS reduce using rule 23 (production_element -> t_symbol_production REPETITION_SYMBOL .)
 
 
 state 37
 
     (14) productions_list -> productions_list ALTERNATIVE_SYMBOL production .
-    (29) production -> production . production_element
+    (28) production -> production . production_element
     (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (34) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -819,25 +837,25 @@ state 37
 state 38
 
     (31) production -> production OPEN_PARENTHESIS production . CLOSE_PARENTHESIS
-    (34) production -> production OPEN_PARENTHESIS production . CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (29) production -> production . production_element
+    (36) production -> production OPEN_PARENTHESIS production . CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (28) production -> production . production_element
     (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (34) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (15) xor_productions_list -> production .
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
     (20) t_symbol_production -> . T_SYMBOL
 
   ! shift/reduce conflict for CLOSE_PARENTHESIS resolved as shift
-    CLOSE_PARENTHESIS shift and go to state 46
+    CLOSE_PARENTHESIS shift and go to state 47
     OPEN_PARENTHESIS shift and go to state 27
     ALTERNATIVE_SYMBOL reduce using rule 15 (xor_productions_list -> production .)
     OPEN_SQUARE_BRACKET shift and go to state 18
@@ -851,23 +869,118 @@ state 38
 
 state 39
 
-    (30) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .
-    (32) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS . production
-    (33) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS . REPETITION_SYMBOL
-    (28) production -> . production_element
-    (29) production -> . production production_element
+    (32) production -> production OPEN_PARENTHESIS xor_productions_list . CLOSE_PARENTHESIS
+    (16) xor_productions_list -> xor_productions_list . ALTERNATIVE_SYMBOL production
+
+    CLOSE_PARENTHESIS shift and go to state 48
+    ALTERNATIVE_SYMBOL shift and go to state 41
+
+
+state 40
+
+    (29) production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .
+    (34) production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS . production
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
     (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
     (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
+    (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
+    (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+    (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
+    (20) t_symbol_production -> . T_SYMBOL
+
+  ! shift/reduce conflict for OPEN_PARENTHESIS resolved as shift
+  ! shift/reduce conflict for OPEN_SQUARE_BRACKET resolved as shift
+  ! shift/reduce conflict for NT_SYMBOL resolved as shift
+  ! shift/reduce conflict for T_SYMBOL resolved as shift
+    ALTERNATIVE_SYMBOL reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LGRAMMAR_EXPRESSION reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LTOKEN_EXPRESSION reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LSTRICT_EXPRESSION reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LMACRO_EXPRESSION reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    COMMENT         reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    $end            reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    CLOSE_PARENTHESIS reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    OPEN_PARENTHESIS shift and go to state 17
+    OPEN_SQUARE_BRACKET shift and go to state 18
+    NT_SYMBOL       shift and go to state 19
+    T_SYMBOL        shift and go to state 21
+
+  ! OPEN_PARENTHESIS [ reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .) ]
+  ! OPEN_SQUARE_BRACKET [ reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .) ]
+  ! NT_SYMBOL       [ reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .) ]
+  ! T_SYMBOL        [ reduce using rule 29 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .) ]
+
+    production                     shift and go to state 49
+    production_element             shift and go to state 16
+    t_symbol_production            shift and go to state 20
+
+state 41
+
+    (16) xor_productions_list -> xor_productions_list ALTERNATIVE_SYMBOL . production
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
+    (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
+    (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+    (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
+    (20) t_symbol_production -> . T_SYMBOL
+
+    OPEN_PARENTHESIS shift and go to state 17
+    OPEN_SQUARE_BRACKET shift and go to state 18
+    NT_SYMBOL       shift and go to state 19
+    T_SYMBOL        shift and go to state 21
+
+    production                     shift and go to state 50
+    production_element             shift and go to state 16
+    t_symbol_production            shift and go to state 20
+
+state 42
+
+    (30) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .
+    (33) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS . production
+    (35) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS . REPETITION_SYMBOL
+    (27) production -> . production_element
+    (28) production -> . production production_element
+    (29) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (32) production -> . production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
+    (34) production -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production
+    (35) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (36) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -885,7 +998,7 @@ state 39
     COMMENT         reduce using rule 30 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
     $end            reduce using rule 30 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
     CLOSE_PARENTHESIS reduce using rule 30 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
-    REPETITION_SYMBOL shift and go to state 48
+    REPETITION_SYMBOL shift and go to state 52
     OPEN_PARENTHESIS shift and go to state 17
     OPEN_SQUARE_BRACKET shift and go to state 18
     NT_SYMBOL       shift and go to state 19
@@ -896,60 +1009,11 @@ state 39
   ! NT_SYMBOL       [ reduce using rule 30 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .) ]
   ! T_SYMBOL        [ reduce using rule 30 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS .) ]
 
-    production                     shift and go to state 47
+    production                     shift and go to state 51
     production_element             shift and go to state 16
     t_symbol_production            shift and go to state 20
 
-state 40
-
-    (22) production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .
-
-    OPEN_PARENTHESIS reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    OPEN_SQUARE_BRACKET reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    NT_SYMBOL       reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    T_SYMBOL        reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    ALTERNATIVE_SYMBOL reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    LGRAMMAR_EXPRESSION reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    LTOKEN_EXPRESSION reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    LSTRICT_EXPRESSION reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    LMACRO_EXPRESSION reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    COMMENT         reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    $end            reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-    CLOSE_PARENTHESIS reduce using rule 22 (production_element -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
-
-
-state 41
-
-    (16) xor_productions_list -> xor_productions_list ALTERNATIVE_SYMBOL . production
-    (28) production -> . production_element
-    (29) production -> . production production_element
-    (30) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (31) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (32) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
-    (33) production -> . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (34) production -> . production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-    (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
-    (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
-    (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
-    (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
-    (20) t_symbol_production -> . T_SYMBOL
-
-    OPEN_PARENTHESIS shift and go to state 17
-    OPEN_SQUARE_BRACKET shift and go to state 18
-    NT_SYMBOL       shift and go to state 19
-    T_SYMBOL        shift and go to state 21
-
-    production                     shift and go to state 49
-    production_element             shift and go to state 16
-    t_symbol_production            shift and go to state 20
-
-state 42
+state 43
 
     (21) production_element -> OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET .
 
@@ -967,7 +1031,7 @@ state 42
     CLOSE_PARENTHESIS reduce using rule 21 (production_element -> OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET .)
 
 
-state 43
+state 44
 
     (17) t_symbol_production -> OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET .
 
@@ -986,7 +1050,7 @@ state 43
     CLOSE_PARENTHESIS reduce using rule 17 (t_symbol_production -> OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET .)
 
 
-state 44
+state 45
 
     (18) t_symbol_production -> OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET .
 
@@ -1005,7 +1069,7 @@ state 44
     CLOSE_PARENTHESIS reduce using rule 18 (t_symbol_production -> OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET .)
 
 
-state 45
+state 46
 
     (19) t_symbol_production -> OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET .
 
@@ -1024,10 +1088,10 @@ state 45
     CLOSE_PARENTHESIS reduce using rule 19 (t_symbol_production -> OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET .)
 
 
-state 46
+state 47
 
     (31) production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS .
-    (34) production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS . REPETITION_SYMBOL
+    (36) production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS . REPETITION_SYMBOL
 
     OPEN_PARENTHESIS reduce using rule 31 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
     OPEN_SQUARE_BRACKET reduce using rule 31 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
@@ -1041,22 +1105,40 @@ state 46
     COMMENT         reduce using rule 31 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
     $end            reduce using rule 31 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
     CLOSE_PARENTHESIS reduce using rule 31 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS .)
-    REPETITION_SYMBOL shift and go to state 50
+    REPETITION_SYMBOL shift and go to state 53
 
 
-state 47
+state 48
 
-    (32) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .
-    (29) production -> production . production_element
+    (32) production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .
+
+    OPEN_PARENTHESIS reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    OPEN_SQUARE_BRACKET reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    NT_SYMBOL       reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    T_SYMBOL        reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    ALTERNATIVE_SYMBOL reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LGRAMMAR_EXPRESSION reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LTOKEN_EXPRESSION reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LSTRICT_EXPRESSION reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    LMACRO_EXPRESSION reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    COMMENT         reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    $end            reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+    CLOSE_PARENTHESIS reduce using rule 32 (production -> production OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS .)
+
+
+state 49
+
+    (34) production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .
+    (28) production -> production . production_element
     (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (34) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -1066,58 +1148,40 @@ state 47
   ! shift/reduce conflict for OPEN_SQUARE_BRACKET resolved as shift
   ! shift/reduce conflict for NT_SYMBOL resolved as shift
   ! shift/reduce conflict for T_SYMBOL resolved as shift
-    ALTERNATIVE_SYMBOL reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    LGRAMMAR_EXPRESSION reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    LTOKEN_EXPRESSION reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    LSTRICT_EXPRESSION reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    LMACRO_EXPRESSION reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    COMMENT         reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    $end            reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
-    CLOSE_PARENTHESIS reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    ALTERNATIVE_SYMBOL reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    LGRAMMAR_EXPRESSION reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    LTOKEN_EXPRESSION reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    LSTRICT_EXPRESSION reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    LMACRO_EXPRESSION reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    COMMENT         reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    $end            reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
+    CLOSE_PARENTHESIS reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .)
     OPEN_PARENTHESIS shift and go to state 27
     OPEN_SQUARE_BRACKET shift and go to state 18
     NT_SYMBOL       shift and go to state 19
     T_SYMBOL        shift and go to state 21
 
-  ! OPEN_PARENTHESIS [ reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
-  ! OPEN_SQUARE_BRACKET [ reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
-  ! NT_SYMBOL       [ reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
-  ! T_SYMBOL        [ reduce using rule 32 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
+  ! OPEN_PARENTHESIS [ reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .) ]
+  ! OPEN_SQUARE_BRACKET [ reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .) ]
+  ! NT_SYMBOL       [ reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .) ]
+  ! T_SYMBOL        [ reduce using rule 34 (production -> OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS production .) ]
 
     production_element             shift and go to state 26
     t_symbol_production            shift and go to state 20
 
-state 48
-
-    (33) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .
-
-    OPEN_PARENTHESIS reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    OPEN_SQUARE_BRACKET reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    NT_SYMBOL       reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    T_SYMBOL        reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    COMMENT         reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    $end            reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    CLOSE_PARENTHESIS reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-
-
-state 49
+state 50
 
     (16) xor_productions_list -> xor_productions_list ALTERNATIVE_SYMBOL production .
-    (29) production -> production . production_element
+    (28) production -> production . production_element
     (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
-    (34) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
     (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-    (22) production_element -> . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
-    (23) production_element -> . NT_SYMBOL REPETITION_SYMBOL
-    (24) production_element -> . t_symbol_production REPETITION_SYMBOL
-    (25) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-    (26) production_element -> . NT_SYMBOL
-    (27) production_element -> . t_symbol_production
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
     (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
     (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
     (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
@@ -1133,35 +1197,104 @@ state 49
     production_element             shift and go to state 26
     t_symbol_production            shift and go to state 20
 
-state 50
+state 51
 
-    (34) production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .
+    (33) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .
+    (28) production -> production . production_element
+    (31) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS
+    (32) production -> production . OPEN_PARENTHESIS xor_productions_list CLOSE_PARENTHESIS
+    (36) production -> production . OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
+    (21) production_element -> . OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+    (22) production_element -> . NT_SYMBOL REPETITION_SYMBOL
+    (23) production_element -> . t_symbol_production REPETITION_SYMBOL
+    (24) production_element -> . OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
+    (25) production_element -> . NT_SYMBOL
+    (26) production_element -> . t_symbol_production
+    (17) t_symbol_production -> . OPEN_SQUARE_BRACKET T_SYMBOL CLOSE_SQUARE_BRACKET
+    (18) t_symbol_production -> . OPEN_SQUARE_BRACKET REPETITION_SYMBOL CLOSE_SQUARE_BRACKET
+    (19) t_symbol_production -> . OPEN_SQUARE_BRACKET ALTERNATIVE_SYMBOL CLOSE_SQUARE_BRACKET
+    (20) t_symbol_production -> . T_SYMBOL
 
-    OPEN_PARENTHESIS reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    OPEN_SQUARE_BRACKET reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    NT_SYMBOL       reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    T_SYMBOL        reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    ALTERNATIVE_SYMBOL reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LGRAMMAR_EXPRESSION reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LTOKEN_EXPRESSION reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LSTRICT_EXPRESSION reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    LMACRO_EXPRESSION reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    COMMENT         reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    $end            reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
-    CLOSE_PARENTHESIS reduce using rule 34 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+  ! shift/reduce conflict for OPEN_PARENTHESIS resolved as shift
+  ! shift/reduce conflict for OPEN_SQUARE_BRACKET resolved as shift
+  ! shift/reduce conflict for NT_SYMBOL resolved as shift
+  ! shift/reduce conflict for T_SYMBOL resolved as shift
+    ALTERNATIVE_SYMBOL reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    LGRAMMAR_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    LTOKEN_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    LSTRICT_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    LMACRO_EXPRESSION reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    COMMENT         reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    $end            reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    CLOSE_PARENTHESIS reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .)
+    OPEN_PARENTHESIS shift and go to state 27
+    OPEN_SQUARE_BRACKET shift and go to state 18
+    NT_SYMBOL       shift and go to state 19
+    T_SYMBOL        shift and go to state 21
+
+  ! OPEN_PARENTHESIS [ reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
+  ! OPEN_SQUARE_BRACKET [ reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
+  ! NT_SYMBOL       [ reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
+  ! T_SYMBOL        [ reduce using rule 33 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS production .) ]
+
+    production_element             shift and go to state 26
+    t_symbol_production            shift and go to state 20
+
+state 52
+
+    (35) production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .
+
+    OPEN_PARENTHESIS reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    OPEN_SQUARE_BRACKET reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    NT_SYMBOL       reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    T_SYMBOL        reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    COMMENT         reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    $end            reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    CLOSE_PARENTHESIS reduce using rule 35 (production -> OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+
+
+state 53
+
+    (36) production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .
+
+    OPEN_PARENTHESIS reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    OPEN_SQUARE_BRACKET reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    NT_SYMBOL       reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    T_SYMBOL        reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    ALTERNATIVE_SYMBOL reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LGRAMMAR_EXPRESSION reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LTOKEN_EXPRESSION reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LSTRICT_EXPRESSION reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    LMACRO_EXPRESSION reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    COMMENT         reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    $end            reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
+    CLOSE_PARENTHESIS reduce using rule 36 (production -> production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
 WARNING: shift/reduce conflict for COMMENT in state 2 resolved as shift
 WARNING: shift/reduce conflict for COMMENT in state 8 resolved as shift
-WARNING: shift/reduce conflict for CLOSE_PARENTHESIS in state 28 resolved as shift
+WARNING: shift/reduce conflict for CLOSE_PARENTHESIS in state 29 resolved as shift
 WARNING: shift/reduce conflict for CLOSE_PARENTHESIS in state 38 resolved as shift
-WARNING: shift/reduce conflict for OPEN_PARENTHESIS in state 39 resolved as shift
-WARNING: shift/reduce conflict for OPEN_SQUARE_BRACKET in state 39 resolved as shift
-WARNING: shift/reduce conflict for NT_SYMBOL in state 39 resolved as shift
-WARNING: shift/reduce conflict for T_SYMBOL in state 39 resolved as shift
-WARNING: shift/reduce conflict for OPEN_PARENTHESIS in state 47 resolved as shift
-WARNING: shift/reduce conflict for OPEN_SQUARE_BRACKET in state 47 resolved as shift
-WARNING: shift/reduce conflict for NT_SYMBOL in state 47 resolved as shift
-WARNING: shift/reduce conflict for T_SYMBOL in state 47 resolved as shift
+WARNING: shift/reduce conflict for OPEN_PARENTHESIS in state 40 resolved as shift
+WARNING: shift/reduce conflict for OPEN_SQUARE_BRACKET in state 40 resolved as shift
+WARNING: shift/reduce conflict for NT_SYMBOL in state 40 resolved as shift
+WARNING: shift/reduce conflict for T_SYMBOL in state 40 resolved as shift
+WARNING: shift/reduce conflict for OPEN_PARENTHESIS in state 42 resolved as shift
+WARNING: shift/reduce conflict for OPEN_SQUARE_BRACKET in state 42 resolved as shift
+WARNING: shift/reduce conflict for NT_SYMBOL in state 42 resolved as shift
+WARNING: shift/reduce conflict for T_SYMBOL in state 42 resolved as shift
+WARNING: shift/reduce conflict for OPEN_PARENTHESIS in state 49 resolved as shift
+WARNING: shift/reduce conflict for OPEN_SQUARE_BRACKET in state 49 resolved as shift
+WARNING: shift/reduce conflict for NT_SYMBOL in state 49 resolved as shift
+WARNING: shift/reduce conflict for T_SYMBOL in state 49 resolved as shift
+WARNING: shift/reduce conflict for OPEN_PARENTHESIS in state 51 resolved as shift
+WARNING: shift/reduce conflict for OPEN_SQUARE_BRACKET in state 51 resolved as shift
+WARNING: shift/reduce conflict for NT_SYMBOL in state 51 resolved as shift
+WARNING: shift/reduce conflict for T_SYMBOL in state 51 resolved as shift
