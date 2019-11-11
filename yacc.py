@@ -168,7 +168,7 @@ class TPTPParser():
             else:
                 p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.NONE)
         elif len(p) == 3 and p[1] == "[": #OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-            p[0] = PRODUCTION_ELEMENT([], ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
+            p[0] = PRODUCTION_ELEMENT(T_SYMBOL(""), ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
         elif len(p) == 3:  # NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
             if (type(p[1]) is T_SYMBOL):
                 p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.REPETITION)
@@ -237,21 +237,18 @@ class TPTPParser():
             p[1].list.append(PRODUCTION([p[3]]))
             p[0] = p[1]
 
-
-
     def p_error(self,t):
         print("Syntax error at '%s'" % t.value)
 
     def run(self,filename):
+        result=self.parser.parse(self.lexer.import_tptp_file(filename))
         #result = self.parser.parse(r"""
         #%----Top of Page---------------------------------------------------------------
-        #
+        #<thf_tuple>            ::= [] | [<thf_formula_list>]
         # """)
         #print(result)
 
-        a=self.parser.parse(self.lexer.import_tptp_file(filename))
-        return a
-        #return result
+        return result
 
     def __init__(self):
         self.tokens = lexer.TPTPLexer.tokens
