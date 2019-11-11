@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 from enum import Enum
 import lexer
+import TreeBuilder
 
 class ProductionProperty(Enum):
     NONE = 1
@@ -141,6 +142,7 @@ class TPTPParser():
     def p_production_element(self,p):
         """
         production_element : OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+                |    OPEN_PARENTHESIS productions_list CLOSE_PARENTHESIS
                 |    NT_SYMBOL REPETITION_SYMBOL
                 |    t_symbol_production REPETITION_SYMBOL
                 |    OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
@@ -160,8 +162,9 @@ class TPTPParser():
             else:
                 p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.REPETITION)
         elif len(p) == 4 and p[1] == '[': #OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
-            p[0] = PRODUCTION(NT_SYMBOL(p[2]), ProductionProperty.OPTIONAL)
-
+            p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[2]), ProductionProperty.OPTIONAL)
+        elif len(p) == 4 and p[1] == '(':  # OPEN_SQUARE_BRACKET NT_SYMBOL CLOSE_SQUARE_BRACKET
+            p[0] = PRODUCTION_ELEMENT(p[2], ProductionProperty.XOR)
 
     def p_production(self,p):
         #missing optional production
@@ -173,32 +176,32 @@ class TPTPParser():
                 |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS production
                 |    OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
                 |    production OPEN_PARENTHESIS production CLOSE_PARENTHESIS REPETITION_SYMBOL
-                |    production ALTERNATIVE_SYMBOL production
-                |    production ALTERNATIVE_SYMBOL OPEN_PARENTHESIS production_element CLOSE_PARENTHESIS
+
 
         """
+        #|    production ALTERNATIVE_SYMBOL OPEN_PARENTHESIS production_element CLOSE_PARENTHESIS
         if len(p) == 2:
            p[0] = PRODUCTION([p[1]])
         elif len(p) == 3:
             p[1].list.append(p[2])
             p[0] = p[1]
-        elif len(p) == 4 and p[2] == '|':
-            p[1].productionProperty = ProductionProperty.XOR
-            p[1].list.append(p[3])
-            p[0] = p[1]
-        elif len(p) == 4:
-            p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
-            p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+        #elif len(p) == 4 and p[2] == '|':
+         #   p[1].productionProperty = ProductionProperty.XOR
+          #  p[1].list.append(p[3])
+           # p[0] = p[1]
+        elif len(p) == 4 and type(p[2]) is PRODUCTION:
+            p[2].list.insert(0, PRODUCTION_ELEMENT(T_SYMBOL('(')))
+            p[2].list.append(PRODUCTION_ELEMENT(T_SYMBOL(')')))
             p[0] = p[2]
         elif len(p) == 5 and p[4] == '*':
             p[2].productionProperty = ProductionProperty.REPETITION
             p[0] = PRODUCTION([p[2]])
-        elif len(p) == 5 and p[3] == ')':
+        elif len(p) == 5 and p[3] == ')' and isinstance(p[2],PRODUCTION):
             p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
             p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
             p[4].list.insert(0,PRODUCTION(p[2]))
             p[0] = p[4]
-        elif len(p) == 5 and p[4] == ')':
+        elif len(p) == 5 and p[4] == ')' and isinstance(p[3], PRODUCTION):
             p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
             p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
             p[1].list.append(p[3])
@@ -219,14 +222,16 @@ class TPTPParser():
     def p_error(self,t):
         print("Syntax error at '%s'" % t.value)
 
-    def run(self):
-        # result = self.parser.parse(r"""
-        # %----Top of Page---------------------------------------------------------------
-        #
-        # <sq_char>              ::: ([\40-\46\50-\133\135-\176]|[\\]['\\])
-        # """)
-        # print(result)
-        return self.parser.parse(self.lexer.import_tptp_file(r'TPTP_BNF_NEW.txt'))
+    def run(self,filename):
+        #result = self.parser.parse(r"""
+        #%----Top of Page---------------------------------------------------------------
+        #<TPTP_input>           ::= (<test>) bla
+         # """)
+        #print(result)
+
+        a=self.parser.parse(self.lexer.import_tptp_file(filename))
+        return a
+        #return result
 
     def __init__(self):
         self.tokens = lexer.TPTPLexer.tokens
@@ -234,6 +239,7 @@ class TPTPParser():
         self.parser = yacc.yacc(module=self)
 
 if __name__== "__main__":
-  parser = TPTPParser()
-  test_result = parser.run()
-  print(test_result)
+  #parser = TPTPParser()
+  #test_result = parser.run()
+  #print(test_result)
+  treeBuilder = TreeBuilder.TPTPTreeBuilder('tptp_bnf.txt')
