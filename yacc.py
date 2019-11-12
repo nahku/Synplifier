@@ -68,6 +68,10 @@ class TPTPParser():
     def p_grammar_list(self,p):
         """
         grammar_list : comment_block
+                    |  grammar_expression
+                    |  token_expression
+                    |  strict_expression
+                    |  macro_expression
                     |  grammar_list grammar_expression
                     |  grammar_list token_expression
                     |  grammar_list strict_expression
@@ -214,16 +218,16 @@ class TPTPParser():
             p[2].productionProperty = ProductionProperty.REPETITION
             p[0] = PRODUCTION([p[2]])
         elif len(p) == 5 and p[3] == ')' and isinstance(p[2],PRODUCTION):
-            p[2].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
-            p[2].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+            p[2].list.insert(0, PRODUCTION_ELEMENT(T_SYMBOL('(')))
+            p[2].list.append(PRODUCTION_ELEMENT(T_SYMBOL(')')))
             p[4].list.insert(0,PRODUCTION(p[2]))
             p[0] = p[4]
         elif len(p) == 5 and p[3] == ')' and isinstance(p[2],XOR_PRODUCTIONS_LIST):
             p[4].list.insert(0,PRODUCTION([p[2]]))
             p[0] = p[4]
         elif len(p) == 5 and p[4] == ')' and isinstance(p[3], PRODUCTION):
-            p[3].list.insert(0, PRODUCTION_ELEMENT(NT_SYMBOL('(')))
-            p[3].list.append(PRODUCTION_ELEMENT(NT_SYMBOL(')')))
+            p[3].list.insert(0, PRODUCTION_ELEMENT(T_SYMBOL('(')))
+            p[3].list.append(PRODUCTION_ELEMENT(T_SYMBOL(')')))
             p[1].list.append(p[3])
             p[0] = p[1]
         elif len(p) == 5 and p[4] == ')' and isinstance(p[3], XOR_PRODUCTIONS_LIST):
