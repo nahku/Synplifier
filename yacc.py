@@ -65,6 +65,8 @@ class COMMENT_BLOCK:
 
 class TPTPParser():
 
+    #production rules
+
     def p_grammar_list(self,p):
         """
         grammar_list : comment_block

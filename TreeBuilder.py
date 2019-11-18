@@ -104,38 +104,54 @@ class TPTPTreeBuilder():
             self.print_symbol(production_element.name)
             self.print_wo_newline("|")
 
-    def print_symbol(self,symbol):
+    # def print_symbol(self,symbol):
+    #     if isinstance(symbol,yacc.T_SYMBOL):
+    #         if (symbol.property == yacc.ProductionProperty.NONE):
+    #             if(len(symbol.value) < 2):
+    #                 self.print_wo_newline("[")
+    #                 self.print_wo_newline(symbol.value)
+    #                 self.print_wo_newline("]")
+    #             else:
+    #                 self.print_wo_newline(symbol.value)
+    #         elif (symbol.property == yacc.ProductionProperty.REPETITION):
+    #             if (len(symbol.value) < 2):
+    #                 self.print_wo_newline("[")
+    #                 self.print_wo_newline(symbol.value)
+    #                 self.print_wo_newline("]")
+    #             else:
+    #                 self.print_wo_newline(symbol.value)
+    #             self.print_wo_newline("*")
+    #         elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
+    #             self.print_wo_newline("[")
+    #             self.print_wo_newline(symbol.value)
+    #             self.print_wo_newline("]")
+    #         elif (symbol.property == yacc.ProductionProperty.XOR):
+    #             self.print_wo_newline("(")
+    #             if (len(symbol.value) < 2):
+    #                 self.print_wo_newline("[")
+    #                 self.print_wo_newline(symbol.value)
+    #                 self.print_wo_newline("]")
+    #             else:
+    #                 self.print_wo_newline(symbol.value)
+    #             self.print_wo_newline(")")
+    #     else:
+    #         self.print_wo_newline(symbol.value)
+
+    def print_symbol(self, symbol):
         if isinstance(symbol,yacc.T_SYMBOL):
-            if (symbol.property == yacc.ProductionProperty.NONE):
-                if(len(symbol.value) < 2):
-                    self.print_wo_newline("[")
+                if (symbol.property == yacc.ProductionProperty.NONE):
                     self.print_wo_newline(symbol.value)
-                    self.print_wo_newline("]")
-                else:
+                elif (symbol.property == yacc.ProductionProperty.REPETITION):
+                    self.print_wo_newline("*")
+                elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
                     self.print_wo_newline(symbol.value)
-            elif (symbol.property == yacc.ProductionProperty.REPETITION):
-                if (len(symbol.value) < 2):
-                    self.print_wo_newline("[")
+                elif (symbol.property == yacc.ProductionProperty.XOR):
+                    self.print_wo_newline("(")
                     self.print_wo_newline(symbol.value)
-                    self.print_wo_newline("]")
-                else:
-                    self.print_wo_newline(symbol.value)
-                self.print_wo_newline("*")
-            elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
-                self.print_wo_newline("[")
-                self.print_wo_newline(symbol.value)
-                self.print_wo_newline("]")
-            elif (symbol.property == yacc.ProductionProperty.XOR):
-                self.print_wo_newline("(")
-                if (len(symbol.value) < 2):
-                    self.print_wo_newline("[")
-                    self.print_wo_newline(symbol.value)
-                    self.print_wo_newline("]")
-                else:
-                    self.print_wo_newline(symbol.value)
-                self.print_wo_newline(")")
+                    self.print_wo_newline(")")
         else:
             self.print_wo_newline(symbol.value)
+        self.print_wo_newline(" ")
 
     def print_productions_list(self,productions_list):
         length = len(productions_list.list)
