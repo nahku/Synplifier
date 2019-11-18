@@ -2,6 +2,7 @@ import ply.lex as lex
 import os
 
 class TPTPLexer():
+
     #List of token names
     tokens = (
         'LGRAMMAR_EXPRESSION',
@@ -20,22 +21,9 @@ class TPTPLexer():
     )
 
     literals = []
-
-    # Regular expression rules for simple tokens
-    #t_GRAMMAR_SYMBOL = r'::='
-    #t_TOKEN_SYMBOL = r'::-'
-    #t_STRICT_SYMBOL = r':=='
-    #t_MACRO_SYMBOL = r':::'
-    #t_NT_OPEN_SYMBOL   = r'<'
-    #t_NT_CLOSE_SYMBOL  = r'>'
-    #t_OR  = r'\|'
-    #t_OPEN_PARENTHESIS = r'\('
-    #t_CLOSE_PARENTHESIS = r'\)'
-    #t_ALTERNATIVE_SYMBOL = r'\|'
-    #t_REPETITION_SYMBOL = r'\*'
-
     t_ignore = ' \t\n'
 
+    #token definitions
     def t_COMMENT(self,t):
         r'%-.*'
         #t.value = t.value.rstrip('\n')
@@ -102,10 +90,12 @@ class TPTPLexer():
         #r'..*'
         return t
 
+    #error handling
     def t_error(self,t):
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
+    #import tptp text file from specified filename
     def import_tptp_file(self,filename):
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
         my_file = os.path.join(THIS_FOLDER, filename)
