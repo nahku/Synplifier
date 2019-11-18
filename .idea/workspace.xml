@@ -3,10 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="b3d8672f-597d-4c0c-8151-b4e276ccbf3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TPTP_BNF_NEW.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TPTP_BNF_NEW.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TreeBuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/TreeBuilder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lexer.py" beforeDir="false" afterPath="$PROJECT_DIR$/lexer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parser.out" beforeDir="false" afterPath="$PROJECT_DIR$/parser.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsetab.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yacc.py" beforeDir="false" afterPath="$PROJECT_DIR$/yacc.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +16,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Python Unit Test" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -104,8 +102,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.yacc" />
-        <item itemvalue="Python.lexer" />
         <item itemvalue="Python tests.pytest in lexerTest.py" />
+        <item itemvalue="Python.lexer" />
       </list>
     </recent_temporary>
   </component>
@@ -139,11 +137,23 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
+          <line>180</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yacc.py</url>
-          <line>199</line>
-          <option name="timeStamp" value="44" />
+          <line>161</line>
+          <option name="timeStamp" value="137" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
