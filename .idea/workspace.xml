@@ -141,8 +141,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>251</line>
-          <option name="timeStamp" value="146" />
+          <line>281</line>
+          <option name="timeStamp" value="166" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -165,6 +165,7 @@
         <watch expression="self.nodes_dictionary['&lt;TPTP_input&gt;'].rule_type" />
         <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].productions_list.list[1].list[0]" />
         <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].children[0].children[0].children[0].children[0]" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].children[3]" />
       </configuration>
     </watches-manager>
   </component>
