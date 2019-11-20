@@ -30,25 +30,56 @@ class TPTPTreeBuilder():
 
     def init_tree(self, start_symbol):
         #self.treeBNF = Tree(self.nodes_dictionary.pop(start_symbol))
-        start = self.nodes_dictionary.pop(start_symbol)
-        self.build_tree(start, start.productions_list)
+        start = self.nodes_dictionary.get(start_symbol)
+        self.build_tree_rek(start, start.productions_list)
+        self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
 
-    def build_tree(self, node, symbol):
-        children = self.search_productions_list_for_nt(symbol)
-        if children != []:
-            node.add_children(children)
-            #print(children.value)
-            return self.build_tree(children, children.productions_list)
+    def build_tree_rek(self, node, symbol):
+        #children = self.search_productions_list_for_nt(node, symbol)
+        self.search_productions_list_for_nt(node, symbol)
+        if node.children == []:
+            print("------------")
+            #return []
+            self.print_tree(self.nodes_dictionary.get("<TPTP_file>"), 0)
+        else:
+            for i in node.children:
+            #if node.children != []:
+            #node.add_children(children)
+            #print(i.value)
+                print("blub")
+                self.build_tree_rek(i, i.productions_list)
 
 
-        #for key,value in self.nodes_dictionary.items():
-         #   if key != start_symbol:
-          #      self.find_nt_rule(key, value)
+    def build_tree(self, start_symbol):
+
+        for key,value in self.nodes_dictionary.items():
+            if key != start_symbol:
+                self.find_nt_rule(key, value)
+
+        #self.treeBNF = self.nodes_dictionary.get(start_symbol)
+        self.print_tree(self.nodes_dictionary.get(start_symbol),0)
+
+    def print_tree(self, node, level):
+        if level == 0:
+            self.print_tree_nt(node.value, level)
+        for i in node.children:
+            self.print_tree_nt(i.value, level+1)
+            self.print_tree(i, level+2)
+
+    def print_tree_nt(self, nt_name, level):
+        for i in range(0,level):
+            print(" ",end = "")
+
+        print(nt_name)
+        #print("\n")
 
     def find_nt_rule(self, key, value):
         for i in self.nodes_dictionary.values():
             if self.search_productions_list(i.productions_list, key):
-                i.add_children(value)
+                if i == value:
+                    print(i.value)
+                else:
+                    i.add_children(value)
 
     def find_nt_key(self, nt_name):
         #children = []
@@ -206,28 +237,27 @@ class TPTPTreeBuilder():
                 self.print_wo_newline("| ")
             j = j + 1
 
-    #def search_productions_list(self,productions_list, nt_name):
-     #   for i in productions_list.list:
-      #      if self.search_production(i,nt_name):
-       #        return True
-
-    def search_productions_list_for_nt(self, productions_list):
+    def search_productions_list(self,productions_list, nt_name):
         for i in productions_list.list:
-            return self.search_production_for_nt(i)
+            if self.search_production(i,nt_name):
+               return True
 
-        return []
+    def search_productions_list_for_nt(self, node, productions_list):
+        for i in productions_list.list:
+            self.search_production_for_nt(node, i)
 
-    def search_production_for_nt(self, production):
+
+    def search_production_for_nt(self, node, production):
         for i in production.list:
             if (isinstance(i, yacc.PRODUCTION)):
-                return self.search_production_for_nt(i)
+                self.search_production_for_nt(node, i)
             elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
-                self.search_productions_list_for_nt(i)
+                self.search_productions_list_for_nt(node, i)
             elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
                 if not isinstance(i.name, yacc.T_SYMBOL):
-                    return self.find_nt_key(i.name.value)
+                    node.children.append(self.find_nt_key(i.name.value))
 
-        return []
+
 
 
     def print_comment_block(self,comment_block):
