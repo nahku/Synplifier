@@ -31,23 +31,24 @@ class TPTPTreeBuilder():
     def init_tree(self, start_symbol):
         #self.treeBNF = Tree(self.nodes_dictionary.pop(start_symbol))
         start = self.nodes_dictionary.get(start_symbol)
-        self.build_tree_rek(start, start.productions_list)
-        self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
+        self.build_tree_rek(start)
+        #self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
 
-    def build_tree_rek(self, node, symbol):
+    def build_tree_rek(self, node):
         #children = self.search_productions_list_for_nt(node, symbol)
-        self.search_productions_list_for_nt(node, symbol)
-        if node.children == []:
-            print("------------")
-            #return []
-            self.print_tree(self.nodes_dictionary.get("<TPTP_file>"), 0)
-        else:
-            for i in node.children:
-            #if node.children != []:
-            #node.add_children(children)
-            #print(i.value)
-                print("blub")
-                self.build_tree_rek(i, i.productions_list)
+        if len(node.children) == 0:
+            self.search_productions_list_for_nt(node, node.productions_list)
+            #self.print_tree(self.nodes_dictionary.get("<TPTP_file>"), 0)
+            if len(node.children) != 0:
+                for i in node.children:
+                #if node.children != []:
+                #node.add_children(children)
+                #print(i.value)
+                    if i != []:
+                        for j in i:
+                            self.build_tree_rek(j)
+                    else:
+                        node.children.remove(i)
 
 
     def build_tree(self, start_symbol):
@@ -62,16 +63,21 @@ class TPTPTreeBuilder():
     def print_tree(self, node, level):
         if level == 0:
             self.print_tree_nt(node.value, level)
-        for i in node.children:
-            self.print_tree_nt(i.value, level+1)
-            self.print_tree(i, level+2)
+        if len(node.children) > 0:
+            if len(node.children[0]) >= 0:
+                for i in node.children:
+                    print("")
+                    for j in i:
+                        self.print_tree_nt(j.value, level+1)
+                        self.print_tree(j, level+2)
 
     def print_tree_nt(self, nt_name, level):
         for i in range(0,level):
-            print(" ",end = "")
+            print("  ",end = "")
 
-        print(nt_name)
-        #print("\n")
+        print(nt_name, end = "")
+
+
 
     def find_nt_rule(self, key, value):
         for i in self.nodes_dictionary.values():
@@ -81,13 +87,13 @@ class TPTPTreeBuilder():
                 else:
                     i.add_children(value)
 
-    def find_nt_key(self, nt_name):
-        #children = []
+    def find_nt_key(self, node, nt_name):
+        children = []
         for key, value in self.nodes_dictionary.items():
             if key == nt_name:
-                #children.append(value)
-                return value
-        return []
+                node = self.nodes_dictionary.get(key)
+                children.append(value)
+        return children
 
     def build_nodes_dictionary(self,rules_list):
 
@@ -248,6 +254,7 @@ class TPTPTreeBuilder():
 
 
     def search_production_for_nt(self, node, production):
+        children = []
         for i in production.list:
             if (isinstance(i, yacc.PRODUCTION)):
                 self.search_production_for_nt(node, i)
@@ -255,7 +262,12 @@ class TPTPTreeBuilder():
                 self.search_productions_list_for_nt(node, i)
             elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
                 if not isinstance(i.name, yacc.T_SYMBOL):
-                    node.children.append(self.find_nt_key(i.name.value))
+                    childrenNote = self.find_nt_key(i, i.name.value)
+                    for j in childrenNote:
+                        children.append(j) #all children of production
+                    i.name = childrenNote
+
+        node.children.append(children)
 
 
 
@@ -274,16 +286,17 @@ class TPTPTreeBuilder():
         self.treeBNF = None
         self.parser = yacc.TPTPParser()
         rules_list = self.parser.run('TPTP_BNF_NEW.txt')
+        #rules_list = self.parser.run('TPTP_Test.txt')
         #self.build_tree(rules_list)
         self.build_nodes_dictionary(rules_list)
         #self.find_nt_rule("<annotated_formula>")
         #self.build_tree("<TPTP_file>")
         self.init_tree("<TPTP_file>")
-        for i in rules_list.list:
-            if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
-                self.print_expression(i)
-                print("")
-            else:
-                self.print_comment_block(i)
+        #for i in rules_list.list:
+         #   if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
+          #      self.print_expression(i)
+           #     print("")
+            #else:
+             #   self.print_comment_block(i)
         #self.print_expression(rules_list.list[2])
         print("")
