@@ -141,8 +141,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>281</line>
-          <option name="timeStamp" value="166" />
+          <line>63</line>
+          <option name="timeStamp" value="145" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
+          <line>34</line>
+          <option name="timeStamp" value="147" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -166,6 +171,13 @@
         <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].productions_list.list[1].list[0]" />
         <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].children[0].children[0].children[0].children[0]" />
         <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].children[3]" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0][0].children[0][0].children" />
+        <watch expression="self.nodes_dictionary" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0][0].children[0][0].children[0][0].children[0][0].children[0][0].children[0][0].children[0]" />
+        <watch expression="start.children[0]" />
+        <watch expression="start.children[0][0].children[0][0].children[0][0].children[0][2].children[0][0].children[0][0].children[0][0].children[0][1].children[0]" />
+        <watch expression="__py_debug_temp_var_552301958" />
+        <watch expression="start.children[0][0].children[0][0].children[0][0].children[0][2].children[0][0].children[2][0].children[2][0].children[0][0].children.__len__()" />
       </configuration>
     </watches-manager>
   </component>
