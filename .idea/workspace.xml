@@ -4,8 +4,6 @@
     <list default="true" id="b3d8672f-597d-4c0c-8151-b4e276ccbf3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TreeBuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/TreeBuilder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lexer.py" beforeDir="false" afterPath="$PROJECT_DIR$/lexer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yacc.py" beforeDir="false" afterPath="$PROJECT_DIR$/yacc.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -137,14 +135,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>180</line>
-          <option name="timeStamp" value="134" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yacc.py</url>
           <line>161</line>
           <option name="timeStamp" value="137" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
+          <line>63</line>
+          <option name="timeStamp" value="145" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
+          <line>34</line>
+          <option name="timeStamp" value="147" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -164,6 +167,17 @@
         <watch expression="result.list" />
         <watch expression="result.list[1].productions_list.list[0]" />
         <watch expression="result.list[1].productions_list.list[0].list[1].name" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_input&gt;'].rule_type" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].productions_list.list[1].list[0]" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].children[0].children[0].children[0].children[0]" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0].children[0].children[3]" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0][0].children[0][0].children" />
+        <watch expression="self.nodes_dictionary" />
+        <watch expression="self.nodes_dictionary['&lt;TPTP_file&gt;'].children[0][0].children[0][0].children[0][0].children[0][0].children[0][0].children[0][0].children[0]" />
+        <watch expression="start.children[0]" />
+        <watch expression="start.children[0][0].children[0][0].children[0][0].children[0][2].children[0][0].children[0][0].children[0][0].children[0][1].children[0]" />
+        <watch expression="__py_debug_temp_var_552301958" />
+        <watch expression="start.children[0][0].children[0][0].children[0][0].children[0][2].children[0][0].children[2][0].children[2][0].children[0][0].children.__len__()" />
       </configuration>
     </watches-manager>
   </component>
