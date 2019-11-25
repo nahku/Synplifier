@@ -95,7 +95,7 @@
 <thf_binary_formula>   ::= <thf_binary_nonassoc> | <thf_binary_assoc> |
                            <thf_binary_type>
 %----There's no precedence among binary connectives
-<thf_binary_nonassoc>   := <thf_unit_formula> <nonassoc_connective>
+<thf_binary_nonassoc>  ::= <thf_unit_formula> <nonassoc_connective>
                            <thf_unit_formula>
 <thf_binary_assoc>     ::= <thf_or_formula> | <thf_and_formula> |
                            <thf_apply_formula>
