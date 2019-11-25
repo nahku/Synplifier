@@ -101,8 +101,13 @@ class TPTPParser():
     def p_grammar_expression(self,p):
         """
         grammar_expression : LGRAMMAR_EXPRESSION productions_list
+                            | LGRAMMAR_EXPRESSION
+
         """
-        p[0] = GRAMMAR_EXPRESSION(p[1],p[2])
+        if len(p) == 3:
+            p[0] = GRAMMAR_EXPRESSION(p[1],p[2])
+        elif len(p) == 2: #for case <null> ::=
+            p[0] = GRAMMAR_EXPRESSION(p[1], PRODUCTIONS_LIST([PRODUCTION([PRODUCTION_ELEMENT(T_SYMBOL(""))])]))
 
     def p_token_expression(self,p):
         """
