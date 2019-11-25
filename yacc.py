@@ -154,9 +154,6 @@ class TPTPParser():
         if len(p) == 2:
             p[0] = T_SYMBOL(p[1])
         elif len(p) == 4:
-            if len(p[2]) == 1:
-                p[0] = T_SYMBOL(p[2])
-            else:
                 p[0] = T_SYMBOL(p[2], ProductionProperty.OPTIONAL)
 
     def p_production_element(self,p):
