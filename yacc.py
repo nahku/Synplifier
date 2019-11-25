@@ -154,9 +154,6 @@ class TPTPParser():
         if len(p) == 2:
             p[0] = T_SYMBOL(p[1])
         elif len(p) == 4:
-            if len(p[2]) == 1:
-                p[0] = T_SYMBOL(p[2])
-            else:
                 p[0] = T_SYMBOL(p[2], ProductionProperty.OPTIONAL)
 
     def p_production_element(self,p):
@@ -246,14 +243,36 @@ class TPTPParser():
     def p_error(self,t):
         print("Syntax error at '%s'" % t.value)
 
-    def run(self,filename):
-        result=self.parser.parse(self.lexer.import_tptp_file(filename))
-        #result = self.parser.parse(r"""
-        #%----Top of Page---------------------------------------------------------------
-        #<thf_tuple>            ::= [] | [<thf_formula_list>]
-        # """)
-        #print(result)
+    #replaces ProductionProperty OPTIONAL by the terminal square brackets for GRAMMAR and STRICT Expressions
+    def disambigue_square_brackets(self, rules_list):
+        for production_rule in rules_list.list:
+            if((isinstance(production_rule,GRAMMAR_EXPRESSION)) or (isinstance(production_rule,STRICT_EXPRESSION))):
+                self.replace_optional_square_brackets_by_terminal(production_rule)
+        return rules_list
 
+    def replace_optional_square_brackets_by_terminal(self,rule):
+        for production in rule.productions_list.list:
+            self.replace_square_brackets_in_production(production)
+
+    #replaces ProductionProperty OPTIONAL by the terminal square brackets
+    def replace_square_brackets_in_production(self,production):
+        if(production.productionProperty == ProductionProperty.OPTIONAL):
+            production.list.insert(0,PRODUCTION_ELEMENT(T_SYMBOL("[")))
+            production.list.append(PRODUCTION_ELEMENT(T_SYMBOL("]")))
+            production.productionProperty = ProductionProperty.NONE
+        i=0
+        for element in production.list:
+            if(isinstance(element,PRODUCTION)):
+                self.replace_square_brackets_in_production(element)
+            elif(isinstance(element,PRODUCTION_ELEMENT) and (element.productionProperty == ProductionProperty.OPTIONAL)):
+                element.productionProperty = ProductionProperty.NONE
+                production.list[i] = PRODUCTION([PRODUCTION_ELEMENT(T_SYMBOL("[")),element,PRODUCTION_ELEMENT(T_SYMBOL("]"))])
+            i = i + 1
+
+    def run(self,filename):
+        result = self.parser.parse(self.lexer.import_tptp_file(filename))
+        result = self.disambigue_square_brackets(result)
+        #print(result)
         return result
 
     def __init__(self):
@@ -265,4 +284,4 @@ if __name__== "__main__":
   #parser = TPTPParser()
   #test_result = parser.run()
   #print(test_result)
-  treeBuilder = TreeBuilder.TPTPTreeBuilder('tptp_bnf.txt')
+  treeBuilder = TreeBuilder.TPTPTreeBuilder('TPTP_BNF_NEW.txt')

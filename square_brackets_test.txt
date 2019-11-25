@@ -1,0 +1,4 @@
+<TPTP_file>  :== [<katze>]<maus>|[<hamster>]
+<katze>	     :== <hamster>|<katze>
+<maus> ::: [blub]
+<hamster> ::: fisch

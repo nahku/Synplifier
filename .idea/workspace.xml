@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b3d8672f-597d-4c0c-8151-b4e276ccbf3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TreeBuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/TreeBuilder.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -136,18 +135,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yacc.py</url>
-          <line>161</line>
+          <line>158</line>
           <option name="timeStamp" value="137" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>63</line>
-          <option name="timeStamp" value="145" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>34</line>
-          <option name="timeStamp" value="147" />
+          <line>307</line>
+          <option name="timeStamp" value="153" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -178,6 +172,7 @@
         <watch expression="start.children[0][0].children[0][0].children[0][0].children[0][2].children[0][0].children[0][0].children[0][0].children[0][1].children[0]" />
         <watch expression="__py_debug_temp_var_552301958" />
         <watch expression="start.children[0][0].children[0][0].children[0][0].children[0][2].children[0][0].children[2][0].children[2][0].children[0][0].children.__len__()" />
+        <watch expression="result.list[385]" />
       </configuration>
     </watches-manager>
   </component>
