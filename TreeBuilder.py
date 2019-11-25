@@ -285,18 +285,18 @@ class TPTPTreeBuilder():
         #self.input_tree = None
         self.treeBNF = None
         self.parser = yacc.TPTPParser()
-        rules_list = self.parser.run('TPTP_BNF_NEW.txt')
+        rules_list = self.parser.run('TPTP_BNF.txt')
         #rules_list = self.parser.run('TPTP_Test.txt')
         #self.build_tree(rules_list)
         self.build_nodes_dictionary(rules_list)
         #self.find_nt_rule("<annotated_formula>")
         #self.build_tree("<TPTP_file>")
-        self.init_tree("<TPTP_file>")
-        #for i in rules_list.list:
-         #   if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
-          #      self.print_expression(i)
-           #     print("")
-            #else:
-             #   self.print_comment_block(i)
+        #self.init_tree("<TPTP_file>")
+        for i in rules_list.list:
+            if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
+                self.print_expression(i)
+                print("")
+            else:
+                self.print_comment_block(i)
         #self.print_expression(rules_list.list[2])
         print("")
