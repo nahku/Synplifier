@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3d8672f-597d-4c0c-8151-b4e276ccbf3b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TreeBuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/TreeBuilder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yacc.py" beforeDir="false" afterPath="$PROJECT_DIR$/yacc.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -142,7 +140,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>305</line>
+          <line>307</line>
           <option name="timeStamp" value="153" />
         </line-breakpoint>
       </breakpoints>

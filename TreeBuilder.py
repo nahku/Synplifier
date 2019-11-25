@@ -267,7 +267,9 @@ class TPTPTreeBuilder():
                 elif (symbol.property == yacc.ProductionProperty.REPETITION):
                     self.print_wo_newline("*")
                 elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
+                    self.print_wo_newline("[")
                     self.print_wo_newline(symbol.value)
+                    self.print_wo_newline("]")
                 elif (symbol.property == yacc.ProductionProperty.XOR):
                     self.print_wo_newline("(")
                     self.print_wo_newline(symbol.value)
@@ -306,12 +308,12 @@ class TPTPTreeBuilder():
         self.build_nodes_dictionary(rules_list)
         #self.find_nt_rule("<annotated_formula>")
         #self.build_tree("<TPTP_file>")
-        self.init_tree("<TPTP_file>")
-        #for i in rules_list.list:
-         #   if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
-          #      self.print_expression(i)
-           #     print("")
-            #else:
-             #   self.print_comment_block(i)
+        #self.init_tree("<TPTP_file>")
+        for i in rules_list.list:
+            if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
+                self.print_expression(i)
+                print("")
+            else:
+                self.print_comment_block(i)
         #self.print_expression(rules_list.list[2])
         print("")
