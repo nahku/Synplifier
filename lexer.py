@@ -25,7 +25,9 @@ class TPTPLexer():
 
     #token definitions
     def t_COMMENT(self,t):
-        r'%-.*'
+        #r'%-.*'
+        #r'%[a-zA-Z\- ].*'
+        r'%[^\]].*'
         #t.value = t.value.rstrip('\n')
         return t
 
@@ -106,8 +108,10 @@ class TPTPLexer():
 
     def run(self):
         # data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
-        data = r'<thf_unitary_formula>  ::= <thf_quantified_formula> | <thf_atomic_formula> | <variable> | (<thf_logic_formula>)'
-        # data = import_tptp_file('tptp_bnf.txt')
+        #data = r"""%FOR PLAIN TFF <tff_atomic_formula>   ::= <fof_atomic_formula>
+         #          <tff_atomic_formula>   ::= <tff_plain_atomic> | <tff_defined_atomic> |
+          #                          <tff_system_atomic> """
+        data = self.import_tptp_file('TPTP_BNF.txt')
         self.lexer.input(data)
         while 1:
             tok = lex.token()
