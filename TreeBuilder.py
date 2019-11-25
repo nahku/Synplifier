@@ -300,7 +300,7 @@ class TPTPTreeBuilder():
         #self.input_tree = None
         self.treeBNF = None
         self.parser = yacc.TPTPParser()
-        rules_list = self.parser.run('TPTP_BNF_NEW.txt')
+        rules_list = self.parser.run(filename)
         #rules_list = self.parser.run('TPTP_Test.txt')
         #self.build_tree(rules_list)
         self.build_nodes_dictionary(rules_list)
