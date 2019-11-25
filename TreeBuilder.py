@@ -32,7 +32,7 @@ class TPTPTreeBuilder():
         #self.treeBNF = Tree(self.nodes_dictionary.pop(start_symbol))
         start = self.nodes_dictionary.get(start_symbol)
         self.build_tree_rek(start)
-        #self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
+        self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
 
     def build_tree_rek(self, node):
         #children = self.search_productions_list_for_nt(node, symbol)
@@ -60,6 +60,46 @@ class TPTPTreeBuilder():
         #self.treeBNF = self.nodes_dictionary.get(start_symbol)
         self.print_tree(self.nodes_dictionary.get(start_symbol),0)
 
+    def search_productions_list(self,productions_list, nt_name):
+        for i in productions_list.list:
+            if self.search_production(i,nt_name):
+               return True
+
+    def search_productions_list_for_nt(self, node, productions_list):
+        for i in productions_list.list:
+            self.search_production_for_nt(node, i)
+
+
+    def search_production_for_nt(self, node, production):
+        children = []
+        for i in production.list:
+            if (isinstance(i, yacc.PRODUCTION)):
+                self.search_production_for_nt(node, i)
+            elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
+                self.search_productions_list_for_nt(node, i)
+            elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
+                if not isinstance(i.name, yacc.T_SYMBOL):
+                    childrenNote = self.find_nt_key(i, i.name.value)
+                    for j in childrenNote:
+                        children.append(j) #all children of production
+                    i.name = childrenNote
+
+        node.children.append(children)
+
+    def search_production(self, production, nt_name):
+        for i in production.list:
+            if (isinstance(i, yacc.PRODUCTION)):
+                if self.search_production(i, nt_name):
+                    return True
+            elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
+                self.search_productions_list(i, nt_name)
+            elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
+                if not isinstance(i.name, yacc.T_SYMBOL):
+                    if i.name.value == nt_name:
+                        return True
+
+        return False
+
     def print_tree(self, node, level):
         if level == 0:
             self.print_tree_nt(node.value, level)
@@ -77,7 +117,11 @@ class TPTPTreeBuilder():
 
         print(nt_name, end = "")
 
-
+    def print_rules_from_graph(self,node,visited):
+        self.print_rule_from_nt_node(node)
+        visited.add()
+        #for i in node.children todo
+        print("")
 
     def find_nt_rule(self, key, value):
         for i in self.nodes_dictionary.values():
@@ -117,6 +161,18 @@ class TPTPTreeBuilder():
     def create_node_from_expression(self, expression):
         return NTNode(None, expression.name,expression.productions_list)
 
+    def print_rule_from_nt_node(self, node):
+        self.print_wo_newline(node.name)
+        if(node.rule_type == RuleType.GRAMMAR):
+            self.print_wo_newline(" ::= ")
+        elif(node.rule_type == RuleType.TOKEN):
+            self.print_wo_newline(" ::- ")
+        elif(node.rule_type == RuleType.STRICT):
+            self.print_wo_newline(" :== ")
+        elif(node.rule_type == RuleType.MACRO):
+            self.print_wo_newline(" ::: ")
+        self.print_productions_list(node.productions_list)
+
     def print_expression(self, expression):
         self.print_wo_newline(expression.name)
         if(isinstance(expression,yacc.GRAMMAR_EXPRESSION)):
@@ -151,20 +207,6 @@ class TPTPTreeBuilder():
                 self.print_xor_productions_list(i)
             elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
                 self.print_production_element(i)
-
-    def search_production(self, production, nt_name):
-        for i in production.list:
-            if (isinstance(i, yacc.PRODUCTION)):
-                if self.search_production(i, nt_name):
-                    return True
-            elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
-                self.search_productions_list(i, nt_name)
-            elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    if i.name.value == nt_name:
-                        return True
-
-        return False
 
     def print_xor_productions_list(self,xor_productions_list):
         self.print_wo_newline("(")
@@ -230,9 +272,11 @@ class TPTPTreeBuilder():
                     self.print_wo_newline("(")
                     self.print_wo_newline(symbol.value)
                     self.print_wo_newline(")")
-        else:
+        elif(isinstance(symbol,yacc.NT_SYMBOL)):
             self.print_wo_newline(symbol.value)
-        self.print_wo_newline(" ")
+        elif(isinstance(symbol,list)):
+            self.print_wo_newline(symbol[0].value)
+            self.print_wo_newline(" ")
 
     def print_productions_list(self,productions_list):
         length = len(productions_list.list)
@@ -242,35 +286,6 @@ class TPTPTreeBuilder():
             if(j<length):
                 self.print_wo_newline("| ")
             j = j + 1
-
-    def search_productions_list(self,productions_list, nt_name):
-        for i in productions_list.list:
-            if self.search_production(i,nt_name):
-               return True
-
-    def search_productions_list_for_nt(self, node, productions_list):
-        for i in productions_list.list:
-            self.search_production_for_nt(node, i)
-
-
-    def search_production_for_nt(self, node, production):
-        children = []
-        for i in production.list:
-            if (isinstance(i, yacc.PRODUCTION)):
-                self.search_production_for_nt(node, i)
-            elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
-                self.search_productions_list_for_nt(node, i)
-            elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    childrenNote = self.find_nt_key(i, i.name.value)
-                    for j in childrenNote:
-                        children.append(j) #all children of production
-                    i.name = childrenNote
-
-        node.children.append(children)
-
-
-
 
     def print_comment_block(self,comment_block):
         for i in comment_block.list:
