@@ -4,6 +4,7 @@
     <list default="true" id="b3d8672f-597d-4c0c-8151-b4e276ccbf3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       <change beforePath="$PROJECT_DIR$/TPTP_BNF.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TPTP_BNF.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TPTP_BNF_NEW.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TPTP_BNF_NEW.txt" afterDir="false" />
@@ -14,6 +15,10 @@
       <change beforePath="$PROJECT_DIR$/parsetab.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsetab.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yacc.py" beforeDir="false" afterPath="$PROJECT_DIR$/yacc.py" afterDir="false" />
 >>>>>>> hanna
+=======
+      <change beforePath="$PROJECT_DIR$/TPTP_BNF_NEW.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TPTP_BNF_NEW.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TreeBuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/TreeBuilder.py" afterDir="false" />
+>>>>>>> nahku
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +76,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="yacc" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="yacc" type="PythonConfigurationType" factoryName="Python">
       <module name="CLDTS" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -109,7 +114,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.yacc" />
         <item itemvalue="Python tests.pytest in lexerTest.py" />
         <item itemvalue="Python.lexer" />
       </list>
@@ -146,16 +150,27 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
 <<<<<<< HEAD
+<<<<<<< HEAD
           <url>file://$PROJECT_DIR$/yacc.py</url>
           <line>158</line>
           <option name="timeStamp" value="137" />
+=======
+          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
+          <line>255</line>
+          <option name="timeStamp" value="166" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
+          <line>254</line>
+          <option name="timeStamp" value="167" />
+>>>>>>> nahku
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
 =======
 >>>>>>> hanna
           <url>file://$PROJECT_DIR$/TreeBuilder.py</url>
-          <line>307</line>
-          <option name="timeStamp" value="153" />
+          <line>41</line>
+          <option name="timeStamp" value="169" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yacc.py</url>
