@@ -115,6 +115,15 @@ class TPTPTreeBuilder():
             print("  ",end = "")
         print(nt_name, end = "")
 
+    def print_rules_from_rules_list(self,rules_list):
+        for i in rules_list.list:
+            if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
+                self.print_expression(i)
+                print("")
+            else:
+                self.print_comment_block(i)
+            #self.print_expression(rules_list.list[2])
+
     def print_rules_from_graph(self,node,visited):
         #visited = {}
         self.print_rule_from_nt_node(node)
@@ -249,12 +258,8 @@ class TPTPTreeBuilder():
         elif(isinstance(symbol,yacc.NT_SYMBOL)):
             self.print_wo_newline(symbol.value)
         elif(isinstance(symbol,list)):
-            if(len(symbol) >= 1):
-                self.print_wo_newline(symbol[0].value)  #only first because all list elements have the same name
-                self.print_wo_newline("")
-            else:
-                print("Fehler Liste Leer")
-                print(len(symbol))
+            self.print_wo_newline(symbol[0].value)  #only first because all list elements have the same name
+            self.print_wo_newline("")
 
     def print_productions_list(self,productions_list):
         length = len(productions_list.list)
@@ -284,14 +289,8 @@ class TPTPTreeBuilder():
         self.build_nodes_dictionary(rules_list)
         #self.find_nt_rule("<annotated_formula>")
         #self.build_tree("<TPTP_file>")
-        self.init_tree("<TPTP_file>")
+        self.init_tree("<name>")
         visited = {}
-        self.print_rules_from_graph(self.nodes_dictionary.get("<TPTP_file>"),visited)
-        #for i in rules_list.list:
-        #    if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
-        #        self.print_expression(i)
-        #        print("")
-        #    else:
-        #        self.print_comment_block(i)
-        #self.print_expression(rules_list.list[2])
+        self.print_rules_from_graph(self.nodes_dictionary.get("<name>"),visited)
+        #self.print_rules_from_rules_list(rules_list)
         print("")
