@@ -1,5 +1,8 @@
 import yacc
 from enum import Enum
+from collections import namedtuple
+
+Node = namedtuple("Node", ["value", "productionProperty"])
 
 class RuleType(Enum):
     GRAMMAR = 1
@@ -32,7 +35,7 @@ class TPTPTreeBuilder():
         #self.treeBNF = Tree(self.nodes_dictionary.pop(start_symbol))
         start = self.nodes_dictionary.get(start_symbol)
         self.build_tree_rek(start)
-        self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
+        #self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
 
     def build_tree_rek(self, node):
         #children = self.search_productions_list_for_nt(node, symbol)
@@ -50,9 +53,7 @@ class TPTPTreeBuilder():
                     else:
                         node.children.remove(i)
 
-
     def build_tree(self, start_symbol):
-
         for key,value in self.nodes_dictionary.items():
             if key != start_symbol:
                 self.find_nt_rule(key, value)
@@ -69,7 +70,6 @@ class TPTPTreeBuilder():
         for i in productions_list.list:
             self.search_production_for_nt(node, i)
 
-
     def search_production_for_nt(self, node, production):
         children = []
         for i in production.list:
@@ -79,10 +79,10 @@ class TPTPTreeBuilder():
                 self.search_productions_list_for_nt(node, i)
             elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
                 if not isinstance(i.name, yacc.T_SYMBOL):
-                    childrenNote = self.find_nt_key(i, i.name.value)
-                    for j in childrenNote:
+                    childrenNode = self.find_nt_key(i, i.name.value)
+                    for j in childrenNode:
                         children.append(j) #all children of production
-                    i.name = childrenNote
+                    i.name = childrenNode
 
         node.children.append(children)
 
@@ -97,7 +97,6 @@ class TPTPTreeBuilder():
                 if not isinstance(i.name, yacc.T_SYMBOL):
                     if i.name.value == nt_name:
                         return True
-
         return False
 
     def print_tree(self, node, level):
@@ -114,13 +113,31 @@ class TPTPTreeBuilder():
     def print_tree_nt(self, nt_name, level):
         for i in range(0,level):
             print("  ",end = "")
-
         print(nt_name, end = "")
 
     def print_rules_from_graph(self,node,visited):
+        #visited = {}
         self.print_rule_from_nt_node(node)
-        visited.add()
-        #for i in node.children todo
+        visited.update({Node(node.value, node.rule_type): node})
+        for i in node.children: #todo doppelte liste entfernen
+            for j in i:
+                if(Node(j.value,j.rule_type) not in visited.keys()):
+                    self.print_rules_from_graph(j,visited)
+                    visited.update({Node(j.value, j.rule_type): j})
+
+    def print_rule_from_nt_node(self, node):
+        if(node.comment_block is not None):
+            self.print_comment_block(node.comment_block)
+        self.print_wo_newline(node.value)
+        if(node.rule_type == RuleType.GRAMMAR):
+            self.print_wo_newline(" ::= ")
+        elif(node.rule_type == RuleType.TOKEN):
+            self.print_wo_newline(" ::- ")
+        elif(node.rule_type == RuleType.STRICT):
+            self.print_wo_newline(" :== ")
+        elif(node.rule_type == RuleType.MACRO):
+            self.print_wo_newline(" ::: ")
+        self.print_productions_list(node.productions_list)
         print("")
 
     def find_nt_rule(self, key, value):
@@ -160,18 +177,6 @@ class TPTPTreeBuilder():
 
     def create_node_from_expression(self, expression):
         return NTNode(None, expression.name,expression.productions_list)
-
-    def print_rule_from_nt_node(self, node):
-        self.print_wo_newline(node.name)
-        if(node.rule_type == RuleType.GRAMMAR):
-            self.print_wo_newline(" ::= ")
-        elif(node.rule_type == RuleType.TOKEN):
-            self.print_wo_newline(" ::- ")
-        elif(node.rule_type == RuleType.STRICT):
-            self.print_wo_newline(" :== ")
-        elif(node.rule_type == RuleType.MACRO):
-            self.print_wo_newline(" ::: ")
-        self.print_productions_list(node.productions_list)
 
     def print_expression(self, expression):
         self.print_wo_newline(expression.name)
@@ -225,40 +230,7 @@ class TPTPTreeBuilder():
             self.print_wo_newline("]")
         elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
             self.print_symbol(production_element.name)
-            self.print_wo_newline("|")
-
-    # def print_symbol(self,symbol):
-    #     if isinstance(symbol,yacc.T_SYMBOL):
-    #         if (symbol.property == yacc.ProductionProperty.NONE):
-    #             if(len(symbol.value) < 2):
-    #                 self.print_wo_newline("[")
-    #                 self.print_wo_newline(symbol.value)
-    #                 self.print_wo_newline("]")
-    #             else:
-    #                 self.print_wo_newline(symbol.value)
-    #         elif (symbol.property == yacc.ProductionProperty.REPETITION):
-    #             if (len(symbol.value) < 2):
-    #                 self.print_wo_newline("[")
-    #                 self.print_wo_newline(symbol.value)
-    #                 self.print_wo_newline("]")
-    #             else:
-    #                 self.print_wo_newline(symbol.value)
-    #             self.print_wo_newline("*")
-    #         elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
-    #             self.print_wo_newline("[")
-    #             self.print_wo_newline(symbol.value)
-    #             self.print_wo_newline("]")
-    #         elif (symbol.property == yacc.ProductionProperty.XOR):
-    #             self.print_wo_newline("(")
-    #             if (len(symbol.value) < 2):
-    #                 self.print_wo_newline("[")
-    #                 self.print_wo_newline(symbol.value)
-    #                 self.print_wo_newline("]")
-    #             else:
-    #                 self.print_wo_newline(symbol.value)
-    #             self.print_wo_newline(")")
-    #     else:
-    #         self.print_wo_newline(symbol.value)
+            self.print_wo_newline(" |")
 
     def print_symbol(self, symbol):
         if isinstance(symbol,yacc.T_SYMBOL):
@@ -277,8 +249,12 @@ class TPTPTreeBuilder():
         elif(isinstance(symbol,yacc.NT_SYMBOL)):
             self.print_wo_newline(symbol.value)
         elif(isinstance(symbol,list)):
-            self.print_wo_newline(symbol[0].value)
-            self.print_wo_newline(" ")
+            if(len(symbol) >= 1):
+                self.print_wo_newline(symbol[0].value)  #only first because all list elements have the same name
+                self.print_wo_newline("")
+            else:
+                print("Fehler Liste Leer")
+                print(len(symbol))
 
     def print_productions_list(self,productions_list):
         length = len(productions_list.list)
@@ -286,7 +262,7 @@ class TPTPTreeBuilder():
         for i in productions_list.list:
             self.print_production(i)
             if(j<length):
-                self.print_wo_newline("| ")
+                self.print_wo_newline(" | ")
             j = j + 1
 
     def print_comment_block(self,comment_block):
@@ -308,12 +284,14 @@ class TPTPTreeBuilder():
         self.build_nodes_dictionary(rules_list)
         #self.find_nt_rule("<annotated_formula>")
         #self.build_tree("<TPTP_file>")
-        #self.init_tree("<TPTP_file>")
-        for i in rules_list.list:
-            if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
-                self.print_expression(i)
-                print("")
-            else:
-                self.print_comment_block(i)
+        self.init_tree("<TPTP_file>")
+        visited = {}
+        self.print_rules_from_graph(self.nodes_dictionary.get("<TPTP_file>"),visited)
+        #for i in rules_list.list:
+        #    if(isinstance(i,yacc.MACRO_EXPRESSION)|isinstance(i,yacc.STRICT_EXPRESSION)|isinstance(i,yacc.GRAMMAR_EXPRESSION)|isinstance(i,yacc.TOKEN_EXPRESSION)):
+        #        self.print_expression(i)
+        #        print("")
+        #    else:
+        #        self.print_comment_block(i)
         #self.print_expression(rules_list.list[2])
         print("")
