@@ -176,7 +176,7 @@ class TPTPParser():
             else:
                 p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.NONE)
         elif len(p) == 3 and p[1] == "[": #OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
-            p[0] = PRODUCTION_ELEMENT(T_SYMBOL(""), ProductionProperty.NONE)  #evt. Problem wegen leerer Liste
+            p[0] = PRODUCTION([], ProductionProperty.OPTIONAL)  #evt. Problem wegen leerer Liste
         elif len(p) == 3:  # NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
             if (type(p[1]) is T_SYMBOL):
                 p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.REPETITION)
