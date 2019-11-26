@@ -253,7 +253,8 @@ class TPTPTreeBuilder():
                 self.print_wo_newline(symbol[0].value)  #only first because all list elements have the same name
                 self.print_wo_newline("")
             else:
-                print("leer")
+                print("Fehler Liste Leer")
+                print(len(symbol))
 
     def print_productions_list(self,productions_list):
         length = len(productions_list.list)
