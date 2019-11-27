@@ -21,6 +21,7 @@ class NTNode():
     def add_children(self, children):
        self.children.append(children)
 
+
 class Tree():
     def __init__(self, start):
         self.start = start
@@ -128,7 +129,7 @@ class TPTPTreeBuilder():
         #visited = {}
         self.print_rule_from_nt_node(node)
         visited.update({Node(node.value, node.rule_type): node})
-        for i in node.children: #todo doppelte liste entfernen
+        for i in node.children:
             for j in i:
                 if(Node(j.value,j.rule_type) not in visited.keys()):
                     self.print_rules_from_graph(j,visited)
@@ -167,10 +168,21 @@ class TPTPTreeBuilder():
 
     def build_nodes_dictionary(self,rules_list):
 
-        puffer_comment_block = None
+        comment_block_buffer = None
+        index = 0
         for i in rules_list.list:
             if isinstance(i,yacc.COMMENT_BLOCK):
-                puffer_comment_block = i
+                comment_block_buffer_list = self.split_comment_block_by_top_of_page(i)
+                if(len(comment_block_buffer_list) == 1):
+                    comment_block_buffer = comment_block_buffer_list[0]
+                elif(index == 0):
+                    comment_block_buffer = yacc.COMMENT_BLOCK(comment_block_buffer_list[0].list + comment_block_buffer_list[1].list)
+                else:
+                    if(self.nodes_dictionary.get(rules_list.list[index-1].name).comment_block is None):
+                        rules_list.list[index-1].comment_block = comment_block_buffer_list[0]
+                    else:
+                        rules_list.list[index-1].comment_block.list = rules_list.list[index-1].comment_block.list + comment_block_buffer_list[0]
+                    comment_block_buffer = comment_block_buffer_list[1]
             else:
                 if isinstance(i,yacc.GRAMMAR_EXPRESSION):
                     rule_type = RuleType.GRAMMAR
@@ -181,8 +193,24 @@ class TPTPTreeBuilder():
                 elif isinstance(i, yacc.STRICT_EXPRESSION):
                     rule_type = RuleType.STRICT
 
-                self.nodes_dictionary.update({i.name:NTNode(i.name,i.productions_list,rule_type,puffer_comment_block)})
-                puffer_comment_block = None
+                self.nodes_dictionary.update({i.name:NTNode(i.name,i.productions_list,rule_type,comment_block_buffer)})
+                comment_block_buffer = None
+            index = index+1
+    #todo commentblock just consisting of 1 line with top of page
+    def split_comment_block_by_top_of_page(self,comment_block):
+        comment_block_list = [comment_block]
+        i = 0
+        for line in comment_block.list:
+            if(line == "%----Top of Page---------------------------------------------------------------"):
+                list_end_index = len(comment_block.list)-1
+                del comment_block.list[i]
+                if((i is not 0) and (i is not list_end_index)):
+                    comment_block_list = [yacc.COMMENT_BLOCK(comment_block.list[0:i]), yacc.COMMENT_BLOCK(comment_block.list[i:len(comment_block.list)])]
+                else:
+                    comment_block_list = [comment_block]
+
+            i = i + 1
+        return comment_block_list
 
     def create_node_from_expression(self, expression):
         return NTNode(None, expression.name,expression.productions_list)
@@ -280,17 +308,11 @@ class TPTPTreeBuilder():
     def __init__(self,filename):
         self.rules_test = []
         self.nodes_dictionary = {}
-        #self.input_tree = None
-        self.treeBNF = None
         self.parser = yacc.TPTPParser()
         rules_list = self.parser.run(filename)
-        #rules_list = self.parser.run('TPTP_Test.txt')
-        #self.build_tree(rules_list)
         self.build_nodes_dictionary(rules_list)
-        #self.find_nt_rule("<annotated_formula>")
-        #self.build_tree("<TPTP_file>")
-        self.init_tree("<name>")
+        self.init_tree("<TPTP_file>")
         visited = {}
-        self.print_rules_from_graph(self.nodes_dictionary.get("<name>"),visited)
+        self.print_rules_from_graph(self.nodes_dictionary.get("<TPTP_file>"),visited)
         #self.print_rules_from_rules_list(rules_list)
         print("")

@@ -18,41 +18,41 @@ class NT_SYMBOL:
         self.value = value
 
 class GRAMMAR_EXPRESSION:
-  def __init__(self, name, productions_list):
-    self.name = name
-    self.productions_list = productions_list
+    def __init__(self, name, productions_list):
+        self.name = name
+        self.productions_list = productions_list
 
 class TOKEN_EXPRESSION:
-  def __init__(self, name, productions_list):
-    self.name = name
-    self.productions_list = productions_list
+    def __init__(self, name, productions_list):
+        self.name = name
+        self.productions_list = productions_list
 
 class STRICT_EXPRESSION:
-  def __init__(self, name, productions_list):
-    self.name = name
-    self.productions_list = productions_list
+    def __init__(self, name, productions_list):
+        self.name = name
+        self.productions_list = productions_list
 
 class MACRO_EXPRESSION:
-  def __init__(self, name, productions_list):
-    self.name = name
-    self.productions_list = productions_list
+    def __init__(self, name, productions_list):
+        self.name = name
+        self.productions_list = productions_list
 
 class GRAMMAR_LIST:
-  def __init__(self, grammar_list):
-    self.list = grammar_list
+    def __init__(self, grammar_list):
+        self.list = grammar_list
 
 class PRODUCTIONS_LIST:
   def __init__(self, productions_list):
     self.list = productions_list
 
 class XOR_PRODUCTIONS_LIST:
-  def __init__(self, xor_productions_list):
-    self.list = xor_productions_list
+    def __init__(self, xor_productions_list):
+        self.list = xor_productions_list
 
 class PRODUCTION:
-  def __init__(self, list, productionProperty=ProductionProperty.NONE):
-    self.list = list
-    self.productionProperty = productionProperty
+    def __init__(self, list, productionProperty=ProductionProperty.NONE):
+        self.list = list
+        self.productionProperty = productionProperty
 
 class PRODUCTION_ELEMENT:
     def __init__(self, name, productionProperty=ProductionProperty.NONE):
@@ -60,8 +60,8 @@ class PRODUCTION_ELEMENT:
         self.productionProperty = productionProperty  # none, repetition or optional
 
 class COMMENT_BLOCK:
-  def __init__(self, list):
-    self.list = list
+    def __init__(self, list):
+        self.list = list
 
 class TPTPParser():
 
