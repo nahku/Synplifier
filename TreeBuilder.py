@@ -162,6 +162,7 @@ class TPTPTreeBuilder():
             print_list[-1].line_list.extend(node.comment_block.list)
             #self.print_comment_block(node.comment_block)
         rule_line = node.value
+        rule_line = rule_line.ljust(30) #uniform length of left side of rule
         #self.print_wo_newline(node.value)
         if (node.rule_type == RuleType.GRAMMAR):
             rule_line += " ::= "
