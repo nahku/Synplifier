@@ -21,21 +21,25 @@ class GRAMMAR_EXPRESSION:
     def __init__(self, name, productions_list):
         self.name = name
         self.productions_list = productions_list
+        self.position = None
 
 class TOKEN_EXPRESSION:
     def __init__(self, name, productions_list):
         self.name = name
         self.productions_list = productions_list
+        self.position = None
 
 class STRICT_EXPRESSION:
     def __init__(self, name, productions_list):
         self.name = name
         self.productions_list = productions_list
+        self.position = None
 
 class MACRO_EXPRESSION:
     def __init__(self, name, productions_list):
         self.name = name
         self.productions_list = productions_list
+        self.position = None
 
 class GRAMMAR_LIST:
     def __init__(self, grammar_list):
@@ -274,10 +278,18 @@ class TPTPParser():
                 production.list[i] = PRODUCTION([PRODUCTION_ELEMENT(T_SYMBOL("[")),element,PRODUCTION_ELEMENT(T_SYMBOL("]"))])
             i = i + 1
 
+    def number_rules(self,rules_list):
+        i = 0
+        for element in rules_list.list:
+            if(not isinstance(element,COMMENT_BLOCK)):
+                element.position = i
+                i = i + 1
+        return rules_list
+
     def run(self,filename):
         result = self.parser.parse(self.lexer.import_tptp_file(filename))
+        result = self.number_rules(result)
         result = self.disambigue_square_brackets(result)
-        #print(result)
         return result
 
     def __init__(self):
