@@ -1,8 +1,11 @@
 import yacc
 from enum import Enum
 from collections import namedtuple
+#import sys
+#sys.setrecursionlimit(10000)
 
 Node = namedtuple("Node", ["value", "productionProperty"])
+PrintListEntry = namedtuple("PrintListEntry", ["position", "line_list"])
 
 class RuleType(Enum):
     GRAMMAR = 1
@@ -11,12 +14,13 @@ class RuleType(Enum):
     MACRO = 4
 
 class NTNode():
-    def __init__(self, value, productions_list, rule_type, comment_block):
+    def __init__(self, value, productions_list, rule_type, comment_block, position):
         self.value = value
         self.productions_list = productions_list
         self.rule_type = rule_type
         self.comment_block = comment_block
         self.children = []
+        self.position = position
 
     def add_children(self, children):
        self.children.append(children)
@@ -84,7 +88,6 @@ class TPTPTreeBuilder():
                     for j in childrenNode:
                         children.append(j) #all children of production
                     i.name = childrenNode
-
         node.children.append(children)
 
     def search_production(self, production, nt_name):
@@ -125,15 +128,53 @@ class TPTPTreeBuilder():
                 self.print_comment_block(i)
             #self.print_expression(rules_list.list[2])
 
-    def print_rules_from_graph(self,node,visited):
-        #visited = {}
-        self.print_rule_from_nt_node(node)
-        visited.update({Node(node.value, node.rule_type): node})
-        for i in node.children:
+    def print_rules_from_graph(self,start_node,visited):
+        self.print_rule_from_nt_node(start_node)
+        visited.update({Node(start_node.value, start_node.rule_type): start_node})
+        for i in start_node.children:
             for j in i:
                 if(Node(j.value,j.rule_type) not in visited.keys()):
                     self.print_rules_from_graph(j,visited)
                     visited.update({Node(j.value, j.rule_type): j})
+
+    def print_ordered_rules_from_graph(self,start_node):
+        visited = {}
+        print_list = []
+        print_list = self.create_print_list(start_node,visited,print_list)
+        print_list.sort(key=lambda x: x[0])
+        for tuple in print_list:
+            for line in tuple.line_list:
+                print(line)
+
+    def create_print_list(self,start_node,visited,print_list):
+        print_list = self.get_print_list(start_node, print_list)
+        visited.update({Node(start_node.value, start_node.rule_type): start_node})
+        for i in start_node.children:
+            for j in i:
+                if (Node(j.value, j.rule_type) not in visited.keys()):
+                    print_list = self.create_print_list(j,visited, print_list)
+                    visited.update({Node(j.value, j.rule_type): j})
+        return print_list
+
+    def get_print_list(self,node,print_list):
+        print_list.append(PrintListEntry(node.position,[]))
+        if (node.comment_block is not None):
+            print_list[-1].line_list.extend(node.comment_block.list)
+            #self.print_comment_block(node.comment_block)
+        rule_line = node.value
+        #self.print_wo_newline(node.value)
+        if (node.rule_type == RuleType.GRAMMAR):
+            rule_line += " ::= "
+        elif (node.rule_type == RuleType.TOKEN):
+            rule_line += " ::- "
+        elif (node.rule_type == RuleType.STRICT):
+            rule_line += " :== "
+        elif (node.rule_type == RuleType.MACRO):
+            rule_line += " ::: "
+        rule_line += self.get_productions_list_string(node.productions_list)
+        print_list[-1].line_list.append(rule_line)
+        return print_list
+
 
     def print_rule_from_nt_node(self, node):
         if(node.comment_block is not None):
@@ -188,7 +229,7 @@ class TPTPTreeBuilder():
             else:
                 rule_type = self.find_rule_type_for_expression(i)
                 #self.nodes_dictionary.update({i.name:NTNode(i.name,i.productions_list,rule_type,comment_block_buffer)})
-                self.nodes_dictionary.update({Node(i.name, rule_type):NTNode(i.name,i.productions_list,rule_type,comment_block_buffer)})
+                self.nodes_dictionary.update({Node(i.name, rule_type):NTNode(i.name,i.productions_list,rule_type,comment_block_buffer,i.position)})
                 comment_block_buffer = None
             index = index+1
 
@@ -235,6 +276,31 @@ class TPTPTreeBuilder():
             self.print_wo_newline(" ::: ")
         self.print_productions_list(expression.productions_list)
 
+    def get_production_string(self,production):
+        production_string = ""
+        for i in production.list:
+            if(isinstance(i, yacc.PRODUCTION)):
+                if (i.productionProperty == yacc.ProductionProperty.NONE):
+                    production_string += self.get_production_string(i)
+                elif(i.productionProperty == yacc.ProductionProperty.REPETITION):
+                    production_string += "("
+                    production_string += self.get_production_string(i)
+                    production_string += ")"
+                    production_string += "*"
+                elif(i.productionProperty == yacc.ProductionProperty.OPTIONAL):
+                    production_string += "["
+                    production_string += self.get_production_string(i)
+                    production_string += "]"
+                elif (i.productionProperty == yacc.ProductionProperty.XOR):
+                    production_string += "("
+                    production_string += self.get_production_string(i)
+                    production_string += ")"
+            elif(isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
+                production_string += self.get_xor_productions_list_string(i)
+            elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
+                production_string += self.get_production_element_string(i)
+        return production_string
+
     def print_production(self, production):
         for i in production.list:
             if(isinstance(i, yacc.PRODUCTION)):
@@ -258,10 +324,33 @@ class TPTPTreeBuilder():
             elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
                 self.print_production_element(i)
 
+    def get_xor_productions_list_string(self,xor_productions_list):
+        xor_productions_list_string = ""
+        xor_productions_list_string += "("
+        xor_productions_list_string += self.get_productions_list_string(xor_productions_list)
+        xor_productions_list_string += ")"
+        return xor_productions_list_string
+
     def print_xor_productions_list(self,xor_productions_list):
         self.print_wo_newline("(")
         self.print_productions_list(xor_productions_list)
         self.print_wo_newline(")")
+
+    def get_production_element_string(self,production_element):
+        production_element_string = ""
+        if (production_element.productionProperty == yacc.ProductionProperty.NONE):
+            production_element_string += self.get_symbol_string(production_element.name)
+        elif (production_element.productionProperty == yacc.ProductionProperty.REPETITION):
+            production_element_string += self.get_symbol_string(production_element.name)
+            production_element_string += "*"
+        elif (production_element.productionProperty == yacc.ProductionProperty.OPTIONAL):
+            production_element_string += "["
+            production_element_string += self.get_symbol_string(production_element.name)
+            production_element_string += "]"
+        elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
+            production_element_string += self.get_symbol_string(production_element.name)
+            production_element_string += " |"
+        return production_element_string
 
     def print_production_element(self,production_element):
         if (production_element.productionProperty == yacc.ProductionProperty.NONE):
@@ -277,11 +366,34 @@ class TPTPTreeBuilder():
             self.print_symbol(production_element.name)
             self.print_wo_newline(" |")
 
+    def get_symbol_string(self,symbol):
+        symbol_string = ""
+        if isinstance(symbol,yacc.T_SYMBOL):
+                if (symbol.property == yacc.ProductionProperty.NONE):
+                    symbol_string += symbol.value
+                elif (symbol.property == yacc.ProductionProperty.REPETITION):
+                    symbol_string += symbol.value
+                    symbol_string += "*" #check todo
+                elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
+                    symbol_string += "["
+                    symbol_string += symbol.value
+                    symbol_string += "]"
+                elif (symbol.property == yacc.ProductionProperty.XOR):
+                    symbol_string += "("
+                    symbol_string += symbol.value
+                    symbol_string += ")"
+        elif(isinstance(symbol,yacc.NT_SYMBOL)):
+            symbol_string += symbol.value
+        elif(isinstance(symbol,list)):
+            symbol_string += symbol[0].value #only first because all list elements have the same name
+        return symbol_string
+
     def print_symbol(self, symbol):
         if isinstance(symbol,yacc.T_SYMBOL):
                 if (symbol.property == yacc.ProductionProperty.NONE):
                     self.print_wo_newline(symbol.value)
                 elif (symbol.property == yacc.ProductionProperty.REPETITION):
+                    self.print_wo_newline(symbol.value)
                     self.print_wo_newline("*")
                 elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
                     self.print_wo_newline("[")
@@ -295,7 +407,17 @@ class TPTPTreeBuilder():
             self.print_wo_newline(symbol.value)
         elif(isinstance(symbol,list)):
             self.print_wo_newline(symbol[0].value)  #only first because all list elements have the same name
-            self.print_wo_newline("")
+
+    def get_productions_list_string(self,productions_list):
+        productions_list_string = ""
+        length = len(productions_list.list)
+        j = 1
+        for i in productions_list.list:
+            productions_list_string += self.get_production_string(i)
+            if (j < length):
+                productions_list_string += " | "
+            j = j + 1
+        return productions_list_string
 
     def print_productions_list(self,productions_list):
         length = len(productions_list.list)
@@ -319,8 +441,13 @@ class TPTPTreeBuilder():
         self.parser = yacc.TPTPParser()
         rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
-        self.init_tree("<name>",RuleType.GRAMMAR)
-        visited = {}
-        self.print_rules_from_graph(self.nodes_dictionary.get(Node("<name>",RuleType.GRAMMAR)),visited)
+        self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
+        self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+        #visited = {}
+        #print_list = []
+        #print_list = self.create_print_list(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited,print_list)
+        #print_list.sort(key=lambda x: x[0])
+        #visited = {}
+        #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
         #self.print_rules_from_rules_list(rules_list)
         print("")
