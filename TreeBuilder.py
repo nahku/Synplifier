@@ -1,11 +1,10 @@
 import yacc
 from enum import Enum
 from collections import namedtuple
-#import sys
-#sys.setrecursionlimit(10000)
 
 Node = namedtuple("Node", ["value", "productionProperty"])
 PrintListEntry = namedtuple("PrintListEntry", ["position", "line_list"])
+INDENT_LENGTH = 30
 
 class RuleType(Enum):
     GRAMMAR = 1
@@ -25,7 +24,6 @@ class NTNode():
     def add_children(self, children):
        self.children.append(children)
 
-
 class Tree():
     def __init__(self, start):
         self.start = start
@@ -37,21 +35,14 @@ class Tree():
 class TPTPTreeBuilder():
 
     def init_tree(self, start_symbol, start_rule):
-        #self.treeBNF = Tree(self.nodes_dictionary.pop(start_symbol))
         start = self.nodes_dictionary.get(Node(start_symbol,start_rule))
         self.build_tree_rek(start)
-        #self.print_tree(self.nodes_dictionary.get(start_symbol), 0)
 
     def build_tree_rek(self, node):
-        #children = self.search_productions_list_for_nt(node, symbol)
         if len(node.children) == 0:
             self.search_productions_list_for_nt(node, node.productions_list)
-            #self.print_tree(self.nodes_dictionary.get("<TPTP_file>"), 0)
             if len(node.children) != 0:
                 for i in node.children:
-                #if node.children != []:
-                #node.add_children(children)
-                #print(i.value)
                     if i != []:
                         for j in i:
                             self.build_tree_rek(j)
@@ -62,9 +53,6 @@ class TPTPTreeBuilder():
         for key,value in self.nodes_dictionary.items():
             if key != start_symbol:
                 self.find_nt_rule(key, value)
-
-        #self.treeBNF = self.nodes_dictionary.get(start_symbol)
-        #self.print_tree(self.nodes_dictionary.get(start_symbol),0)
 
     def search_productions_list(self,productions_list, nt_name):
         for i in productions_list.list:
@@ -103,6 +91,29 @@ class TPTPTreeBuilder():
                         return True
         return False
 
+    def disable_rules(self, disable_rules_filename):
+        with open(disable_rules_filename, "r") as infile:
+            for i in infile:
+                i = i.strip("\n")
+                data = i.split(",")
+                nt_name = data[0]
+                rule_symbol = data[1]
+                rule_type = None
+                if(rule_symbol == "::="):
+                    rule_type = RuleType.GRAMMAR
+                elif(rule_symbol == "::-"):
+                    rule_type = RuleType.TOKEN
+                elif (rule_symbol == ":=="):
+                    rule_type = RuleType.STRICT
+                elif (rule_symbol == ":::"):
+                    rule_type = RuleType.MACRO
+                del data[0:2]
+                data = list(map(int, data))
+                data.sort(reverse=True)
+                for index in data:
+                    del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
+
+
     def print_tree(self, node, level):
         if level == 0:
             self.print_tree_nt(node.value, level)
@@ -126,7 +137,6 @@ class TPTPTreeBuilder():
                 print("")
             else:
                 self.print_comment_block(i)
-            #self.print_expression(rules_list.list[2])
 
     def print_rules_from_graph(self,start_node,visited):
         self.print_rule_from_nt_node(start_node)
@@ -160,10 +170,8 @@ class TPTPTreeBuilder():
         print_list.append(PrintListEntry(node.position,[]))
         if (node.comment_block is not None):
             print_list[-1].line_list.extend(node.comment_block.list)
-            #self.print_comment_block(node.comment_block)
         rule_line = node.value
-        rule_line = rule_line.ljust(30) #uniform length of left side of rule
-        #self.print_wo_newline(node.value)
+        rule_line = rule_line.ljust(INDENT_LENGTH) #uniform length of left side of rule
         if (node.rule_type == RuleType.GRAMMAR):
             rule_line += " ::= "
         elif (node.rule_type == RuleType.TOKEN):
@@ -229,7 +237,6 @@ class TPTPTreeBuilder():
                     comment_block_buffer = comment_block_buffer_list[1]
             else:
                 rule_type = self.find_rule_type_for_expression(i)
-                #self.nodes_dictionary.update({i.name:NTNode(i.name,i.productions_list,rule_type,comment_block_buffer)})
                 self.nodes_dictionary.update({Node(i.name, rule_type):NTNode(i.name,i.productions_list,rule_type,comment_block_buffer,i.position)})
                 comment_block_buffer = None
             index = index+1
@@ -374,7 +381,7 @@ class TPTPTreeBuilder():
                     symbol_string += symbol.value
                 elif (symbol.property == yacc.ProductionProperty.REPETITION):
                     symbol_string += symbol.value
-                    symbol_string += "*" #check todo
+                    symbol_string += "*"
                 elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
                     symbol_string += "["
                     symbol_string += symbol.value
@@ -436,12 +443,13 @@ class TPTPTreeBuilder():
     def print_wo_newline(self,string):
         print(string, end = '')
 
-    def __init__(self,filename):
+    def __init__(self,filename,disable_rules_filnames):
         self.rules_test = []
         self.nodes_dictionary = {}
         self.parser = yacc.TPTPParser()
         rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
+        self.disable_rules(disable_rules_filnames)
         self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
         self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
         #visited = {}
