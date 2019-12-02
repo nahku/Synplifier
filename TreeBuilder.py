@@ -107,30 +107,51 @@ class TPTPTreeBuilder():
                     del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
 
     def remove_non_terminating_symbols(self,start_node):
-        visited = set()
+
         terminating = set()
-        self.find_non_terminating_symbols(start_node,terminating,visited)
+        tempTerminating = set()
+        while 1:    #repeat until set of terminating symbols does not change anymore
+            visited = set()
+            self.find_non_terminating_symbols(start_node, tempTerminating, visited)
+            if (terminating == tempTerminating):
+                break
+            else:
+                terminating = tempTerminating
         visited = set()
         self.delete_non_terminating_productions(start_node,terminating,visited)
-        self.delete_non_terminating_nodes()
+        self.delete_non_terminating_nodes(terminating)
 
     def delete_non_terminating_productions(self,node,terminating,visited):
         if (Node(node.value, node.rule_type) not in visited):
             visited.add(Node(node.value, node.rule_type))
-            i = len(node.children-1)
+            i = len(node.children)-1
             for children_list in reversed(node.children):
                 notTerminating = False    #every non terminal symbol in children_list has to be terminating in oder for this production to be terminating
                 for child in children_list:
-                    self.delete_non_terminating_productions(child,terminating)
-                    if(child not in terminating):
+                    self.delete_non_terminating_productions(child,terminating,visited)
+                    if(child.value not in terminating):
                         notTerminating = True
                 if(notTerminating):
                     del node.children[i]
-                    del node.productions_list[i]
+                    del node.productions_list.list[i]
                 i = i-1
 
     def delete_non_terminating_nodes(self,terminating):
-        del
+        temporary_dictionary = {}
+        for value in terminating:
+            entry = self.nodes_dictionary.get(Node(value,RuleType.GRAMMAR),None)
+            if(entry is not None):
+                temporary_dictionary.update({Node(value,RuleType.GRAMMAR):entry})
+            entry = self.nodes_dictionary.get(Node(value, RuleType.STRICT), None)
+            if (entry is not None):
+                temporary_dictionary.update({Node(value, RuleType.STRICT): entry})
+            entry = self.nodes_dictionary.get(Node(value, RuleType.MACRO), None)
+            if (entry is not None):
+                temporary_dictionary.update({Node(value, RuleType.MACRO): entry})
+            entry = self.nodes_dictionary.get(Node(value, RuleType.TOKEN), None)
+            if (entry is not None):
+                temporary_dictionary.update({Node(value, RuleType.TOKEN): entry})
+            self.nodes_dictionary = temporary_dictionary
 
     def find_non_terminating_symbols(self,node,terminating,visited):
         if(Node(node.value,node.rule_type) not in visited):
@@ -485,6 +506,7 @@ class TPTPTreeBuilder():
         self.build_nodes_dictionary(rules_list)
         #self.disable_rules(disable_rules_filnames)
         self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
+        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
         self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
         #visited = {}
         #print_list = []
@@ -493,5 +515,5 @@ class TPTPTreeBuilder():
         #visited = {}
         #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
         #self.print_rules_from_rules_list(rules_list)
-        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+
         print("")
