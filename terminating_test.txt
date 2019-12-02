@@ -1,0 +1,37 @@
+%----v7.3.0.0 (TPTP version.internal development number)
+%------------------------------------------------------------------------------
+%----README ... this header provides important meta- and usage information
+%----
+%----Intended uses of the various parts of the TPTP syntax are explained
+%----in the TPTP technical manual, linked from www.tptp.org.
+%----
+%----Four kinds of separators are used, to indicate different types of rules:
+%----  ::= is used for regular grammar rules, for syntactic parsing.
+%----  :== is used for semantic grammar rules. These define specific values
+%----      that make semantic sense when more general syntactic rules apply.
+%----  ::- is used for rules that produce tokens.
+%----  ::: is used for rules that define character classes used in the
+%----       construction of tokens.
+%----
+%----White space may occur between any two tokens. White space is not specified
+%----in the grammar, but there are some restrictions to ensure that the grammar
+%----is compatible with standard Prolog: a <TPTP_file> should be readable with
+%----read/1.
+%----
+%----The syntax of comments is defined by the <comment> rule. Comments may
+%----occur between any two tokens, but do not act as white space. Comments
+%----will normally be discarded at the lexical level, but may be processed
+%----by systems that understand them (e.g., if the system comment convention
+%----is followed).
+%----
+%----Multiple languages are defined. Depending on your need, you can implement 
+%----just the one(s) you need. The common rules for atoms, terms, etc, come 
+%----after the definitions of the languages, and mostly all needed for all the 
+%----languages.
+%----Top of Page---------------------------------------------------------------
+%----Files. Empty file is OK.
+<TPTP_file>            ::= <TPTP_input>*
+<TPTP_input>           ::= <TPTP_input>  <annotated_formula> | <include> | [a-z]
+<annotated_formula>    ::: [a-z] <include>              
+<include>              ::= <b>
+<b>                    ::: <b>
