@@ -32,6 +32,6 @@
 %----Files. Empty file is OK.
 <TPTP_file>            ::= <TPTP_input>*
 <TPTP_input>           ::= <TPTP_input>  <annotated_formula> | <include> | [a-z]
-<annotated_formula>    ::: [a-z] <include>              
+<annotated_formula>    ::: [a-z]   <include>              
 <include>              ::= <b>
 <b>                    ::: <b>
