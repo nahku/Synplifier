@@ -2,6 +2,7 @@ import ply.yacc as yacc
 from enum import Enum
 import lexer
 import TreeBuilder
+import view
 
 class ProductionProperty(Enum):
     NONE = 1
