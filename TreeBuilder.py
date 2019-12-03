@@ -506,7 +506,7 @@ class TPTPTreeBuilder():
         self.disable_rules(disable_rules_filnames)
         self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-        self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+        #self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
         #visited = {}
         #print_list = []
         #print_list = self.create_print_list(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited,print_list)
