@@ -296,9 +296,3 @@ class TPTPParser():
         self.tokens = lexer.TPTPLexer.tokens
         self.lexer = lexer.TPTPLexer()
         self.parser = yacc.yacc(module=self)
-
-if __name__== "__main__":
-  #parser = TPTPParser()
-  #test_result = parser.run()
-  #print(test_result)
-  treeBuilder = TreeBuilder.TPTPTreeBuilder('TPTP_BNF_NEW.txt','disable_rules.txt')
