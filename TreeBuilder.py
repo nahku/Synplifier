@@ -107,7 +107,6 @@ class TPTPTreeBuilder():
                     del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
 
     def remove_non_terminating_symbols(self,start_node):
-
         terminating = set()
         tempTerminating = set()
         while 1:    #repeat until set of terminating symbols does not change anymore
@@ -151,7 +150,7 @@ class TPTPTreeBuilder():
             entry = self.nodes_dictionary.get(Node(value, RuleType.TOKEN), None)
             if (entry is not None):
                 temporary_dictionary.update({Node(value, RuleType.TOKEN): entry})
-            self.nodes_dictionary = temporary_dictionary
+        self.nodes_dictionary = temporary_dictionary
 
     def find_non_terminating_symbols(self,node,terminating,visited):
         if(Node(node.value,node.rule_type) not in visited):
@@ -412,7 +411,7 @@ class TPTPTreeBuilder():
             production_element_string += "]"
         elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
             production_element_string += self.get_symbol_string(production_element.name)
-            production_element_string += " |"
+            production_element_string += " | "
         return production_element_string
 
     def print_production_element(self,production_element):
@@ -504,10 +503,10 @@ class TPTPTreeBuilder():
         self.parser = yacc.TPTPParser()
         rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
-        #self.disable_rules(disable_rules_filnames)
+        self.disable_rules(disable_rules_filnames)
         self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-        self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+        #self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
         #visited = {}
         #print_list = []
         #print_list = self.create_print_list(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited,print_list)
