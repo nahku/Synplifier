@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
+from PyQt5.QtWidgets import QApplication, QLabel
+from tkinter import tix
 import TreeBuilder
-
 def build_view(TreeBuilder):
     colours = ['red','green','orange','white','yellow','blue']
 
@@ -26,6 +27,9 @@ def CreateControlFile():
 def About():
     print("This is a simple example of a menu")
 
+def selectItem(self, item):
+    print(item, self.cl.getstatus(item))
+
 def scrollbar(treeBuilder):
     master = Tk()
     master.title("TPTP Sublanguage Extractor")
@@ -45,38 +49,38 @@ def scrollbar(treeBuilder):
     helpmenu.add_command(label="About...", command=About)
     master.config(menu=menu)
 
+
     table = ttk.Treeview(master)
     table.heading('#0', text='Non Terminal')
+    table.column("#0", width=220, stretch=NO)
     table["columns"] = ("one", "two")
-    table.column("one", width=100)
-    table.column("two", width=100)
+    table.column("one",width=100, stretch= NO)
+    table.column("two")
     table.heading("one", text="Production Type")
     table.heading("two", text="Production")
 
-
+    exists = set()
     for node in treeBuilder.nodes_dictionary.values():
-        if(node.rule_type == TreeBuilder.RuleType.GRAMMAR):
+        if(node.value not in exists):
+            exists.add(node.value)
             id = table.insert("",1,node.value,text=node.value)
-
-            r = 0
-            for production in node.productions_list.list:
-                # node production property to string umsetzen
-                table.insert(id,"end",node.value + " " + str(r),text="",values=("GRAMMAR",treeBuilder.get_production_string(production)))
-                r = r + 1
-        #Label(text=node.value, relief=RIDGE, width=45).grid(row=r, column=0)
-        #Entry(bg=colours[1], relief=SUNKEN, width=10).grid(row=r, column=1)
-
-
-    #table.insert("", 0, text="Line 1", values=("1A", "1b"))
-
-    id2 = table.insert("", 1, "dir2", text="<TPTP_file>")
-    table.insert(id2, "end", "dir 2", text="", values=("GRAMMAR", "<TPTP_Input>*"))
-
-    ##alternatively:
-    table.insert("", 3, "dir3", text="Dir 3")
-    table.insert("dir3", 3, text=" sub dir 3", values=("3A", " 3B"))
-
-    table.pack()
+            #print("")
+        else:
+            id = node.value
+        r = 0
+        rule_type = ""
+        if (node.rule_type == TreeBuilder.RuleType.GRAMMAR):
+            rule_type = "GRAMMAR"
+        elif (node.rule_type == TreeBuilder.RuleType.STRICT):
+            rule_type = "STRICT"
+        elif (node.rule_type == TreeBuilder.RuleType.MACRO):
+            rule_type = "MACRO"
+        elif (node.rule_type == TreeBuilder.RuleType.TOKEN):
+            rule_type = "TOKEN"
+        for production in node.productions_list.list:
+            table.insert(id,"end",node.value + rule_type + str(r),text="",values=(rule_type,treeBuilder.get_production_string(production)))
+            r = r + 1
+    table.pack(expand=True, fill='both')
 
     #scrollbar = Scrollbar(master)
     #scrollbar.pack(side=RIGHT, fill=Y)
