@@ -2,10 +2,12 @@ import yacc
 from enum import Enum
 from collections import namedtuple
 
+
+
 Node = namedtuple("Node", ["value", "productionProperty"])
 #NodeTerminating = namedtuple("NodeTerminating", ["value", "productionProperty", "rule_number"]) #for checking if symbols are terminating
 PrintListEntry = namedtuple("PrintListEntry", ["position", "line_list"])
-INDENT_LENGTH = 30
+INDENT_LENGTH = 20
 
 class RuleType(Enum):
     GRAMMAR = 1
