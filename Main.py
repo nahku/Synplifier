@@ -1,3 +1,5 @@
+from PyQt5.QtWidgets import QApplication
+import sys
 import TreeBuilder
 import view
 if __name__== "__main__":
@@ -6,4 +8,5 @@ if __name__== "__main__":
   #print(test_result)
   treeBuilder = TreeBuilder.TPTPTreeBuilder('TPTP_BNF_NEW.txt','disable_rules.txt')
   view.scrollbar(treeBuilder)
-  #treeBuilder.print_ordered_rules_from_graph()
+
+#treeBuilder.print_ordered_rules_from_graph()
