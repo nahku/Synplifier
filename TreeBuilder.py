@@ -16,7 +16,15 @@ class RuleType(Enum):
     MACRO = 4
 
 class NTNode():
-    def __init__(self, value, productions_list, rule_type, comment_block, position):
+    def __init__(self, value: str, productions_list: yacc.PRODUCTIONS_LIST, rule_type: RuleType, comment_block: yacc.COMMENT_BLOCK, position: int):
+        """Creates an NTNode.
+
+        :param value: non-terminal symbol name.
+        :param productions_list: PRODUCTIONS_LIST of productions that are specified in the production rules.
+        :param rule_type: RuleType of the production in that the non-terminal symbol is used.
+        :param comment_block: COMMENT_BLOCK that is associated with the production of the non-terminal symbol.
+        :param position: Position of the production in the input file.
+        """
         self.value = value
         self.productions_list = productions_list
         self.rule_type = rule_type
@@ -24,30 +32,43 @@ class NTNode():
         self.children = []
         self.position = position
 
-    def add_children(self, children):
+    def add_children(self, children: list):
+       """ Add children to children list of NTNode object.
+
+       :param children: List of children that should be added to NTNode object.
+       """
        self.children.append(children)
 
 class TPTPTreeBuilder():
 
-    def init_tree(self, start_symbol, start_rule):
-        start = self.nodes_dictionary.get(Node(start_symbol,start_rule))
-        self.build_tree_rek(start)
+    def init_tree(self, start_symbol: str, start_rule: RuleType):
+        """Initialise the TPTP grammar graph.
 
-    def build_tree_rek(self, node):
-        if len(node.children) == 0:
-            self.search_productions_list_for_nt(node, node.productions_list)
-            if len(node.children) != 0:
-                for i in node.children:
+        :param start_symbol: value of the non-terminal start symbol
+        :param start_rule: rule type of the production that should be starting point of the tree.
+        """
+        start = self.nodes_dictionary.get(Node(start_symbol,start_rule))
+        self.build_graph_rek(start)
+
+    def build_graph_rek(self, start_node: Node):
+        """Build the TPTP graph recursively.
+
+        :param start_node: Start Node from which the TPTP grammar graph should be produced.
+        """
+        if len(start_node.children) == 0:
+            self.search_productions_list_for_nt(start_node, start_node.productions_list)
+            if len(start_node.children) != 0:
+                for i in start_node.children:
                     if i != []:
                         for j in i:
-                            self.build_tree_rek(j)
+                            self.build_graph_rek(j)
                     #else:
                         #node.children.remove(i)
 
-    def build_tree(self, start_symbol):
-        for key,value in self.nodes_dictionary.items():
-            if key != start_symbol:
-                self.find_nt_rule(key, value)
+    #def build_tree(self, start_symbol):
+    #    for key,value in self.nodes_dictionary.items():
+    #        if key != start_symbol:
+    #            self.find_nt_rule(key, value)
 
     def search_productions_list(self,productions_list, nt_name):
         for i in productions_list.list:
@@ -86,7 +107,11 @@ class TPTPTreeBuilder():
                         return True
         return False
 
-    def disable_rules(self, disable_rules_filename):
+    def disable_rules(self, disable_rules_filename: str):
+        """Disables rules specified in the control file from the TPTP grammar graph.
+
+        :param disable_rules_filename: Filename of the control file.
+        """
         with open(disable_rules_filename, "r") as infile:
             for i in infile:
                 i = i.strip("\n")
@@ -108,7 +133,11 @@ class TPTPTreeBuilder():
                 for index in data:
                     del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
 
-    def remove_non_terminating_symbols(self,start_node):
+    def remove_non_terminating_symbols(self,start_node: NTNode):
+        """Removes non-terminating symbols from the TPTP grammar graph recursively.
+
+        :param start_node: Start node of the TPTP grammar graph.
+        """
         terminating = set()
         tempTerminating = set()
         while 1:    #repeat until set of terminating symbols does not change anymore
@@ -122,7 +151,13 @@ class TPTPTreeBuilder():
         self.delete_non_terminating_productions(start_node,terminating,visited)
         self.delete_non_terminating_nodes(terminating)
 
-    def delete_non_terminating_productions(self,node,terminating,visited):
+    def delete_non_terminating_productions(self,node: NTNode,terminating: set, visited: set):
+        """Removes productions, that contain non-terminating symbols from the TPTP grammar graph recursively.
+
+        :param node: The node, from which removing non-terminating productions is started.
+        :param terminating: Set of names (strings) of known terminating symbols.
+        :param visited: Set of Nodes that are already visited.
+        """
         if (Node(node.value, node.rule_type) not in visited):
             visited.add(Node(node.value, node.rule_type))
             i = len(node.children)-1
@@ -138,6 +173,10 @@ class TPTPTreeBuilder():
                 i = i-1
 
     def delete_non_terminating_nodes(self,terminating):
+        """Removes non-terminating nodes from TPTP grammar graph
+
+        :param terminating:
+        """
         temporary_dictionary = {}
         for value in terminating:
             entry = self.nodes_dictionary.get(Node(value,RuleType.GRAMMAR),None)
@@ -492,20 +531,28 @@ class TPTPTreeBuilder():
                 self.print_wo_newline(" | ")
             j = j + 1
 
-    def print_comment_block(self,comment_block):
+    def print_comment_block(self,comment_block: yacc.COMMENT_BLOCK):
+        """Prints all lines of a COMMENT_BLOCK object to console.
+
+        :param comment_block: The comment block that should be printed.
+        """
         for i in comment_block.list:
             print(i)
 
-    def print_wo_newline(self,string):
+    def print_wo_newline(self,string: str):
+        """Prints a string without "\n at the end."
+
+        :param string: The string that shold be printed.
+        """
         print(string, end = '')
 
-    def __init__(self,filename,disable_rules_filnames):
+    def __init__(self,filename: str,disable_rules_filname: str):
         self.rules_test = []
         self.nodes_dictionary = {}
         self.parser = yacc.TPTPParser()
         rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
-        self.disable_rules(disable_rules_filnames)
+        self.disable_rules(disable_rules_filname)
         self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
         #self.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
