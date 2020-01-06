@@ -1,0 +1,2 @@
+<tff_unitary_formula>,::=,1,2,3
+<nonassoc_connective>,::=,1,2,3,4

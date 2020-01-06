@@ -215,10 +215,6 @@ class TPTPGraphBuilder():
                     if(flag):
                         terminating.add(node.value)
 
-
-
-
-
     def find_nt_rule(self, key, value):
         for i in self.nodes_dictionary.values():
             if self.search_productions_list(i.productions_list, key):
