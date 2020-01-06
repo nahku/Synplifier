@@ -287,8 +287,16 @@ class TPTPGraphBuilder():
     def create_node_from_expression(self, expression):
         return NTNode(None, expression.name,expression.productions_list)
 
+    def run(self,filename: str):
+        rules_list = self.parser.run(filename)
+        self.build_nodes_dictionary(rules_list)
+        self.init_tree("<TPTP_file>", RuleType.GRAMMAR)
 
-    def __init__(self,filename: str,disable_rules_filname: str):
+    def reduceGrammar(self, disable_rules_filname: str):
+        self.disable_rules(disable_rules_filname)
+        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+
+    def __init__(self,filename: str= None,disable_rules_filname: str=None):
         self.rules_test = []
         self.nodes_dictionary = {}
         self.parser = yacc.TPTPParser()
@@ -301,3 +309,8 @@ class TPTPGraphBuilder():
         #visited = {}
         #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
         #self.print_rules_from_rules_list(rules_list)
+
+    def __init__(self):
+        self.rules_test = []
+        self.nodes_dictionary = {}
+        self.parser = yacc.TPTPParser()
