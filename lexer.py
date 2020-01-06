@@ -24,6 +24,7 @@ class TPTPLexer():
     t_ignore = ' \t\n'
 
     #token definitions
+
     def t_COMMENT(self,t):
         #r'%-.*'
         #r'%[a-zA-Z\- ].*'
@@ -97,26 +98,26 @@ class TPTPLexer():
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
-    #import tptp text file from specified filename
-    def import_tptp_file(self,filename):
+    def import_tptp_file(self, filename: str) -> str:
+        """Import TPTP grammar file.
+
+        :param filename: Filename of the TPTP grammar file.
+        :return:   grammar file content as string.
+        """
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
         my_file = os.path.join(THIS_FOLDER, filename)
         file = open(my_file, "r", encoding='UTF-8')
         data = file.read()
         return data
 
-
-    def run(self):
-        # data = '<rule1> ::= <rule2> abcd <rule3> | <rule4>'
-        #data = r"""%FOR PLAIN TFF <tff_atomic_formula>   ::= <fof_atomic_formula>
-         #          <tff_atomic_formula>   ::= <tff_plain_atomic> | <tff_defined_atomic> |
-          #                          <tff_system_atomic> """
-        data = self.import_tptp_file('TPTP_BNF.txt')
-        self.lexer.input(data)
-        while 1:
-            tok = lex.token()
-            if not tok: break  # No more input
-            print(tok)
+    #def run(self):
+    #
+    #    data = self.import_tptp_file('TPTP_BNF.txt')
+    #    self.lexer.input(data)
+    #    while 1:
+    #        tok = lex.token()
+    #        if not tok: break  # No more input
+    #        print(tok)
 
     def __init__(self):
         # Build the lexer
