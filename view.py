@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QAction
 import sys
-import TreeBuilder
+import GraphBuilder
 
 def scrollbar(treeBuilder):
     app = QtWidgets.QApplication([])
