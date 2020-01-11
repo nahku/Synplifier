@@ -32,13 +32,7 @@
 <TPTP_file>          ::= <TPTP_input>*
 <TPTP_input>         ::= <annotated_formula> | <include>
 %----Formula records
-<annotated_formula>  ::= <thf_annotated> | <tff_annotated> | <tcf_annotated> | <fof_annotated> | <cnf_annotated> | <tpi_annotated>
-%----Future languages may include ...  english | efof | tfof | mathml | ...
-<tpi_annotated>      ::= tpi(<name>,<formula_role>,<tpi_formula><annotations>).
-<tpi_formula>        ::= <fof_formula>
-<thf_annotated>      ::= thf(<name>,<formula_role>,<thf_formula><annotations>).
-<tff_annotated>      ::= tff(<name>,<formula_role>,<tff_formula><annotations>).
-<tcf_annotated>      ::= tcf(<name>,<formula_role>,<tcf_formula><annotations>).
+<annotated_formula>  ::= <fof_annotated> | <cnf_annotated>
 <fof_annotated>      ::= fof(<name>,<formula_role>,<fof_formula><annotations>).
 <cnf_annotated>      ::= cnf(<name>,<formula_role>,<cnf_formula><annotations>).
 <annotations>        ::= ,<source><optional_info> | <null>
@@ -190,10 +184,6 @@
 <tff_type_list>      ::= <tff_top_level_type> | <tff_top_level_type>,<tff_type_list>
 <tff_subtype>        ::= <untyped_atom><subtype_sign><atom>
 <tfx_sequent>        ::= <tfx_tuple><gentzen_arrow><tfx_tuple> | (<tfx_sequent>)
-%----TCF formulae.
-<tcf_formula>        ::= <tcf_logic_formula> | <tff_atom_typing>
-<tcf_logic_formula>  ::= <tcf_quantified_formula> | <cnf_formula>
-<tcf_quantified_formula> ::= ![<tff_variable_list>]:<cnf_formula>
 %----FOF formulae.
 <fof_formula>        ::= <fof_logic_formula> | <fof_sequent>
 <fof_logic_formula>  ::= <fof_binary_formula> | <fof_unary_formula> | <fof_unitary_formula>

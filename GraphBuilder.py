@@ -300,16 +300,26 @@ class TPTPGraphBuilder():
         self.rules_test = []
         self.nodes_dictionary = {}
         self.parser = yacc.TPTPParser()
-        rules_list = self.parser.run(filename)
-        self.build_nodes_dictionary(rules_list)
-        self.disable_rules(disable_rules_filname)
-        self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
-        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-        InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
-        InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
-        #visited = {}
-        #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
-        #self.print_rules_from_rules_list(rules_list)
+        if((filename is not None) and (disable_rules_filname is not None)):
+            rules_list = self.parser.run(filename)
+            self.build_nodes_dictionary(rules_list)
+            self.disable_rules(disable_rules_filname)
+            self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
+            self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+            InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+            #visited = {}
+            #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
+            #self.print_rules_from_rules_list(rules_list)
+        elif(filename is not None):
+            rules_list = self.parser.run(filename)
+            self.build_nodes_dictionary(rules_list)
+            #self.disable_rules(disable_rules_filname)
+            self.init_tree("<TPTP_file>", RuleType.GRAMMAR)
+            #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+
+
 
     #def __init__(self):
     #    self.rules_test = []
