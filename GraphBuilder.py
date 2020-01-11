@@ -113,31 +113,35 @@ class TPTPGraphBuilder():
                         return True
         return False
 
-    def disable_rules(self, disable_rules_filename: str):
+    def disable_rules(self, disable_rules_string: str, start_symbol: str):
         """Disables rules specified in the control file from the TPTP grammar graph.
 
         :param disable_rules_filename: Filename of the control file.
         """
-        with open(disable_rules_filename, "r") as infile:
-            for i in infile:
-                i = i.strip("\n")
-                data = i.split(",")
-                nt_name = data[0]
-                rule_symbol = data[1]
-                rule_type = None
-                if(rule_symbol == "::="):
-                    rule_type = RuleType.GRAMMAR
-                elif(rule_symbol == "::-"):
-                    rule_type = RuleType.TOKEN
-                elif (rule_symbol == ":=="):
-                    rule_type = RuleType.STRICT
-                elif (rule_symbol == ":::"):
-                    rule_type = RuleType.MACRO
-                del data[0:2]
-                data = list(map(int, data))
-                data.sort(reverse=True)
-                for index in data:
-                    del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
+        for i in disable_rules_string.splitlines():
+            #i = i.strip("\n")
+            data = i.split(",")
+            nt_name = data[0]
+            rule_symbol = data[1]
+            rule_type = None
+            if(rule_symbol == "::="):
+                rule_type = RuleType.GRAMMAR
+            elif(rule_symbol == "::-"):
+                rule_type = RuleType.TOKEN
+            elif (rule_symbol == ":=="):
+                rule_type = RuleType.STRICT
+            elif (rule_symbol == ":::"):
+                rule_type = RuleType.MACRO
+            del data[0:2]
+            data = list(map(int, data))
+            data.sort(reverse=True)
+            for index in data:
+                del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
+                del self.nodes_dictionary.get(Node(nt_name, rule_type)).children[index]
+
+        self.init_tree(start_symbol)
+        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node('<start_symbol>', RuleType.GRAMMAR)))
+
 
     def remove_non_terminating_symbols(self,start_node: NTNode):
         """Removes non-terminating symbols from the TPTP grammar graph recursively.
@@ -299,23 +303,22 @@ class TPTPGraphBuilder():
     def run(self,filename: str):
         rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
-        self.init_tree("<TPTP_file>", RuleType.GRAMMAR)
+        self.init_tree("<TPTP_file>")
 
     def reduceGrammar(self, disable_rules_filname: str):
         self.disable_rules(disable_rules_filname)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
 
     def __init__(self,filename: str= None,disable_rules_filname: str=None):
-        self.rules_test = []
         self.nodes_dictionary = {}
         self.parser = yacc.TPTPParser()
         if((filename is not None) and (disable_rules_filname is not None)):
             rules_list = self.parser.run(filename)
             self.build_nodes_dictionary(rules_list)
-            self.disable_rules(disable_rules_filname)
-            self.init_tree("<formula_role>")
-            self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
-            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
+            self.disable_rules(InputOutput.read_text_from_file(disable_rules_filname),'<TPTP_file>')
+            #self.init_tree("<formula_role>")
+            #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
+            #InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
             InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
             #visited = {}
             #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
@@ -323,10 +326,9 @@ class TPTPGraphBuilder():
         elif(filename is not None):
             rules_list = self.parser.run(filename)
             self.build_nodes_dictionary(rules_list)
-            #self.disable_rules(disable_rules_filname)
-            self.init_tree("<formula_role>")
+            self.init_tree("<TPTP_file>")
             #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
 
 
 
