@@ -253,3 +253,4 @@ def get_productions_list_string(productions_list):
             productions_list_string += " | "
         j = j + 1
     return productions_list_string
+

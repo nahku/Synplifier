@@ -1,5 +1,5 @@
 import yacc
-import InputOutput
+import Output
 from enum import Enum
 from collections import namedtuple
 
@@ -62,21 +62,22 @@ class TPTPGraphBuilder():
                     #else:
                         #node.children.remove(i)
 
-    #def build_tree(self, start_symbol):
-    #    for key,value in self.nodes_dictionary.items():
-    #        if key != start_symbol:
-    #            self.find_nt_rule(key, value)
+    def search_productions_list_for_nt(self, node: Node, productions_list: yacc.PRODUCTIONS_LIST):
+        """Search for every production that is part of the production list.
 
-    def search_productions_list(self,productions_list, nt_name):
-        for i in productions_list.list:
-            if self.search_production(i,nt_name):
-               return True
-
-    def search_productions_list_for_nt(self, node, productions_list):
+        :param node: Node from which the productions should be identified.
+        :param productions_list: Production list of the node above.
+        """
         for i in productions_list.list:
             self.search_production_for_nt(node, i)
 
-    def search_production_for_nt(self, node, production):
+    def search_production_for_nt(self, node: Node, production: yacc.PRODUCTION):
+        """Search for NT symbols recursively that are part of the production. After the NT symbol has been identified,
+        the node of the NT symbol is added to the list of children from the input node.
+
+        :param node: Node from which the NT symbols should be identified.
+        :param production: Production of one productions list of the node above.
+        """
         children = []
         for i in production.list:
             if (isinstance(i, yacc.PRODUCTION)):
@@ -91,18 +92,20 @@ class TPTPGraphBuilder():
                     i.name = childrenNode
         node.children.append(children)
 
-    def search_production(self, production, nt_name):
-        for i in production.list:
-            if (isinstance(i, yacc.PRODUCTION)):
-                if self.search_production(i, nt_name):
-                    return True
-            elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
-                self.search_productions_list(i, nt_name)
-            elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    if i.name.value == nt_name:
-                        return True
-        return False
+    def find_nt_key(self, node: Node, nt_name: str) -> list:
+        """Search for the node whose name is nt_name.
+
+        :param node: ///
+        :param nt_name: Name from which the node should be found.
+        :return: List of nodes that matches nt_name.
+        """
+        children = []
+        for key, value in self.nodes_dictionary.items():
+            if key == Node(nt_name, RuleType.GRAMMAR) or key == Node(nt_name, RuleType.MACRO) \
+                    or key == Node(nt_name, RuleType.STRICT) or key == Node(nt_name, RuleType.TOKEN):
+                node = self.nodes_dictionary.get(key)
+                children.append(value)
+        return children
 
     def disable_rules(self, disable_rules_filename: str):
         """Disables rules specified in the control file from the TPTP grammar graph.
@@ -215,29 +218,11 @@ class TPTPGraphBuilder():
                     if(flag):
                         terminating.add(node.value)
 
+    def build_nodes_dictionary(self,rules_list: yacc.GRAMMAR_LIST):
+        """Builds a dictionary from a list of rules.
 
-
-
-
-    def find_nt_rule(self, key, value):
-        for i in self.nodes_dictionary.values():
-            if self.search_productions_list(i.productions_list, key):
-                if i == value:
-                    print(i.value)
-                else:
-                    i.add_children(value)
-
-    def find_nt_key(self, node, nt_name):
-        children = []
-        for key, value in self.nodes_dictionary.items():
-            if key == Node(nt_name,RuleType.GRAMMAR) or key == Node(nt_name,RuleType.MACRO) \
-                    or key == Node(nt_name,RuleType.STRICT) or key == Node(nt_name,RuleType.TOKEN):
-                node = self.nodes_dictionary.get(key)
-                children.append(value)
-        return children
-
-    def build_nodes_dictionary(self,rules_list):
-
+        :param rules_list:  List of rules from which the dictionary should be build.
+        """
         comment_block_buffer = None
         index = 0
         for i in rules_list.list:
@@ -261,7 +246,11 @@ class TPTPGraphBuilder():
             index = index+1
 
     def find_rule_type_for_expression(self, expression):
+        """Find the rule type of a given expression.
 
+        :param expression: Expression from which the rule type should be identified.
+        :return: Rule Type of expression.
+        """
         if isinstance(expression, yacc.GRAMMAR_EXPRESSION):
             rule_type = RuleType.GRAMMAR
         elif isinstance(expression, yacc.TOKEN_EXPRESSION):
@@ -273,7 +262,12 @@ class TPTPGraphBuilder():
         return rule_type
 
     #todo commentblock just consisting of 1 line with top of page
-    def split_comment_block_by_top_of_page(self,comment_block):
+    def split_comment_block_by_top_of_page(self,comment_block) -> list:
+        """Split a comment block into two comment blocks if there exists an "Top of Page".
+
+        :param comment_block: Comment block which should be split.
+        :return: List of split comment blocks.
+        """
         comment_block_list = [comment_block]
         i = 0
         for line in comment_block.list:
@@ -288,9 +282,13 @@ class TPTPGraphBuilder():
             i = i + 1
         return comment_block_list
 
-    def create_node_from_expression(self, expression):
-        return NTNode(None, expression.name,expression.productions_list)
+    def create_node_from_expression(self, expression) -> Node:
+        """Create a node from a given expression.
 
+        :param expression: Expression from which Node should be build consisting of a name and a production list.
+        :return: Node of given expression.
+        """
+        return NTNode(None, expression.name,expression.productions_list)
 
     def __init__(self,filename: str,disable_rules_filname: str):
         self.rules_test = []
@@ -301,7 +299,7 @@ class TPTPGraphBuilder():
         self.disable_rules(disable_rules_filname)
         self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-        InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+        Output.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
         #visited = {}
         #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
         #self.print_rules_from_rules_list(rules_list)

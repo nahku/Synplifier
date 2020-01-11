@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 from enum import Enum
 import lexer
+import Input
 
 
 class ProductionProperty(Enum):
@@ -309,7 +310,7 @@ class TPTPParser():
         :param filename: Filename of the TPTP grammar file.
         :return: Grammar_List contatining the representation of the TPTP grammar.
         """
-        result = self.parser.parse(self.lexer.import_tptp_file(filename))
+        result = self.parser.parse(Input.import_tptp_file(filename))
         result = self.number_rules(result)
         result = self.disambigue_square_brackets(result)
         return result

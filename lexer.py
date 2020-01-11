@@ -1,5 +1,4 @@
 import ply.lex as lex
-import os
 
 class TPTPLexer():
 
@@ -97,18 +96,6 @@ class TPTPLexer():
     def t_error(self,t):
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
-
-    def import_tptp_file(self, filename: str) -> str:
-        """Import TPTP grammar file.
-
-        :param filename: Filename of the TPTP grammar file.
-        :return:   grammar file content as string.
-        """
-        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        my_file = os.path.join(THIS_FOLDER, filename)
-        file = open(my_file, "r", encoding='UTF-8')
-        data = file.read()
-        return data
 
     #def run(self):
     #
