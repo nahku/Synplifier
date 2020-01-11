@@ -89,6 +89,15 @@ def save_ordered_rules_from_graph(filename,start_node):
     with open(filename, "w") as text_file:
         text_file.write(print_string)
 
+def save_text_to_file(text: str,filename: str):
+    with open(filename, "w") as text_file:
+        text_file.write(text)
+
+def read_text_from_file(filename:str) -> str:
+    with open(filename, 'r') as text_file:
+        text = text_file.read()
+    return text
+
 def print_expression( expression):
     print_wo_newline(expression.name)
     if(isinstance(expression,yacc.GRAMMAR_EXPRESSION)):
