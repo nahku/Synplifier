@@ -138,7 +138,6 @@ class TPTPGraphBuilder():
             for index in data:
                 del self.nodes_dictionary.get(Node(nt_name,rule_type)).productions_list.list[index]
                 del self.nodes_dictionary.get(Node(nt_name, rule_type)).children[index]
-                print("")
 
         self.init_tree(start_symbol)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node('<start_symbol>', RuleType.GRAMMAR)))
@@ -311,7 +310,6 @@ class TPTPGraphBuilder():
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
 
     def __init__(self,filename: str= None,disable_rules_filname: str=None):
-        self.rules_test = []
         self.nodes_dictionary = {}
         self.parser = yacc.TPTPParser()
         if((filename is not None) and (disable_rules_filname is not None)):
