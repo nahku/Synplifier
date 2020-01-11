@@ -1,1 +1,1 @@
-<annotated_formula>,::=,0
+<annotated_formula>,::=,1
