@@ -72,8 +72,9 @@ def print_ordered_rules_from_graph(start_node):
     print_list = create_print_list(start_node,visited,print_list)
     print_list.sort(key=lambda x: x[0])
     for tuple in print_list:
-        for line in tuple.line_list:
-            print(line)
+        if(tuple.position > 0):
+            for line in tuple.line_list:
+                print(line)
 
 def save_ordered_rules_from_graph(filename,start_node):
     visited = {}
@@ -82,8 +83,9 @@ def save_ordered_rules_from_graph(filename,start_node):
     print_list.sort(key=lambda x: x[0])
     print_string = ""
     for tuple in print_list:
-        for line in tuple.line_list:
-            print_string += line + "\n"
+        if(tuple.position > 0):
+            for line in tuple.line_list:
+                print_string += line + "\n"
     with open(filename, "w") as text_file:
         text_file.write(print_string)
 

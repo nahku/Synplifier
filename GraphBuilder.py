@@ -38,14 +38,23 @@ class NTNode():
 
 class TPTPGraphBuilder():
 
-    def init_tree(self, start_symbol: str, start_rule: RuleType):
+    def init_tree(self, start_symbol: str):
         """Initialise the TPTP grammar graph.
 
         :param start_symbol: value of the non-terminal start symbol
-        :param start_rule: rule type of the production that should be starting point of the tree.
         """
-        start = self.nodes_dictionary.get(Node(start_symbol,start_rule))
-        self.build_graph_rek(start)
+        start_nodes = []
+
+        #for ruleType in RuleType:
+        #    start = self.nodes_dictionary.get(Node(start_symbol,ruleType))
+        #    if start is not None:
+        #        start_nodes.append(start)
+        productions_list = yacc.PRODUCTIONS_LIST([yacc.PRODUCTION([yacc.PRODUCTION_ELEMENT(yacc.NT_SYMBOL(start_symbol))])])
+        #for node in start_nodes:
+        #    productions_list.list.append(yacc.PRODUCTION([yacc.PRODUCTION_ELEMENT(node.value)]))
+        new_start_node = NTNode("<start_symbol>", productions_list,RuleType.GRAMMAR,yacc.COMMENT_BLOCK([]),-1)
+        self.nodes_dictionary[Node(new_start_node.value,new_start_node.rule_type)] = new_start_node
+        self.build_graph_rek(new_start_node)
 
     def build_graph_rek(self, start_node: Node):
         """Build the TPTP graph recursively.
@@ -284,8 +293,8 @@ class TPTPGraphBuilder():
             i = i + 1
         return comment_block_list
 
-    def create_node_from_expression(self, expression):
-        return NTNode(None, expression.name,expression.productions_list)
+    #def create_node_from_expression(self, expression):
+    #    return NTNode(None, expression.name,expression.productions_list)
 
     def run(self,filename: str):
         rules_list = self.parser.run(filename)
@@ -304,10 +313,10 @@ class TPTPGraphBuilder():
             rules_list = self.parser.run(filename)
             self.build_nodes_dictionary(rules_list)
             self.disable_rules(disable_rules_filname)
-            self.init_tree("<TPTP_file>",RuleType.GRAMMAR)
-            self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
-            InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)))
+            self.init_tree("<formula_role>")
+            self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
+            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
+            InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
             #visited = {}
             #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
             #self.print_rules_from_rules_list(rules_list)
@@ -315,7 +324,7 @@ class TPTPGraphBuilder():
             rules_list = self.parser.run(filename)
             self.build_nodes_dictionary(rules_list)
             #self.disable_rules(disable_rules_filname)
-            self.init_tree("<TPTP_file>", RuleType.GRAMMAR)
+            self.init_tree("<formula_role>")
             #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
             InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
 
