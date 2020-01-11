@@ -13,36 +13,11 @@ def scrollbar(graphBuilder):
     window = QtWidgets.QWidget()
     layout = QtWidgets.QVBoxLayout(window)
 
-    tw = QtWidgets.QTreeWidget()
-    tw.setHeaderLabels(['Non Terminal', 'Production Type', 'Production'])
-    tw.setAlternatingRowColors(True)
-
-
-    i = 0
-    for node in graphBuilder.nodes_dictionary.values():
-        rule_type = ""
-        if (node.rule_type == GraphBuilder.RuleType.GRAMMAR):
-            rule_type = "GRAMMAR"
-        elif (node.rule_type == GraphBuilder.RuleType.STRICT):
-            rule_type = "STRICT"
-        elif (node.rule_type == GraphBuilder.RuleType.MACRO):
-            rule_type = "MACRO"
-        elif (node.rule_type == GraphBuilder.RuleType.TOKEN):
-            rule_type = "TOKEN"
-        item = QtWidgets.QTreeWidgetItem([node.value, rule_type,''])
-        tw.addTopLevelItem(item)
-
-        for production in node.productions_list.list:
-            child_item = QtWidgets.QTreeWidgetItem(['', '',InputOutput.get_production_string(production)])
-            child_item.setCheckState(0, QtCore.Qt.Checked)
-            tw.topLevelItem(i).addChild(child_item)
-            #table.insert(id,"end",node.value + rule_type + str(r),text="",values=(rule_type,graphBuilder.get_production_string(production)))
-            #r = r + 1
-        i += 1
+    tableView = createTableView(graphBuilder)
 
     openTPTPFileAction = QAction('&Open TPTP Grammar File')
     openTPTPFileAction.setShortcut('Ctrl+O')
-    #openTPTPFileAction.triggered.connect(self.openTPTPGrammarFile)
+    openTPTPFileAction.triggered.connect(functools.partial(openTPTPGrammarFile,graphBuilder,tableView))
 
     openControlFileAction = QAction('&Reduce TPTP Grammar with Control File')
     openControlFileAction.setShortcut('Ctrl+R')
@@ -54,9 +29,7 @@ def scrollbar(graphBuilder):
 
     produceControlFileAction = QAction('&Produce Control File from Selection', window)
     produceControlFileAction.setShortcut('Ctrl+D')
-    #produceControlFileAction.triggered.connect(produceControlFile)
-
-    produceControlFileAction.triggered.connect(functools.partial(produceControlFile,tw))
+    produceControlFileAction.triggered.connect(functools.partial(produceControlFile,tableView))
     menubar = QtWidgets.QMenuBar()
 
     actionFile = menubar.addMenu("Commands")
@@ -70,10 +43,35 @@ def scrollbar(graphBuilder):
     menubar.addMenu("View")
     menubar.addMenu("Help")
     layout.addWidget(menubar)
-    layout.addWidget(tw)
+    layout.addWidget(tableView)
     window.show()
 
     sys.exit(app.exec_())
+
+def createTableView(graphBuilder: GraphBuilder.TPTPGraphBuilder) -> QtWidgets.QTreeWidget:
+    tableView = QtWidgets.QTreeWidget()
+    tableView.setHeaderLabels(['Non Terminal', 'Production Type', 'Production'])
+    tableView.setAlternatingRowColors(True)
+    nodesList = list(graphBuilder.nodes_dictionary.values())
+    nodesList.sort(key=lambda x: x.position)
+    for node in nodesList:
+        rule_type = ""
+        if (node.rule_type == GraphBuilder.RuleType.GRAMMAR):
+            rule_type = "GRAMMAR"
+        elif (node.rule_type == GraphBuilder.RuleType.STRICT):
+            rule_type = "STRICT"
+        elif (node.rule_type == GraphBuilder.RuleType.MACRO):
+            rule_type = "MACRO"
+        elif (node.rule_type == GraphBuilder.RuleType.TOKEN):
+            rule_type = "TOKEN"
+        item = QtWidgets.QTreeWidgetItem([node.value, rule_type, ''])
+        for production in node.productions_list.list:
+            child_item = QtWidgets.QTreeWidgetItem(['', '', InputOutput.get_production_string(production)])
+            child_item.setCheckState(0, QtCore.Qt.Checked)
+            item.addChild(child_item)
+        tableView.addTopLevelItem(item)
+
+    return tableView
 
 def produceControlFile(treeView):
     fileName, _ = QtWidgets.QFileDialog.getSaveFileName(None,"QFileDialog.getOpenFileName()", "", "Control File (*.txt);;")
@@ -120,6 +118,14 @@ def produceControlFile(treeView):
     with open(fileName, "w") as text_file:
         text_file.write(control_string)
 
+def openTPTPGrammarFile(self,graphBuilder: GraphBuilder.TPTPGraphBuilder):
+    fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open TPTP Grammar File", "","TPTP Grammar File (*.txt);;")
+    if fileName:
+        print(fileName)
+    graphBuilder.run(fileName)
+    tableView = createTableView(graphBuilder)
+    #return  tableView
+
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -156,10 +162,7 @@ class MyWidget(QtWidgets.QWidget):
 
         #self.button.clicked.connect(self.openTPTPGrammarFile)
 
-    def openTPTPGrammarFile(self):
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open TPTP Grammar File", "","TPTP Grammar File (*.txt);;")
-        if fileName:
-            print(fileName)
+
 
     def reduceTPTPGrammarWithControlFile(self):
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "","Control File (*.txt);;")

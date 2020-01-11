@@ -75,6 +75,18 @@ def print_ordered_rules_from_graph(start_node):
         for line in tuple.line_list:
             print(line)
 
+def save_ordered_rules_from_graph(filename,start_node):
+    visited = {}
+    print_list = []
+    print_list = create_print_list(start_node,visited,print_list)
+    print_list.sort(key=lambda x: x[0])
+    print_string = ""
+    for tuple in print_list:
+        for line in tuple.line_list:
+            print_string += line + "\n"
+    with open(filename, "w") as text_file:
+        text_file.write(print_string)
+
 def print_expression( expression):
     print_wo_newline(expression.name)
     if(isinstance(expression,yacc.GRAMMAR_EXPRESSION)):
@@ -112,7 +124,13 @@ def print_production( production):
 
 def print_xor_productions_list(xor_productions_list):
     print_wo_newline("(")
-    print_productions_list(xor_productions_list)
+    length = len(xor_productions_list.list)
+    j = 1
+    for i in xor_productions_list.list:
+        print_production(i)
+        if (j < length):
+            print_wo_newline("|")
+        j = j + 1
     print_wo_newline(")")
 
 def print_production_element(production_element):
@@ -127,7 +145,7 @@ def print_production_element(production_element):
         print_wo_newline("]")
     elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
         print_symbol(production_element.name)
-        print_wo_newline(" |")
+        print_wo_newline("|")
 
 def print_symbol( symbol):
     if isinstance(symbol,yacc.T_SYMBOL):
@@ -201,7 +219,15 @@ def get_production_string(production):
 def get_xor_productions_list_string(xor_productions_list):
     xor_productions_list_string = ""
     xor_productions_list_string += "("
-    xor_productions_list_string += get_productions_list_string(xor_productions_list)
+    productions_list_string = ""
+    length = len(xor_productions_list.list)
+    j = 1
+    for i in xor_productions_list.list:
+        productions_list_string += get_production_string(i)
+        if (j < length):
+            productions_list_string += "|"
+        j = j + 1
+    xor_productions_list_string += productions_list_string
     xor_productions_list_string += ")"
     return xor_productions_list_string
 
@@ -218,7 +244,7 @@ def get_production_element_string(production_element):
         production_element_string += "]"
     elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
         production_element_string += get_symbol_string(production_element.name)
-        production_element_string += " | "
+        production_element_string += "|"
     return production_element_string
 
 def get_symbol_string(symbol):
