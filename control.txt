@@ -1,1 +1,2 @@
-<annotated_formula>,::=,1
+<TPTP_file>
+<TPTP_input>,::=,1

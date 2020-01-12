@@ -1,10 +1,10 @@
 from collections import namedtuple
-#from PyQt5 import QtWidgets
+import copy
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QAction, QMainWindow, QWidget, QMessageBox, QFileDialog, QMenuBar, QTreeWidget, \
-    QTreeWidgetItem, QVBoxLayout
+    QTreeWidgetItem, QVBoxLayout, QInputDialog, QLineEdit
 import GraphBuilder
 import InputOutput
 class MainWindow(QMainWindow):
@@ -21,9 +21,9 @@ class MainWindow(QMainWindow):
         openTPTPFileAction.setShortcut('Ctrl+O')
         openTPTPFileAction.triggered.connect(self.openTPTPGrammarFile)
 
-        openControlFileAction = QAction('&Reduce and save TPTP Grammar with Control File')
-        openControlFileAction.setShortcut('Ctrl+R')
-        openControlFileAction.triggered.connect(self.outputTPTPGrammarFromControlFile)
+        saveWithControlFileAction = QAction('&Reduce and save TPTP Grammar with Control File',self)
+        saveWithControlFileAction.setShortcut('Ctrl+R')
+        saveWithControlFileAction.triggered.connect(self.outputTPTPGrammarFromControlFile)
 
         outputTPTPGrammarFileFromSelectionAction = QAction('&Create TPTP Grammar File from Selection', self)
         outputTPTPGrammarFileFromSelectionAction.setShortcut('Ctrl+R')
@@ -46,6 +46,7 @@ class MainWindow(QMainWindow):
         menubar.setNativeMenuBar(False)
         menu = menubar.addMenu("Commands")
         menu.addAction(produceReducedTPTPGrammarAction)
+        menu.addAction(saveWithControlFileAction)
         menu.addAction(outputControlFileAction)
         menu.addAction(outputTPTPGrammarFileFromSelectionAction)
         menu.addAction(toggleCommentsAction)
@@ -108,7 +109,7 @@ class MainWindow(QMainWindow):
 
     def outputControlFile(self):
         filename, _ = QFileDialog.getSaveFileName(None, "QFileDialog.getOpenFileName()", "", "Control File (*.txt);;")
-        control_string = self.produceControlFile()
+        control_string, _ = self.produceControlFile()
         if(control_string is not None):
             InputOutput.save_text_to_file(control_string,filename)
 
@@ -150,7 +151,7 @@ class MainWindow(QMainWindow):
             QMessageBox.about(self, "Error", "A start symbol has to be selected")
             return None, None
 
-        control_string = ""
+        control_string = start_symbol_selection[0] + "\n"
         for key, value in entry_dictionary.items():
             rule_string = ""
             if (key.rule_type == GraphBuilder.RuleType.GRAMMAR):
@@ -167,28 +168,44 @@ class MainWindow(QMainWindow):
         return control_string, start_symbol_selection[0]
 
     def reduceTPTPGrammarWithSelection(self):
-        control_string, start_symbol = self.produceControlFile()
-        if((control_string is not None) and (start_symbol is not None)):
-            self.graphBuilder.disable_rules(control_string,start_symbol)
+        control_string, _ = self.produceControlFile()
+        if(control_string is not None):
+            self.graphBuilder.disable_rules(control_string)
             self.initTreeView(self.graphBuilder)
 
     def createTPTPGrammarFileFromSelection(self):
-        filename, _ = QFileDialog.getSaveFileName(None, "QFileDialog.getOpenFileName()", "", "Control File (*.txt);;")
+        filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "", "TPTP Grammar File(*.txt);;")
         control_string, start_symbol = self.produceControlFile()
         if(start_symbol is not None):
             graphBuilder = GraphBuilder.TPTPGraphBuilder()
             graphBuilder.nodes_dictionary = self.graphBuilder.nodes_dictionary
             graphBuilder.init_tree(start_symbol)
             if(control_string is not None):
-                self.graphBuilder.disable_rules(control_string,start_symbol)
+                self.graphBuilder.disable_rules(control_string)
                 start_node = self.graphBuilder.nodes_dictionary.get(GraphBuilder.Node("<start_symbol>",GraphBuilder.RuleType.GRAMMAR))
             if(start_node is not None):
                 InputOutput.save_ordered_rules_from_graph(filename,start_node)
             else:
                 InputOutput.save_text_to_file("",filename)
 
+    def outputTPTPGrammarFromControlFile(self):
+        control_filename, _ = QFileDialog.getOpenFileName(None, "Open Control File", "", "Control File (*.txt);;")
+        save_filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "", "TPTP Grammar File (*.txt);;")
+        control_string = InputOutput.read_text_from_file(control_filename)
+        graphBuilder = GraphBuilder.TPTPGraphBuilder()
+        graphBuilder.nodes_dictionary = copy.deepcopy(self.graphBuilder.nodes_dictionary)
+        graphBuilder.init_tree(control_string.splitlines()[0])
+        graphBuilder.disable_rules(control_string)
+        start_node = graphBuilder.nodes_dictionary.get(GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
+        if (start_node is not None):
+            InputOutput.save_ordered_rules_from_graph(save_filename, start_node)
+        else:
+            InputOutput.save_text_to_file("", save_filename)
+
     def openTPTPGrammarFile(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open TPTP Grammar File", "","TPTP Grammar File (*.txt);;")
-        self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
-        self.graphBuilder.run(filename)
-        self.initTreeView(self.graphBuilder)
+        start_symbol, okPressed = QInputDialog.getText(self, "Input the desired start symbol","Start Symbol:", QLineEdit.Normal, "<TPTP_file>")
+        if okPressed and start_symbol != '':
+            self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
+            self.graphBuilder.run(filename,start_symbol)
+            self.initTreeView(self.graphBuilder)

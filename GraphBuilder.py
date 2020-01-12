@@ -113,12 +113,15 @@ class TPTPGraphBuilder():
                         return True
         return False
 
-    def disable_rules(self, disable_rules_string: str, start_symbol: str):
-        """Disables rules specified in the control file from the TPTP grammar graph.
+    def disable_rules(self, disable_rules_string: str):
+        """Disables rules specified in the control file from the TPTP grammar graph and select start symbol.
 
-        :param disable_rules_filename: Filename of the control file.
+        :param disable_rules_string: Text of the control file.
         """
-        for i in disable_rules_string.splitlines():
+        lines = disable_rules_string.splitlines()
+        start_symbol = lines[0]
+        del lines[0]
+        for i in lines:
             #i = i.strip("\n")
             data = i.split(",")
             nt_name = data[0]
@@ -300,10 +303,10 @@ class TPTPGraphBuilder():
     #def create_node_from_expression(self, expression):
     #    return NTNode(None, expression.name,expression.productions_list)
 
-    def run(self,filename: str):
+    def run(self,filename: str,start_smbol: str):
         rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
-        self.init_tree("<TPTP_file>")
+        self.init_tree(start_smbol)
 
     def reduceGrammar(self, disable_rules_filname: str):
         self.disable_rules(disable_rules_filname)
