@@ -21,7 +21,7 @@ class TPTPLexer():
     )
 
     literals = []
-    t_ignore = ' \t\n'
+    t_ignore = ' \t\n '
 
     #token definitions
 
