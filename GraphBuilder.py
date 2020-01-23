@@ -303,8 +303,11 @@ class TPTPGraphBuilder():
     #def create_node_from_expression(self, expression):
     #    return NTNode(None, expression.name,expression.productions_list)
 
-    def run(self,filename: str,start_smbol: str):
-        rules_list = self.parser.run(filename)
+    def run(self,filename: str,start_smbol: str, file: str = None):
+        if(file is not None):
+            rules_list = self.parser.run(file=file,filename=None)
+        else:
+            rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_smbol)
 

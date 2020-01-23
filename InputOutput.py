@@ -1,10 +1,20 @@
 from collections import namedtuple
-
+from bs4 import BeautifulSoup
+import urllib
 import yacc
 import GraphBuilder
 
 PrintListEntry = namedtuple("PrintListEntry", ["position", "line_list"])
 INDENT_LENGTH = 20
+
+def import_tptp_grammar_from_web() -> str:
+    with urllib.request.urlopen("http://www.tptp.org/TPTP/SyntaxBNF.html") as url:
+        html_doc = url.read()
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    tptp_grammar = soup.get_text()
+    # Delete Header
+    tptp_grammar = '\n'.join(tptp_grammar.split('\n')[1:])
+    return tptp_grammar
 
 def print_rules_from_rules_list(rules_list):
     for i in rules_list.list:

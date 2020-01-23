@@ -303,13 +303,17 @@ class TPTPParser():
                 i = i + 1
         return rules_list
 
-    def run(self,filename: str) -> GRAMMAR_LIST:
+    def run(self,filename: str,file: str = None) -> GRAMMAR_LIST:
         """Run parser on TPTP grammar file.
 
         :param filename: Filename of the TPTP grammar file.
         :return: Grammar_List contatining the representation of the TPTP grammar.
         """
-        result = self.parser.parse(self.lexer.import_tptp_file(filename))
+        if(file is None):
+            result = self.lexer.import_tptp_file(filename)
+        else:
+            result = file
+        result = self.parser.parse(result)
         result = self.number_rules(result)
         result = self.disambigue_square_brackets(result)
         return result

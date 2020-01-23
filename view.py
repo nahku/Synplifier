@@ -21,6 +21,10 @@ class MainWindow(QMainWindow):
         openTPTPFileAction.setShortcut('Ctrl+O')
         openTPTPFileAction.triggered.connect(self.openTPTPGrammarFile)
 
+        getTPTPFileFromWebAction = QAction('&Import TPTP Grammar File from Web', self)
+        getTPTPFileFromWebAction.setShortcut('Ctrl+I')
+        getTPTPFileFromWebAction.triggered.connect(self.getTPTPFileFromWeb)
+
         saveWithControlFileAction = QAction('&Reduce and save TPTP Grammar with Control File',self)
         saveWithControlFileAction.setShortcut('Ctrl+R')
         saveWithControlFileAction.triggered.connect(self.outputTPTPGrammarFromControlFile)
@@ -51,6 +55,7 @@ class MainWindow(QMainWindow):
         menu.addAction(outputTPTPGrammarFileFromSelectionAction)
         menu.addAction(toggleCommentsAction)
         menu.addAction(openTPTPFileAction)
+        menu.addAction(getTPTPFileFromWebAction)
         self.setWindowTitle('TPTP Grammar Reducer')
         self.showFullScreen()
 
@@ -208,4 +213,13 @@ class MainWindow(QMainWindow):
         if okPressed and start_symbol != '':
             self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
             self.graphBuilder.run(filename,start_symbol)
+            self.initTreeView(self.graphBuilder)
+
+    def getTPTPFileFromWeb(self):
+        file = InputOutput.import_tptp_grammar_from_web()
+        start_symbol, okPressed = QInputDialog.getText(self, "Input the desired start symbol", "Start Symbol:",
+                                                       QLineEdit.Normal, "<TPTP_file>")
+        if okPressed and start_symbol != '':
+            self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
+            self.graphBuilder.run(start_smbol=start_symbol,file=file,filename=None)
             self.initTreeView(self.graphBuilder)
