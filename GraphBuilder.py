@@ -318,20 +318,15 @@ class TPTPGraphBuilder():
         if((filename is not None) and (disable_rules_filname is not None)):
             rules_list = self.parser.run(filename)
             self.build_nodes_dictionary(rules_list)
-            self.disable_rules(InputOutput.read_text_from_file(disable_rules_filname),'<TPTP_file>')
-            #self.init_tree("<formula_role>")
-            #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
-            #InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
-            InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
-            #visited = {}
-            #self.print_rules_from_graph(self.nodes_dictionary.get(Node("<TPTP_file>",RuleType.GRAMMAR)),visited)
-            #self.print_rules_from_rules_list(rules_list)
-        elif(filename is not None):
-            rules_list = self.parser.run(filename)
-            self.build_nodes_dictionary(rules_list)
-            self.init_tree("<TPTP_file>")
+            start_symbol = disable_rules_filname.splitlines()[0]
+            self.disable_rules(InputOutput.read_text_from_file(disable_rules_filname),start_symbol)
+            #InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
+        #elif(filename is not None):
+            #rules_list = self.parser.run(filename)
+            #self.build_nodes_dictionary(rules_list)
+            #self.init_tree("<TPTP_file>")
             #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-            InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
+            #InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
 
 
 
