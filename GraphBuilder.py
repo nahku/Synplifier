@@ -300,9 +300,6 @@ class TPTPGraphBuilder():
             i = i + 1
         return comment_block_list
 
-    #def create_node_from_expression(self, expression):
-    #    return NTNode(None, expression.name,expression.productions_list)
-
     def run(self,filename: str,start_smbol: str, file: str = None):
         if(file is not None):
             rules_list = self.parser.run(file=file,filename=None)
@@ -323,17 +320,3 @@ class TPTPGraphBuilder():
             self.build_nodes_dictionary(rules_list)
             start_symbol = disable_rules_filname.splitlines()[0]
             self.disable_rules(InputOutput.read_text_from_file(disable_rules_filname),start_symbol)
-            #InputOutput.save_ordered_rules_from_graph("output_TPTP.txt",self.nodes_dictionary.get(Node("<start_symbol>",RuleType.GRAMMAR)))
-        #elif(filename is not None):
-            #rules_list = self.parser.run(filename)
-            #self.build_nodes_dictionary(rules_list)
-            #self.init_tree("<TPTP_file>")
-            #self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
-            #InputOutput.print_ordered_rules_from_graph(self.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR)))
-
-
-
-    #def __init__(self):
-    #    self.rules_test = []
-    #    self.nodes_dictionary = {}
-    #    self.parser = yacc.TPTPParser()
