@@ -1,1 +1,2 @@
+<TPTP_File>
 <annotated_formula>,::=,0,1,2,5
