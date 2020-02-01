@@ -1,2 +1,0 @@
-<thf_annotated>,::=,0
-<tff_annotated>,::=,0
