@@ -8,12 +8,19 @@ from PyQt5.QtWidgets import QAction, QMainWindow, QWidget, QMessageBox, QFileDia
 import GraphBuilder
 import InputOutput
 
+
 class MultipleStartSymbolsError(Exception):
     """Multiple Start Symbols Error"""
     pass
 
+
 class NoStartSymbolError(Exception):
-    """Multiple Start Symbols Error"""
+    """No Start Symbol Error"""
+    pass
+
+
+class NoImportedGrammarError(Exception):
+    """No Imported Grammar Error"""
     pass
 
 
@@ -116,11 +123,12 @@ class MainWindow(QMainWindow):
 
     def toggleComments(self):
         new_status = not self.commentStatus
-        for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):
-            flags = item.flags()
-            if (not (Qt.ItemIsUserCheckable & flags)):
-                item.setHidden(new_status)
-        self.commentStatus = new_status
+        if self.treeView is not None:
+            for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):
+                flags = item.flags()
+                if (not (Qt.ItemIsUserCheckable & flags)):
+                    item.setHidden(new_status)
+            self.commentStatus = new_status
 
     def outputControlFile(self):
         try:
@@ -132,12 +140,25 @@ class MainWindow(QMainWindow):
             QMessageBox.about(self, "Error", "A start symbol has to be selected")
         except MultipleStartSymbolsError:
             QMessageBox.about(self, "Error", "Multiple start symbols are not allowed")
-
+        except NoImportedGrammarError:
+            QMessageBox.about(self, "Error", "No grammar imported")
 
     def produceControlFile(self):
+        """Produces cotrol file string from gui selection.
+
+        :return:
+
+        :raises:
+            NoImportedGrammarError: No grammar has been imported.
+            MultipleStartSymbolsError: Multiple start symbols have been selected.
+            NoStartSymbolError: No start symbol has been selected.
+        """
         Entry = namedtuple("Entry", ["value", "rule_type"])
         entry_dictionary = {}
         start_symbol_selection = []
+        if self.treeView is None:
+            raise NoImportedGrammarError
+
         for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):
             parent = item.parent()
 
@@ -152,7 +173,6 @@ class MainWindow(QMainWindow):
                     entry = Entry(parent.text(0), GraphBuilder.RuleType.MACRO)
                 elif (rule_type == "TOKEN"):
                     entry = Entry(parent.text(0), GraphBuilder.RuleType.TOKEN)
-                # print(item.text(1) + " " + item.text(2), item.checkState(0))
                 parent = item.parent()
                 indexOfChild = parent.indexOfChild(item)
                 if entry not in entry_dictionary:
@@ -187,46 +207,63 @@ class MainWindow(QMainWindow):
         return control_string, start_symbol_selection[0]
 
     def reduceTPTPGrammarWithSelection(self):
-        control_string, _ = self.produceControlFile()
-        if (control_string is not None):
+        try:
+            control_string, _ = self.produceControlFile()
             self.graphBuilder.disable_rules(control_string)
             self.initTreeView(self.graphBuilder)
+        except NoStartSymbolError:
+            QMessageBox.about(self, "Error", "A start symbol has to be selected")
+        except MultipleStartSymbolsError:
+            QMessageBox.about(self, "Error", "Multiple start symbols are not allowed")
+        except NoImportedGrammarError:
+            QMessageBox.about(self, "Error", "No grammar imported")
 
     def createTPTPGrammarFileFromSelection(self):
         filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "", "TPTP Grammar File(*.txt);;")
-        control_string, start_symbol = self.produceControlFile()
-        if (start_symbol is not None):
-            graphBuilder = GraphBuilder.TPTPGraphBuilder()
-            graphBuilder.nodes_dictionary = self.graphBuilder.nodes_dictionary
-            graphBuilder.init_tree(start_symbol)
-            if (control_string is not None):
+        if filename:
+            try:
+                control_string, start_symbol = self.produceControlFile()
+                graphBuilder = GraphBuilder.TPTPGraphBuilder()
+                graphBuilder.nodes_dictionary = self.graphBuilder.nodes_dictionary
+                graphBuilder.init_tree(start_symbol)
                 self.graphBuilder.disable_rules(control_string)
                 start_node = self.graphBuilder.nodes_dictionary.get(
                     GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
-            if (start_node is not None):
-                InputOutput.save_ordered_rules_from_graph(filename, start_node)
-            else:
-                InputOutput.save_text_to_file("", filename)
+                if (start_node is not None):
+                    InputOutput.save_ordered_rules_from_graph(filename, start_node)
+                else:
+                    InputOutput.save_text_to_file("", filename)
+            except NoStartSymbolError:
+                QMessageBox.about(self, "Error", "A start symbol has to be selected")
+            except MultipleStartSymbolsError:
+                QMessageBox.about(self, "Error", "Multiple start symbols are not allowed")
+            except NoImportedGrammarError:
+                QMessageBox.about(self, "Error", "No grammar imported")
 
     def outputTPTPGrammarFromControlFile(self):
         control_filename, _ = QFileDialog.getOpenFileName(None, "Open Control File", "", "Control File (*.txt);;")
-        save_filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "",
-                                                       "TPTP Grammar File (*.txt);;")
-        control_string = InputOutput.read_text_from_file(control_filename)
-        graphBuilder = GraphBuilder.TPTPGraphBuilder()
-        graphBuilder.nodes_dictionary = copy.deepcopy(self.graphBuilder.nodes_dictionary)
-        graphBuilder.init_tree(control_string.splitlines()[0])
-        graphBuilder.disable_rules(control_string)
-        start_node = graphBuilder.nodes_dictionary.get(
-            GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
-        if (start_node is not None):
-            InputOutput.save_ordered_rules_from_graph(save_filename, start_node)
-        else:
-            InputOutput.save_text_to_file("", save_filename)
+        if control_filename:
+            save_filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "",
+                                                           "TPTP Grammar File (*.txt);;")
+            if save_filename:
+                control_string = InputOutput.read_text_from_file(control_filename)
+                if self.treeView is not None:
+                    graphBuilder = GraphBuilder.TPTPGraphBuilder()
+                    graphBuilder.nodes_dictionary = copy.deepcopy(self.graphBuilder.nodes_dictionary)
+                    graphBuilder.init_tree(control_string.splitlines()[0])
+                    graphBuilder.disable_rules(control_string)
+                    start_node = graphBuilder.nodes_dictionary.get(
+                        GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
+                    if (start_node is not None):
+                        InputOutput.save_ordered_rules_from_graph(save_filename, start_node)
+                    else:
+                        InputOutput.save_text_to_file("", save_filename)
+                else:
+                    QMessageBox.about(self, "Error", "No grammar imported")
 
     def openTPTPGrammarFile(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open TPTP Grammar File", "", "TPTP Grammar File (*.txt);;")
-        # if filename is empty
+        # if filename is not empty
         if filename:
             start_symbol, ok_pressed = QInputDialog.getText(self, "Input the desired start symbol", "Start Symbol:",
                                                             QLineEdit.Normal, "<TPTP_file>")
