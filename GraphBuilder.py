@@ -1,7 +1,7 @@
-import yacc
-import InputOutput
-from enum import Enum
 from collections import namedtuple
+from enum import Enum
+import InputOutput
+import yacc
 
 Node = namedtuple("Node", ["value", "productionProperty"])
 
