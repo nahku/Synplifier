@@ -1,6 +1,6 @@
-import ply.yacc as yacc
 from enum import Enum
 import lexer
+import ply.yacc as yacc
 
 
 class ProductionProperty(Enum):

@@ -1,5 +1,5 @@
-from collections import namedtuple
 import copy
+from collections import namedtuple
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -24,7 +24,7 @@ class NoImportedGrammarError(Exception):
     pass
 
 
-class MainWindow(QMainWindow):
+class View(QMainWindow):
 
     def __init__(self):
         super().__init__()
