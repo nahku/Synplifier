@@ -1,5 +1,6 @@
 import ply.lex as lex
 import os
+import re
 
 class TPTPLexer():
 
@@ -26,10 +27,7 @@ class TPTPLexer():
     #token definitions
 
     def t_COMMENT(self,t):
-        #r'%-.*'
-        #r'%[a-zA-Z\- ].*'
-        r'%[^\]].*'
-        #t.value = t.value.rstrip('\n')
+        r'^%.*$'
         return t
 
     def t_OPEN_SQUARE_BRACKET(self,t):
@@ -57,40 +55,41 @@ class TPTPLexer():
         return t
 
     def t_LGRAMMAR_EXPRESSION(self,t):
-        r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::='
+        r'<\w+>[\s]*::='
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
     def t_LTOKEN_EXPRESSION(self,t):
-        r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*::-'
+        r'<\w+>[\s]*::-'
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
     def t_LSTRICT_EXPRESSION(self,t):
-        r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*:=='
+        r'<\w+>[\s]*:=='
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
     def t_LMACRO_EXPRESSION(self,t):
-        r'<[a-zA-Z_][a-zA-Z_0-9]*>[\s]*:::'
+        r'<\w+>[\s]*:::'
+
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
     def t_NT_SYMBOL(self,t):
-        r'<[a-zA-Z_][a-zA-Z_0-9]*>'
-        #r'<..*?>'
+        r'<\w+>'
         return t
 
     def t_T_SYMBOL(self,t):
-        #r'[\.,a-zA-Z\_0-9\-<>][a-zA-Z\_0-9\-]*'
-        r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
-        #r'[a-zA-Z\_0-9\_0-9-\-/"!?/@/+-/*/%;\->&+=$\'\\\.,^^+=^~{}:<>][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
-        #r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][$\'\\\.,a-zA-Z\_0-9\0-9-\->&+=/"!?/@/+-/*/%;]*'
-        #r'..*'
+        #r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
+        #r'.+'
+        #r'(?!.*\[|.*\]|.*\(|.*\)|.*\||.*<\w+>).+'
+        r'[^<][\w]+[^>]'
+        #r'(?<!\[|\]|\(|\)|\|).+'
+        #r'[^\[^\]^\(^\)^\|]+(?!<.>)'
         return t
 
     #error handling
@@ -110,15 +109,14 @@ class TPTPLexer():
         data = file.read()
         return data
 
-    #def run(self):
-    #
-    #    data = self.import_tptp_file('TPTP_BNF.txt')
-    #    self.lexer.input(data)
-    #    while 1:
-    #        tok = lex.token()
-    #        if not tok: break  # No more input
-    #        print(tok)
+    def debug(self,data):
+
+        self.lexer.input(data)
+        while 1:
+            tok = lex.token()
+            if not tok: break  # No more input
+            print(tok)
 
     def __init__(self):
         # Build the lexer
-        self.lexer = lex.lex(module=self)
+        self.lexer = lex.lex(module=self,reflags=re.M)
