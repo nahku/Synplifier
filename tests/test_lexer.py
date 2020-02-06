@@ -11,6 +11,7 @@ def test_comment():
         tok = lexer.token()
         if not tok: break  # No more input
         if tok.type != 'COMMENT':
+            print(tok.type)
             type = False
     assert type
 
