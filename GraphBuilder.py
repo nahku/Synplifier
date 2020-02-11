@@ -1,7 +1,9 @@
 from collections import namedtuple
 from enum import Enum
+from typing import List
 import InputOutput
 import yacc
+
 
 Node = namedtuple("Node", ["value", "productionProperty"])
 
@@ -37,6 +39,16 @@ class NTNode():
         :param children: List of children that should be added to NTNode object.
         """
         self.children.append(children)
+
+    def extend_comment_block(self, comment_block: yacc.COMMENT_BLOCK):
+        """"Append comment block to comment block of this node.
+
+        :param comment_block: COMMENT_BLOCK to append
+        """
+        if self.comment_block is None:
+            self.comment_block = comment_block
+        else:
+            self.comment_block.list.extend(comment_block.list)
 
 
 class TPTPGraphBuilder():
@@ -245,32 +257,54 @@ class TPTPGraphBuilder():
         return children
 
     def build_nodes_dictionary(self, rules_list):
-
-        comment_block_buffer = None
         index = 0
-        for i in rules_list.list:
-            if isinstance(i, yacc.COMMENT_BLOCK):
-                comment_block_buffer_list = self.split_comment_block_by_top_of_page(i)
-                if len(comment_block_buffer_list) == 1:
-                    comment_block_buffer = comment_block_buffer_list[0]
-                elif index == 0:
-                    comment_block_buffer = yacc.COMMENT_BLOCK(
-                        comment_block_buffer_list[0].list + comment_block_buffer_list[1].list)
-                else:
-                    rule_type = self.find_rule_type_for_expression(rules_list.list[index - 1])
-                    if (self.nodes_dictionary.get(
-                            Node(rules_list.list[index - 1].name, rule_type)).comment_block is None):
-                        rules_list.list[index - 1].comment_block = comment_block_buffer_list[0]
+        for expression in rules_list.list:
+            if not isinstance(expression,yacc.COMMENT_BLOCK):
+                rule_type = self.find_rule_type_for_expression(expression)
+                self.nodes_dictionary.update({Node(expression.name, rule_type): NTNode(expression.name, expression.productions_list, rule_type,
+                                                                                  None, expression.position)})
+        self.assign_comments_to_rules(rules_list)
+
+
+    def assign_comments_to_rules(self,rules_list):
+        """ Assign comments to rules with heuristic method.
+
+        :param rules_list: List of rules.
+        """
+        for index, expression in enumerate(rules_list.list):
+            if isinstance(expression,yacc.COMMENT_BLOCK):
+                comment_block_list = self.split_comment_block_by_top_of_page(expression)
+                if len(comment_block_list) == 1:
+                    if index < len(rules_list.list)-1:
+                        # if comment is not at the end assign comment to expression after
+                        next_expression = rules_list.list[index+1]
+                        self.nodes_dictionary[Node(next_expression.name,self.find_rule_type_for_expression(next_expression))].extend_comment_block(comment_block_list[0])
                     else:
-                        rules_list.list[index - 1].comment_block.list = rules_list.list[index - 1].comment_block.list + \
-                                                                        comment_block_buffer_list[0]
-                    comment_block_buffer = comment_block_buffer_list[1]
-            else:
-                rule_type = self.find_rule_type_for_expression(i)
-                self.nodes_dictionary.update({Node(i.name, rule_type): NTNode(i.name, i.productions_list, rule_type,
-                                                                              comment_block_buffer, i.position)})
-                comment_block_buffer = None
-            index = index + 1
+                        # if comment at the end of file append to rule before
+                        previous_expression = rules_list.list[index-1]
+                        self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[0])
+                elif len(comment_block_list) == 2:
+                    if index != 0:
+                        # if comment not at the beginning of file assign to rule before
+                        previous_expression = rules_list.list[index-1]
+                        self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[0])
+                    else:
+                        # if comment at the beginning of file assign to rule after
+                        next_expression = rules_list.list[index+1]
+                        self.nodes_dictionary[Node(next_expression.name,self.find_rule_type_for_expression(next_expression))].extend_comment_block(comment_block_list[0])
+
+                    if index < len(rules_list.list)-1:
+                        # if comment not at the end of file assign to rule after
+                        next_expression = rules_list.list[index+1]
+                        self.nodes_dictionary[Node(next_expression.name,self.find_rule_type_for_expression(next_expression))].extend_comment_block(comment_block_list[1])
+                    else:
+                        # if comment at the end of file assign to rule before
+                        previous_expression = rules_list.list[index-1]
+                        self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[1])
+
+            elif len(comment_block_list) > 2:
+                print("Hallo")
+
 
     def find_rule_type_for_expression(self, expression):
         """Find the RuleType of an expression.
@@ -290,28 +324,59 @@ class TPTPGraphBuilder():
             rule_type = RuleType.STRICT
         return rule_type
 
-    # todo commentblock just consisting of 1 line with top of page
-    def split_comment_block_by_top_of_page(self, comment_block: yacc.COMMENT_BLOCK) -> list[yacc.COMMENT_BLOCK]:
+    def find_top_of_page_line_ids(self, comment_block: yacc.COMMENT_BLOCK) -> List[int]:
+        """Find the IDs of top of page lines in a COMMENT_BLOCK ordered ascending.
+
+        :param comment_block:
+        :return: List of IDs of top of page lines.
+        :rtype: List[int]
+        """
+        index = 0
+        index_list = []
+        for line in comment_block.list:
+            if line == "%----Top of Page---------------------------------------------------------------":
+                index_list.append(index)
+            index += 1
+        return index_list
+
+    def split_comment_block_by_top_of_page(self, comment_block: yacc.COMMENT_BLOCK) -> List[yacc.COMMENT_BLOCK]:
         """Split a COMMENT_BLOCK by top of page lines and return a list of splitted COMMENT_BLOCKs without
         the top of page lines.
 
         :param comment_block: COMMENT_BLOCK to be splitted by top of page.
         :return: List of COMMENT_BLOCKs splitted by top of page.
-        :rtype: list[yacc.COMMENT_BLOCK]
+        :rtype: List[yacc.COMMENT_BLOCK]
         """
-        comment_block_list = [comment_block]
-        i = 0
-        for line in comment_block.list:
-            if (line == "%----Top of Page---------------------------------------------------------------"):
-                list_end_index = len(comment_block.list) - 1
-                del comment_block.list[i]
-                if (i != 0) and (i is not list_end_index):
-                    comment_block_list = [yacc.COMMENT_BLOCK(comment_block.list[0:i]),
-                                          yacc.COMMENT_BLOCK(comment_block.list[i:len(comment_block.list)])]
+        top_of_page_indexes = self.find_top_of_page_line_ids(comment_block)
+        comment_block_list = []
+        if top_of_page_indexes == []:
+            comment_block_list = [comment_block]
+        else:
+            #potential leading comment block
+            first_top_of_page_index = top_of_page_indexes[0]
+            if first_top_of_page_index != 0:
+                #if only first line
+                if first_top_of_page_index-1 == 0:
+                    first_comment_block = yacc.COMMENT_BLOCK([comment_block.list[0]])
                 else:
-                    comment_block_list = [comment_block]
+                    first_comment_block = yacc.COMMENT_BLOCK(comment_block.list[0:first_top_of_page_index-1])
+                comment_block_list.append(first_comment_block)
 
-            i = i + 1
+            for index_in_list, index in enumerate(top_of_page_indexes):
+                #if top of page is not last line
+                if(index != len(comment_block.list)-1):
+                    start = index + 1
+                    if(index_in_list+1 < len(top_of_page_indexes)):
+                        end = top_of_page_indexes[index_in_list+1]-1
+                    else:
+                        end = len(comment_block.list)-1
+
+                    if start == end:
+                        new_comment_block = yacc.COMMENT_BLOCK([comment_block.list[start]])
+                    else:
+                        new_comment_block = yacc.COMMENT_BLOCK(comment_block.list[start:end])
+                    comment_block_list.append(new_comment_block)
+
         return comment_block_list
 
     def run(self, filename: str, start_symbol: str, file: str = None):

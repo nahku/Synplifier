@@ -283,5 +283,5 @@ class View(QMainWindow):
 
     def createTPTPView(self, start_symbol, file=None, filename=None):
         self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
-        self.graphBuilder.run(start_smbol=start_symbol, file=file, filename=filename)
+        self.graphBuilder.run(start_symbol=start_symbol, file=file, filename=filename)
         self.initTreeView(self.graphBuilder)
