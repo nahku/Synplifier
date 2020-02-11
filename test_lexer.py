@@ -1,11 +1,11 @@
-from .. import  lexer as lex
+import lexer as lex
 import os
 
 def test_comment():
     tptpLexer = lex.TPTPLexer()
     lexer = tptpLexer.lexer
     dirpath = os.getcwd()
-    lexer.input(tptpLexer.import_tptp_file(dirpath+ '/tests/testfiles/TestCaseComment.txt'))
+    lexer.input(tptpLexer.import_tptp_file(dirpath+ '/testfiles/TestCaseComment.txt'))
     type = True
     while 1:
         tok = lexer.token()

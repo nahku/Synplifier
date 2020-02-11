@@ -79,6 +79,14 @@ class COMMENT_BLOCK:
     def __init__(self, list):
         self.list = list
 
+    def __eq__(self, other):
+        if not isinstance(other, COMMENT_BLOCK):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+        return self.list == other.list
+
+    def __hash__(self):
+        return hash(self.list)
 
 class TPTPParser():
 
