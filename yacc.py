@@ -272,7 +272,7 @@ class TPTPParser():
         :return: List of all rules from TPTP grammar file with correct square bracket interpretation.
         """
         for production_rule in rules_list.list:
-            if ((isinstance(production_rule, GRAMMAR_EXPRESSION)) or (isinstance(production_rule, STRICT_EXPRESSION))):
+            if (isinstance(production_rule, GRAMMAR_EXPRESSION)) or (isinstance(production_rule, STRICT_EXPRESSION)):
                 self.replace_optional_square_brackets_by_terminal(production_rule)
         return rules_list
 
@@ -318,10 +318,11 @@ class TPTPParser():
                 i = i + 1
         return rules_list
 
-    def run(self, filename: str, file: str = None) -> GRAMMAR_LIST:
-        """Run parser on TPTP grammar file.
+    def run(self, filename: str = None, file: str = None) -> GRAMMAR_LIST:
+        """Run parser on TPTP grammar file either passed as string or as filepath.
 
         :param filename: Filename of the TPTP grammar file.
+        :param file: TPTP grammar file as string.
         :return: Grammar_List contatining the representation of the TPTP grammar.
         """
         if (file is None):
