@@ -331,7 +331,7 @@ class TPTPParser():
 
         :param filename: Filename of the TPTP grammar file.
         :param file: TPTP grammar file as string.
-        :return: Grammar_List contatining the representation of the TPTP grammar.
+        :return: Grammar_List containing the representation of the TPTP grammar.
         """
         if (file is None):
             result = self.lexer.import_tptp_file(filename)
