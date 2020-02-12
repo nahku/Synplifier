@@ -62,6 +62,10 @@ class View(QMainWindow):
         toggleCommentsAction.setShortcut('Ctrl+C')
         toggleCommentsAction.triggered.connect(self.toggleComments)
 
+        loadControlFileAction = QAction('&Load Control File', self)
+        loadControlFileAction.setShortcut('Ctrl+C+I')
+        loadControlFileAction.triggered.connect(self.importControlFile)
+
 
         saveWithControlFileCommentsAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
         saveWithControlFileCommentsAction.triggered.connect(self.outputTPTPGrammarFromControlFileWithComments)
@@ -80,6 +84,7 @@ class View(QMainWindow):
         menu.addAction(toggleCommentsAction)
         menu.addAction(openTPTPFileAction)
         menu.addAction(getTPTPFileFromWebAction)
+        menu.addAction(loadControlFileAction)
         commentMenu = menubar.addMenu("With Comments")
         commentMenu.addAction(saveWithControlFileCommentsAction)
         commentMenu.addAction(outputTPTPGrammarFileFromSelectionCommentsAction)
@@ -139,6 +144,57 @@ class View(QMainWindow):
                 if (not (Qt.ItemIsUserCheckable & flags)):
                     item.setHidden(new_status)
             self.commentStatus = new_status
+
+    def loadControlFile(self):
+        """Loads control file and checks tree view items accordingly.
+
+        """
+        if self.treeView is not None:
+            control_filename, _ = QFileDialog.getOpenFileName(None, "Open Control File", "", "Control File (*.txt);;")
+
+            # uncheck all left symbols, check all right symbols
+            for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):
+                if item.parent() is None:
+                    flags = item.flags()
+                    if (Qt.ItemIsUserCheckable & flags):
+                        #item is not a comment
+                        item.setCheckState(0, QtCore.Qt.Unchecked)
+                else:
+                    item.setCheckState(0,QtCore.Qt.Checked)
+
+            if control_filename:
+                disable_rules_string = InputOutput.read_text_from_file(control_filename)
+
+                lines = disable_rules_string.splitlines()
+                start_symbol = lines[0]
+                for item in self.treeView.findItems(start_symbol, Qt.MatchFixedString | Qt.MatchRecursive):
+                    item.setCheckState(0, QtCore.Qt.Checked)
+                del lines[0]
+
+                for i in lines:
+                    data = i.split(",")
+                    nt_name = data[0]
+                    rule_symbol = data[1]
+                    del data[0:2]
+                    data = list(map(int, data))
+                    rule_type_name = ""
+                    if rule_symbol == "::=":
+                        rule_type_name = "GRAMMAR"
+                    elif rule_symbol == "::-":
+                        rule_type_name = "TOKEN"
+                    elif rule_symbol == ":==":
+                        rule_type_name = "STRICT"
+                    elif rule_symbol == ":::":
+                        rule_type_name = "MACRO"
+
+                    # find nt
+                    for item in self.treeView.findItems(nt_name, Qt.MatchFixedString | Qt.MatchRecursive):
+                        if item.parent() is None and item.text(1) == rule_type_name:
+                            for index in data:
+                                #if child exists
+                                if child is not None:
+                                    child = item.child(index)
+                                    child.setCheckState(0, QtCore.Qt.Unchecked)
 
     def outputControlFile(self):
         try:
