@@ -15,7 +15,7 @@ class RuleType(Enum):
     MACRO = 4
 
 
-class NTNode():
+class NTNode:
     def __init__(self, value: str, productions_list: yacc.PRODUCTIONS_LIST, rule_type: RuleType,
                  comment_block: yacc.COMMENT_BLOCK, position: int):
         """Creates an NTNode.
@@ -301,9 +301,8 @@ class TPTPGraphBuilder():
                         # if comment at the end of file assign to rule before
                         previous_expression = rules_list.list[index-1]
                         self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[1])
-
-            elif len(comment_block_list) > 2:
-                print("Hallo")
+                elif len(comment_block_list) > 2:
+                    print("Hallo")
 
 
     def find_rule_type_for_expression(self, expression):

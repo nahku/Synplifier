@@ -1,0 +1,5 @@
+<comment>              ::- <comment_line>|<comment_block>
+<comment_line>         ::- [%]<printable_char>*
+<comment_block>        ::: [/][*]<not_star_slash>[*][*]*[/]
+<not_star_slash>       ::: ([^*]*[*][*]*[^/*])*[^*]*
+<printable_char>       ::: .

@@ -96,7 +96,7 @@ def print_ordered_rules_from_graph(start_node):
                 print(line)
 
 
-def save_ordered_rules_from_graph(filename, start_node):
+def save_ordered_rules_from_graph(filename, start_node, print_option = "w"):
     visited = {}
     print_list = []
     print_list = create_print_list(start_node, visited, print_list)
@@ -106,8 +106,22 @@ def save_ordered_rules_from_graph(filename, start_node):
         if (tuple.position >= 0):
             for line in tuple.line_list:
                 print_string += line + "\n"
-    with open(filename, "w") as text_file:
+    with open(filename, print_option) as text_file:
         text_file.write(print_string)
+
+def save_ordered_rules_from_graph_with_comments(filename: str, start_node):
+    """Save the rules from graph with comment symbols at the end.
+
+    :param filename: Filename where string should be stored.
+    :param start_node: Start node of graph.
+    """
+    save_ordered_rules_from_graph(filename,start_node)
+
+    graphBuilder = GraphBuilder.TPTPGraphBuilder()
+    graphBuilder.run(start_symbol="<comment>", filename="comment.txt")
+    start_node = graphBuilder.nodes_dictionary.get(
+        GraphBuilder.Node("<comment>", GraphBuilder.RuleType.TOKEN))
+    save_ordered_rules_from_graph(filename, start_node, print_option="a")
 
 
 def save_text_to_file(text: str, filename: str):

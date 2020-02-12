@@ -31,7 +31,7 @@
 %----Top of Page---------------------------------------------------------------
 %----Files. Empty file is OK.
 <TPTP_file>            ::= <TPTP_input>*
-<TPTP_input>           ::= <annotated_formula> | <include>
+<TPTP_input>           ::= <annotated_formula> | <include> | <comment>
 
 %----Formula records
 <annotated_formula>    ::= <thf_annotated> | <tff_annotated> | <tcf_annotated> |

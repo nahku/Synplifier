@@ -44,11 +44,11 @@ class View(QMainWindow):
 
         saveWithControlFileAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
         saveWithControlFileAction.setShortcut('Ctrl+R')
-        saveWithControlFileAction.triggered.connect(self.outputTPTPGrammarFromControlFile)
+        saveWithControlFileAction.triggered.connect(self.outputTPTPGrammarFromControlFileWithoutComments)
 
         outputTPTPGrammarFileFromSelectionAction = QAction('&Create TPTP Grammar File from Selection', self)
         outputTPTPGrammarFileFromSelectionAction.setShortcut('Ctrl+R')
-        outputTPTPGrammarFileFromSelectionAction.triggered.connect(self.createTPTPGrammarFileFromSelection)
+        outputTPTPGrammarFileFromSelectionAction.triggered.connect(self.createTPTPGrammarFileFromSelectionWithoutComments)
 
         produceReducedTPTPGrammarAction = QAction('&Reduced TPTP Grammar with Selection', self)
         produceReducedTPTPGrammarAction.setShortcut('Ctrl+B')
@@ -62,6 +62,13 @@ class View(QMainWindow):
         toggleCommentsAction.setShortcut('Ctrl+C')
         toggleCommentsAction.triggered.connect(self.toggleComments)
 
+
+        saveWithControlFileCommentsAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
+        saveWithControlFileCommentsAction.triggered.connect(self.outputTPTPGrammarFromControlFileWithComments)
+
+        outputTPTPGrammarFileFromSelectionCommentsAction = QAction('&Create TPTP Grammar File from Selection', self)
+        outputTPTPGrammarFileFromSelectionCommentsAction.triggered.connect(self.createTPTPGrammarFileFromSelectionWithComments)
+
         menubar = QMenuBar()
         self.setMenuBar(menubar)
         menubar.setNativeMenuBar(False)
@@ -73,6 +80,9 @@ class View(QMainWindow):
         menu.addAction(toggleCommentsAction)
         menu.addAction(openTPTPFileAction)
         menu.addAction(getTPTPFileFromWebAction)
+        commentMenu = menubar.addMenu("With Comments")
+        commentMenu.addAction(saveWithControlFileCommentsAction)
+        commentMenu.addAction(outputTPTPGrammarFileFromSelectionCommentsAction)
         self.setWindowTitle('TPTP Grammar Reducer')
         self.showFullScreen()
 
@@ -144,7 +154,7 @@ class View(QMainWindow):
             QMessageBox.about(self, "Error", "No grammar imported")
 
     def produceControlFile(self):
-        """Produces cotrol file string from gui selection.
+        """Produces control file string from gui selection.
 
         :return:
 
@@ -218,7 +228,13 @@ class View(QMainWindow):
         except NoImportedGrammarError:
             QMessageBox.about(self, "Error", "No grammar imported")
 
-    def createTPTPGrammarFileFromSelection(self):
+    def createTPTPGrammarFileFromSelectionWithComments(self):
+        self.createTPTPGrammarFileFromSelection(withComments=True)
+
+    def createTPTPGrammarFileFromSelectionWithoutComments(self):
+        self.createTPTPGrammarFileFromSelection(withComments=False)
+
+    def createTPTPGrammarFileFromSelection(self,withComments: bool):
         filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "", "TPTP Grammar File(*.txt);;")
         if filename:
             try:
@@ -230,7 +246,10 @@ class View(QMainWindow):
                 start_node = self.graphBuilder.nodes_dictionary.get(
                     GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                 if (start_node is not None):
-                    InputOutput.save_ordered_rules_from_graph(filename, start_node)
+                    if withComments:
+                        InputOutput.save_ordered_rules_from_graph_with_comments(filename, start_node)
+                    else:
+                        InputOutput.save_ordered_rules_from_graph(filename, start_node)
                 else:
                     InputOutput.save_text_to_file("", filename)
             except NoStartSymbolError:
@@ -240,7 +259,13 @@ class View(QMainWindow):
             except NoImportedGrammarError:
                 QMessageBox.about(self, "Error", "No grammar imported")
 
-    def outputTPTPGrammarFromControlFile(self):
+    def outputTPTPGrammarFromControlFileWithComments(self):
+        self.outputTPTPGrammarFromControlFile(withComments=True)
+
+    def outputTPTPGrammarFromControlFileWithoutComments(self):
+        self.outputTPTPGrammarFromControlFile(withComments=False)
+
+    def outputTPTPGrammarFromControlFile(self, withComments: bool):
         control_filename, _ = QFileDialog.getOpenFileName(None, "Open Control File", "", "Control File (*.txt);;")
         if control_filename:
             save_filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "",
@@ -255,7 +280,10 @@ class View(QMainWindow):
                     start_node = graphBuilder.nodes_dictionary.get(
                         GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                     if (start_node is not None):
-                        InputOutput.save_ordered_rules_from_graph(save_filename, start_node)
+                        if withComments:
+                            InputOutput.save_ordered_rules_from_graph_with_comments(save_filename, start_node)
+                        else:
+                            InputOutput.save_ordered_rules_from_graph(save_filename, start_node)
                     else:
                         InputOutput.save_text_to_file("", save_filename)
                 else:
