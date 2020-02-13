@@ -64,7 +64,7 @@ class View(QMainWindow):
 
         loadControlFileAction = QAction('&Load Control File', self)
         loadControlFileAction.setShortcut('Ctrl+C+I')
-        loadControlFileAction.triggered.connect(self.importControlFile)
+        loadControlFileAction.triggered.connect(self.loadControlFile)
 
 
         saveWithControlFileCommentsAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
@@ -191,6 +191,7 @@ class View(QMainWindow):
                     for item in self.treeView.findItems(nt_name, Qt.MatchFixedString | Qt.MatchRecursive):
                         if item.parent() is None and item.text(1) == rule_type_name:
                             for index in data:
+                                child = item.child(index)
                                 #if child exists
                                 if child is not None:
                                     child = item.child(index)
