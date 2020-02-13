@@ -89,7 +89,7 @@ class View(QMainWindow):
         commentMenu.addAction(saveWithControlFileCommentsAction)
         commentMenu.addAction(outputTPTPGrammarFileFromSelectionCommentsAction)
         self.setWindowTitle('TPTP Grammar Reducer')
-        self.showFullScreen()
+        self.showMaximized()
 
     def initTreeView(self, graphBuilder: GraphBuilder.TPTPGraphBuilder) -> None:
         self.treeView = QTreeWidget()
