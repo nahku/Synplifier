@@ -64,7 +64,7 @@ class View(QMainWindow):
 
         loadControlFileAction = QAction('&Load Control File', self)
         loadControlFileAction.setShortcut('Ctrl+C+I')
-        loadControlFileAction.triggered.connect(self.importControlFile)
+        loadControlFileAction.triggered.connect(self.loadControlFile)
 
 
         saveWithControlFileCommentsAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
@@ -89,7 +89,7 @@ class View(QMainWindow):
         commentMenu.addAction(saveWithControlFileCommentsAction)
         commentMenu.addAction(outputTPTPGrammarFileFromSelectionCommentsAction)
         self.setWindowTitle('TPTP Grammar Reducer')
-        self.showFullScreen()
+        self.showMaximized()
 
     def initTreeView(self, graphBuilder: GraphBuilder.TPTPGraphBuilder) -> None:
         self.treeView = QTreeWidget()
