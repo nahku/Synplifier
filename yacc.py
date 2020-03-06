@@ -13,6 +13,7 @@ class SYMBOL:
     def __init__(self, value):
         self.value = value
 
+
 class T_SYMBOL(SYMBOL):
     def __init__(self, value, property=ProductionProperty.NONE):
         super().__init__(value)
@@ -72,23 +73,23 @@ class PRODUCTION:
 
 
 class PRODUCTION_ELEMENT:
-    def __init__(self, name, productionProperty=ProductionProperty.NONE):
-        self.name = name
+    def __init__(self, symbol: SYMBOL, productionProperty=ProductionProperty.NONE):
+        self.symbol = symbol
         self.productionProperty = productionProperty  # none, repetition or optional
 
 
 class COMMENT_BLOCK:
-    def __init__(self, list):
-        self.list = list
+    def __init__(self, comment_lines):
+        self.comment_lines = comment_lines
 
     def __eq__(self, other):
         if not isinstance(other, COMMENT_BLOCK):
             # don't attempt to compare against unrelated types
             return NotImplemented
-        return self.list == other.list
+        return self.comment_lines == other.comment_lines
 
     def __hash__(self):
-        return hash(self.list)
+        return hash(self.comment_lines)
 
 class TPTPParser():
 
@@ -122,7 +123,7 @@ class TPTPParser():
         if len(p) == 2:
             p[0] = COMMENT_BLOCK([p[1]])
         elif len(p) == 3:
-            p[1].list.append(p[2])
+            p[1].comment_lines.append(p[2])
             p[0] = p[1]
 
     def p_grammar_expression(self, p):

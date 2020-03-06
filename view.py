@@ -123,7 +123,7 @@ class View(QMainWindow):
                     child_item.setCheckState(0, QtCore.Qt.Checked)
                     item.addChild(child_item)
                 if (node.comment_block is not None):
-                    comment = "\n".join(node.comment_block.list)
+                    comment = "\n".join(node.comment_block.comment_lines)
                     comment_item = QTreeWidgetItem([comment])
                     self.treeView.addTopLevelItem(comment_item)
                     comment_item.setHidden(False)
@@ -137,6 +137,9 @@ class View(QMainWindow):
         self.setCentralWidget(widget)
 
     def toggleComments(self):
+        """Shows/hides comments in gui.
+
+        """
         new_status = not self.commentStatus
         if self.treeView is not None:
             for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):

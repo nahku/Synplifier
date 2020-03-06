@@ -40,7 +40,7 @@ class NTNode:
         """
         self.children.append(children)
 
-    def extend_comment_block(self, comment_block: yacc.COMMENT_BLOCK):
+    def extend_comment_block(self, comment_block: yacc.COMMENT_BLOCK) -> None:
         """"Append comment block to comment block of this node.
 
         :param comment_block: COMMENT_BLOCK to append
@@ -48,7 +48,7 @@ class NTNode:
         if self.comment_block is None:
             self.comment_block = comment_block
         else:
-            self.comment_block.list.extend(comment_block.list)
+            self.comment_block.comment_lines.extend(comment_block.comment_lines)
 
 
 class TPTPGraphBuilder():
@@ -102,11 +102,11 @@ class TPTPGraphBuilder():
             elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
                 self.search_productions_list_for_nt(node, i)
             elif isinstance(i, yacc.PRODUCTION_ELEMENT):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    children_node = self.find_nt_key(i, i.name.value)
+                if not isinstance(i.symbol, yacc.T_SYMBOL):
+                    children_node = self.find_nt_key(i, i.symbol.value)
                     for j in children_node:
                         children.append(j)  # all children of production
-                    i.name = children_node
+                    i.symbol = children_node
         node.children.append(children)
 
     def search_production(self, production, nt_name):
@@ -117,8 +117,8 @@ class TPTPGraphBuilder():
             elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
                 self.search_productions_list(i, nt_name)
             elif isinstance(i, yacc.PRODUCTION_ELEMENT):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    if i.name.value == nt_name:
+                if not isinstance(i.symbol, yacc.T_SYMBOL):
+                    if i.symbol.value == nt_name:
                         return True
         return False
 
@@ -332,7 +332,7 @@ class TPTPGraphBuilder():
         """
         index = 0
         index_list = []
-        for line in comment_block.list:
+        for line in comment_block.comment_lines:
             if line == "%----Top of Page---------------------------------------------------------------":
                 index_list.append(index)
             index += 1
@@ -356,24 +356,24 @@ class TPTPGraphBuilder():
             if first_top_of_page_index != 0:
                 #if only first line
                 if first_top_of_page_index-1 == 0:
-                    first_comment_block = yacc.COMMENT_BLOCK([comment_block.list[0]])
+                    first_comment_block = yacc.COMMENT_BLOCK([comment_block.comment_lines[0]])
                 else:
-                    first_comment_block = yacc.COMMENT_BLOCK(comment_block.list[0:first_top_of_page_index-1])
+                    first_comment_block = yacc.COMMENT_BLOCK(comment_block.comment_lines[0:first_top_of_page_index-1])
                 comment_block_list.append(first_comment_block)
 
             for index_in_list, index in enumerate(top_of_page_indexes):
                 #if top of page is not last line
-                if(index != len(comment_block.list)-1):
+                if(index != len(comment_block.comment_lines)-1):
                     start = index + 1
                     if(index_in_list+1 < len(top_of_page_indexes)):
                         end = top_of_page_indexes[index_in_list+1]-1
                     else:
-                        end = len(comment_block.list)-1
+                        end = len(comment_block.comment_lines)-1
 
                     if start == end:
-                        new_comment_block = yacc.COMMENT_BLOCK([comment_block.list[start]])
+                        new_comment_block = yacc.COMMENT_BLOCK([comment_block.comment_lines[start]])
                     else:
-                        new_comment_block = yacc.COMMENT_BLOCK(comment_block.list[start:end])
+                        new_comment_block = yacc.COMMENT_BLOCK(comment_block.comment_lines[start:end])
                     comment_block_list.append(new_comment_block)
 
         return comment_block_list
