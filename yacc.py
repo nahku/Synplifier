@@ -9,43 +9,45 @@ class ProductionProperty(Enum):
     OPTIONAL = 3
 
 
-class T_SYMBOL:
-    def __init__(self, value, property=ProductionProperty.NONE):
-        self.value = value
-        self.property = property
-
-
-class NT_SYMBOL:
+class SYMBOL:
     def __init__(self, value):
         self.value = value
 
+class T_SYMBOL(SYMBOL):
+    def __init__(self, value, property=ProductionProperty.NONE):
+        super().__init__(value)
+        self.property = property
 
-class GRAMMAR_EXPRESSION:
+
+class NT_SYMBOL(SYMBOL):
+    def __init__(self, value):
+        super().__init__(value)
+
+
+class EXPRESSION:
     def __init__(self, name, productions_list):
         self.name = name
         self.productions_list = productions_list
         self.position = None
 
-
-class TOKEN_EXPRESSION:
+class GRAMMAR_EXPRESSION(EXPRESSION):
     def __init__(self, name, productions_list):
-        self.name = name
-        self.productions_list = productions_list
-        self.position = None
+        super().__init__(name,productions_list)
 
 
-class STRICT_EXPRESSION:
+class TOKEN_EXPRESSION(EXPRESSION):
     def __init__(self, name, productions_list):
-        self.name = name
-        self.productions_list = productions_list
-        self.position = None
+        super().__init__(name, productions_list)
 
 
-class MACRO_EXPRESSION:
+class STRICT_EXPRESSION(EXPRESSION):
     def __init__(self, name, productions_list):
-        self.name = name
-        self.productions_list = productions_list
-        self.position = None
+        super().__init__(name, productions_list)
+
+
+class MACRO_EXPRESSION(EXPRESSION):
+    def __init__(self, name, productions_list):
+        super().__init__(name, productions_list)
 
 
 class GRAMMAR_LIST:
@@ -226,16 +228,11 @@ class TPTPParser():
 
 
         """
-        # |    production ALTERNATIVE_SYMBOL OPEN_PARENTHESIS production_element CLOSE_PARENTHESIS
         if len(p) == 2:
             p[0] = PRODUCTION([p[1]])
         elif len(p) == 3:
             p[1].list.append(p[2])
             p[0] = p[1]
-        # elif len(p) == 4 and p[2] == '|':
-        #   p[1].productionProperty = ProductionProperty.XOR
-        #  p[1].list.append(p[3])
-        # p[0] = p[1]
         elif len(p) == 4 and type(p[2]) is PRODUCTION:
             p[2].list.insert(0, PRODUCTION_ELEMENT(T_SYMBOL('(')))
             p[2].list.append(PRODUCTION_ELEMENT(T_SYMBOL(')')))
@@ -314,7 +311,7 @@ class TPTPParser():
             i = i + 1
 
     def number_rules(self, rules_list: GRAMMAR_LIST) -> GRAMMAR_LIST:
-        """Number rules by occurence in TPTP gramar file.
+        """Number rules by occurrence in TPTP gramar file.
 
         :param rules_list:  List of all rules from the TPTP grammar file.
         :return: List of all rules from TPTP grammar file numbered by occurence.
