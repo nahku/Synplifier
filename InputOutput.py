@@ -1,7 +1,7 @@
 from collections import namedtuple
 from bs4 import BeautifulSoup
 import urllib
-import yacc
+import Parser
 import GraphBuilder
 
 PrintListEntry = namedtuple("PrintListEntry", ["position", "line_list"])
@@ -20,9 +20,9 @@ def import_tptp_grammar_from_web() -> str:
 
 def print_rules_from_rules_list(rules_list):
     for i in rules_list.list:
-        if (isinstance(i, yacc.MACRO_EXPRESSION) | isinstance(i, yacc.STRICT_EXPRESSION) | isinstance(i,
-                                                                                                      yacc.GRAMMAR_EXPRESSION) | isinstance(
-                i, yacc.TOKEN_EXPRESSION)):
+        if (isinstance(i, Parser.MACRO_EXPRESSION) | isinstance(i, Parser.STRICT_EXPRESSION) | isinstance(i,
+                                                                                                          Parser.GRAMMAR_EXPRESSION) | isinstance(
+                i, Parser.TOKEN_EXPRESSION)):
             print_expression(i)
             print("")
         else:
@@ -137,38 +137,38 @@ def read_text_from_file(filename: str) -> str:
 
 def print_expression(expression):
     print_wo_newline(expression.name)
-    if (isinstance(expression, yacc.GRAMMAR_EXPRESSION)):
+    if (isinstance(expression, Parser.GRAMMAR_EXPRESSION)):
         print_wo_newline(" ::= ")
-    elif (isinstance(expression, yacc.TOKEN_EXPRESSION)):
+    elif (isinstance(expression, Parser.TOKEN_EXPRESSION)):
         print_wo_newline(" ::- ")
-    elif (isinstance(expression, yacc.STRICT_EXPRESSION)):
+    elif (isinstance(expression, Parser.STRICT_EXPRESSION)):
         print_wo_newline(" :== ")
-    elif (isinstance(expression, yacc.MACRO_EXPRESSION)):
+    elif (isinstance(expression, Parser.MACRO_EXPRESSION)):
         print_wo_newline(" ::: ")
     print_productions_list(expression.productions_list)
 
 
 def print_production(production):
     for i in production.list:
-        if (isinstance(i, yacc.PRODUCTION)):
-            if (i.productionProperty == yacc.ProductionProperty.NONE):
+        if (isinstance(i, Parser.PRODUCTION)):
+            if (i.productionProperty == Parser.ProductionProperty.NONE):
                 print_production(i)
-            elif (i.productionProperty == yacc.ProductionProperty.REPETITION):
+            elif (i.productionProperty == Parser.ProductionProperty.REPETITION):
                 print_wo_newline("(")
                 print_production(i)
                 print_wo_newline(")")
                 print_wo_newline("*")
-            elif (i.productionProperty == yacc.ProductionProperty.OPTIONAL):
+            elif (i.productionProperty == Parser.ProductionProperty.OPTIONAL):
                 print_wo_newline("[")
                 print_production(i)
                 print_wo_newline("]")
-            elif (i.productionProperty == yacc.ProductionProperty.XOR):
+            elif (i.productionProperty == Parser.ProductionProperty.XOR):
                 print_wo_newline("(")
                 print_production(i)
                 print_wo_newline(")")
-        elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
+        elif (isinstance(i, Parser.XOR_PRODUCTIONS_LIST)):
             print_xor_productions_list(i)
-        elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
+        elif (isinstance(i, Parser.PRODUCTION_ELEMENT)):
             print_production_element(i)
 
 
@@ -185,25 +185,25 @@ def print_xor_productions_list(xor_productions_list):
 
 
 def print_production_element(production_element):
-    if (production_element.productionProperty == yacc.ProductionProperty.NONE):
+    if (production_element.productionProperty == Parser.ProductionProperty.NONE):
         print_symbol(production_element.name)
-    elif (production_element.productionProperty == yacc.ProductionProperty.REPETITION):
+    elif (production_element.productionProperty == Parser.ProductionProperty.REPETITION):
         print_symbol(production_element.name)
         print_wo_newline("*")
-    elif (production_element.productionProperty == yacc.ProductionProperty.OPTIONAL):
+    elif (production_element.productionProperty == Parser.ProductionProperty.OPTIONAL):
         print_wo_newline("[")
         print_symbol(production_element.name)
         print_wo_newline("]")
-    elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
+    elif (production_element.productionProperty == Parser.ProductionProperty.XOR):
         print_symbol(production_element.name)
         print_wo_newline("|")
 
 
-def print_symbol(symbol:yacc.SYMBOL) -> None:
+def print_symbol(symbol:Parser.SYMBOL) -> None:
     print_wo_newline(get_symbol_string(symbol))
 
 
-def print_productions_list(productions_list: yacc.PRODUCTIONS_LIST) -> None:
+def print_productions_list(productions_list: Parser.PRODUCTIONS_LIST) -> None:
     """Prints string that represents production list to console.
 
     :param productions_list: Productions list that should be printed.
@@ -217,7 +217,7 @@ def print_productions_list(productions_list: yacc.PRODUCTIONS_LIST) -> None:
         j = j + 1
 
 
-def print_comment_block(comment_block: yacc.COMMENT_BLOCK):
+def print_comment_block(comment_block: Parser.COMMENT_BLOCK):
     """Prints all lines of a COMMENT_BLOCK object to console.
 
     :param comment_block: The comment block that should be printed.
@@ -234,7 +234,7 @@ def print_wo_newline(string: str) -> None:
     print(string, end='')
 
 
-def get_production_string(production: yacc.PRODUCTION) -> str:
+def get_production_string(production: Parser.PRODUCTION) -> str:
     """Creates print string of production.
 
     :param production: Production of which print string should be created
@@ -243,30 +243,30 @@ def get_production_string(production: yacc.PRODUCTION) -> str:
     """
     production_string = ""
     for i in production.list:
-        if (isinstance(i, yacc.PRODUCTION)):
-            if (i.productionProperty == yacc.ProductionProperty.NONE):
+        if (isinstance(i, Parser.PRODUCTION)):
+            if (i.productionProperty == Parser.ProductionProperty.NONE):
                 production_string += get_production_string(i)
-            elif (i.productionProperty == yacc.ProductionProperty.REPETITION):
+            elif (i.productionProperty == Parser.ProductionProperty.REPETITION):
                 production_string += "("
                 production_string += get_production_string(i)
                 production_string += ")"
                 production_string += "*"
-            elif (i.productionProperty == yacc.ProductionProperty.OPTIONAL):
+            elif (i.productionProperty == Parser.ProductionProperty.OPTIONAL):
                 production_string += "["
                 production_string += get_production_string(i)
                 production_string += "]"
-            elif (i.productionProperty == yacc.ProductionProperty.XOR):
+            elif (i.productionProperty == Parser.ProductionProperty.XOR):
                 production_string += "("
                 production_string += get_production_string(i)
                 production_string += ")"
-        elif (isinstance(i, yacc.XOR_PRODUCTIONS_LIST)):
+        elif (isinstance(i, Parser.XOR_PRODUCTIONS_LIST)):
             production_string += get_xor_productions_list_string(i)
-        elif (isinstance(i, yacc.PRODUCTION_ELEMENT)):
+        elif (isinstance(i, Parser.PRODUCTION_ELEMENT)):
             production_string += get_production_element_string(i)
     return production_string
 
 
-def get_xor_productions_list_string(xor_productions_list: yacc.XOR_PRODUCTIONS_LIST) -> str:
+def get_xor_productions_list_string(xor_productions_list: Parser.XOR_PRODUCTIONS_LIST) -> str:
     """Creates print string of xor productions list.
 
     :param xor_productions_list: Xor productions list of which print string should be created.
@@ -288,29 +288,29 @@ def get_xor_productions_list_string(xor_productions_list: yacc.XOR_PRODUCTIONS_L
     return xor_productions_list_string
 
 
-def get_production_element_string(production_element: yacc.PRODUCTION_ELEMENT) -> str:
+def get_production_element_string(production_element: Parser.PRODUCTION_ELEMENT) -> str:
     """Creates print string of a production element.
 
     :param production_element: Production element of which the print string should be produced.
     :return: Print string that production element represents.
     """
     production_element_string = ""
-    if (production_element.productionProperty == yacc.ProductionProperty.NONE):
+    if (production_element.productionProperty == Parser.ProductionProperty.NONE):
         production_element_string += get_symbol_string(production_element.symbol)
-    elif (production_element.productionProperty == yacc.ProductionProperty.REPETITION):
+    elif (production_element.productionProperty == Parser.ProductionProperty.REPETITION):
         production_element_string += get_symbol_string(production_element.symbol)
         production_element_string += "*"
-    elif (production_element.productionProperty == yacc.ProductionProperty.OPTIONAL):
+    elif (production_element.productionProperty == Parser.ProductionProperty.OPTIONAL):
         production_element_string += "["
         production_element_string += get_symbol_string(production_element.symbol)
         production_element_string += "]"
-    elif (production_element.productionProperty == yacc.ProductionProperty.XOR):
+    elif (production_element.productionProperty == Parser.ProductionProperty.XOR):
         production_element_string += get_symbol_string(production_element.symbol)
         production_element_string += "|"
     return production_element_string
 
 
-def get_symbol_string(symbol: yacc.SYMBOL) -> str:
+def get_symbol_string(symbol: Parser.SYMBOL) -> str:
     """Creates print string of a symbol
 
     :param symbol: Symbol of which print string should be created.
@@ -318,28 +318,28 @@ def get_symbol_string(symbol: yacc.SYMBOL) -> str:
     :rtype: str
     """
     symbol_string = ""
-    if isinstance(symbol, yacc.T_SYMBOL):
-        if (symbol.property == yacc.ProductionProperty.NONE):
+    if isinstance(symbol, Parser.T_SYMBOL):
+        if (symbol.property == Parser.ProductionProperty.NONE):
             symbol_string += symbol.value
-        elif (symbol.property == yacc.ProductionProperty.REPETITION):
+        elif (symbol.property == Parser.ProductionProperty.REPETITION):
             symbol_string += symbol.value
             symbol_string += "*"
-        elif (symbol.property == yacc.ProductionProperty.OPTIONAL):
+        elif (symbol.property == Parser.ProductionProperty.OPTIONAL):
             symbol_string += "["
             symbol_string += symbol.value
             symbol_string += "]"
-        elif (symbol.property == yacc.ProductionProperty.XOR):
+        elif (symbol.property == Parser.ProductionProperty.XOR):
             symbol_string += "("
             symbol_string += symbol.value
             symbol_string += ")"
-    elif (isinstance(symbol, yacc.NT_SYMBOL)):
+    elif (isinstance(symbol, Parser.NT_SYMBOL)):
         symbol_string += symbol.value
     elif (isinstance(symbol, list)):
         symbol_string += symbol[0].value  # only first because all list elements have the same name
     return symbol_string
 
 
-def get_productions_list_string(productions_list: yacc.PRODUCTIONS_LIST) -> str:
+def get_productions_list_string(productions_list: Parser.PRODUCTIONS_LIST) -> str:
     """Creates print string of a productions list.
 
     :param productions_list: Productions list of which print string should be created.

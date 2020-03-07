@@ -94,10 +94,6 @@ class View(QMainWindow):
     def initTreeView(self, graphBuilder: GraphBuilder.TPTPGraphBuilder) -> None:
         self.treeView = QTreeWidget()
         self.treeView.setHeaderLabels(['Non Terminal', 'Production Type', 'Production'])
-        # self.treeView.setAlternatingRowColors(True)
-        # self.treeView.header().setSectionResizeMode(0, QHeaderView.Stretch)
-        # self.treeView.header().setSectionResizeMode(1, QHeaderView.Stretch)
-        # self.treeView.header().setSectionResizeMode(2, QHeaderView.Stretch)
         nodesList = list(graphBuilder.nodes_dictionary.values())
         nodesList.sort(key=lambda x: x.position)
         for node in nodesList:
