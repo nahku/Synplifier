@@ -77,8 +77,6 @@ class TPTPGraphBuilder():
                     if i != []:
                         for j in i:
                             self.build_graph_rek(j)
-                    # else:
-                    # node.children.remove(i)
 
     def search_productions_list(self, productions_list, nt_name):
         for i in productions_list.list:
@@ -87,50 +85,21 @@ class TPTPGraphBuilder():
 
     def search_productions_list_for_nt(self, node, productions_list):
         for i in productions_list.list:
-            self.search_production_for_nt(node, i)
-            #children = self.search_nt(node, i)
-            #node.children.append(children)
+            children = []
+            self.search_production_for_nt(node, i, children)
+            node.children.append(children)
 
-    def search_production_for_nt(self, node, production):
-        children = []
-        #flag = True
-
+    def search_production_for_nt(self, node, production, children):
         for i in production.list:
-            if isinstance(i, yacc.PRODUCTION):
-                children = []
-                self.search_nt(node, i, children)
-                #self.search_production_for_nt(node, i)
-                #flag = False
-            elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
+            if isinstance(i, Parser.PRODUCTION):
+                self.search_production_for_nt(node, i, children)
+            elif isinstance(i, Parser.XOR_PRODUCTIONS_LIST):
                 self.search_productions_list_for_nt(node, i)
-            elif isinstance(i, yacc.PRODUCTION_ELEMENT):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    children_nodes = self.find_nt_key(i.name.value)
+            elif isinstance(i, Parser.PRODUCTION_ELEMENT):
+                if not isinstance(i.symbol, Parser.T_SYMBOL):
+                    children_nodes = self.find_nt_key(i.symbol.value)
                     for j in children_nodes:
                         children.append(j)  # all children of production
-                    i.name = children_nodes
-        #if (flag):
-        node.children.append(children)
-        print("")
-        #for i in production.list:
-        #children = self.search_nt(node, production)
-        #node.children.append(children)
-
-    def search_nt(self, node, production, children):
-        for i in production.list:
-            if isinstance(i, yacc.PRODUCTION):
-                temp_children = self.search_nt(node, i, children)
-                if temp_children is not None:
-                    children = children + temp_children
-            elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
-                self.search_productions_list_for_nt(node, i)
-            elif isinstance(i, yacc.PRODUCTION_ELEMENT):
-                if not isinstance(i.name, yacc.T_SYMBOL):
-                    children_node = self.find_nt_key(i.name.value)
-                    for j in children_node:
-                        children.append(j)  # all children of production
-                    i.name = children_node
-        #return children
 
     def search_production(self, production, nt_name):
         for i in production.list:
@@ -279,7 +248,6 @@ class TPTPGraphBuilder():
         return children
 
     def build_nodes_dictionary(self, rules_list):
-        index = 0
         for expression in rules_list.list:
             if not isinstance(expression, Parser.COMMENT_BLOCK):
                 rule_type = self.find_rule_type_for_expression(expression)
