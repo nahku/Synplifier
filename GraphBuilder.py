@@ -386,13 +386,15 @@ class TPTPGraphBuilder():
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
 
-    def reduce_grammar(self, control_filename: str) -> None:
+    def reduce_grammar(self, control_string: str = None) -> None:
         """Reduce Grammar with control file.
 
         :param control_filename: Path for the control file.
         """
-        self.disable_rules(control_filename)
-        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+        lines = control_string.splitlines()
+        start_symbol = lines[0]
+        self.disable_rules(control_string)
+        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node(start_symbol, RuleType.GRAMMAR)))
 
     def __init__(self, filename: str = None, disable_rules_filename: str = None):
         self.nodes_dictionary = {}
