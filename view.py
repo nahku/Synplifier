@@ -131,6 +131,7 @@ class View(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+        self.treeView.resizeColumnToContents(0)
 
     def toggleComments(self):
         """Shows/hides comments in gui.
