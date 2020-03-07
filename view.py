@@ -95,9 +95,9 @@ class View(QMainWindow):
         self.treeView = QTreeWidget()
         self.treeView.setHeaderLabels(['Non Terminal', 'Production Type', 'Production'])
         # self.treeView.setAlternatingRowColors(True)
-        # self.treeView.header().setSectionResizeMode(0, QHeaderView.Stretch)
-        # self.treeView.header().setSectionResizeMode(1, QHeaderView.Stretch)
-        # self.treeView.header().setSectionResizeMode(2, QHeaderView.Stretch)
+        #self.treeView.header().setSectionResizeMode(0, QTreeWidget.QHeaderView.Stretch)
+        #self.treeView.header().setSectionResizeMode(1, QTreeWidget.QHeaderView.ResizeToContents)
+        #self.treeView.header().setSectionResizeMode(2, QTreeWidget.QHeaderView.ResizeToContents)
         nodesList = list(graphBuilder.nodes_dictionary.values())
         nodesList.sort(key=lambda x: x.position)
         for node in nodesList:
@@ -135,6 +135,7 @@ class View(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+        self.treeView.resizeColumnToContents(0)
 
     def toggleComments(self):
         new_status = not self.commentStatus
