@@ -78,18 +78,25 @@ class TPTPGraphBuilder():
                         for j in i:
                             self.build_graph_rek(j)
 
-    def search_productions_list(self, productions_list, nt_name):
-        for i in productions_list.list:
-            if self.search_production(i, nt_name):
-                return True
-
-    def search_productions_list_for_nt(self, node, productions_list):
+    def search_productions_list_for_nt(self, node: NTNode, productions_list: Parser.PRODUCTIONS_LIST):
+        """
+        Searches for every production that is part of the production list.
+        :param node: Node from which the productions should be identified.
+        :param productions_list: Production list of the node above.
+        """
         for i in productions_list.list:
             children = []
             self.search_production_for_nt(node, i, children)
-            node.children.append(children)
+            node.children.append(children) #Append children that have been found to node
 
-    def search_production_for_nt(self, node, production, children):
+    def search_production_for_nt(self, node: NTNode, production: Parser.PRODUCTION, children: list):
+        """
+        Searches for NT symbols recursively that are part of the production. After the NT symbol has been identified,
+        the node of the NT symbol is added to the list of children from the input node.
+        :param node: Node from which the NT symbols should be identified.
+        :param production: Production of one  productions list of the node above.
+        :param children: List of children from that should be appended to the node above.
+        """
         for i in production.list:
             if isinstance(i, Parser.PRODUCTION):
                 self.search_production_for_nt(node, i, children)
@@ -101,18 +108,18 @@ class TPTPGraphBuilder():
                     for j in children_nodes:
                         children.append(j)  # all children of production
 
-    def search_production(self, production, nt_name):
-        for i in production.list:
-            if isinstance(i, Parser.PRODUCTION):
-                if self.search_production(i, nt_name):
-                    return True
-            elif isinstance(i, Parser.XOR_PRODUCTIONS_LIST):
-                self.search_productions_list(i, nt_name)
-            elif isinstance(i, Parser.PRODUCTION_ELEMENT):
-                if not isinstance(i.symbol, Parser.T_SYMBOL):
-                    if i.symbol.value == nt_name:
-                        return True
-        return False
+    def find_nt_key(self, nt_name: str) -> list:
+        """
+        Searches for the node whose name is nt_name in nodes dictionary.
+        :param nt_name: Name from which the node should be found.
+        :return: List of nodes that matches nt_name.
+        """
+        children = []
+        for key, value in self.nodes_dictionary.items():
+            if key == Node(nt_name, RuleType.GRAMMAR) or key == Node(nt_name, RuleType.MACRO) \
+                    or key == Node(nt_name, RuleType.STRICT) or key == Node(nt_name, RuleType.TOKEN):
+                children.append(value)
+        return children
 
     def disable_rules(self, disable_rules_string: str):
         """Disables rules specified in the control file from the TPTP grammar graph and select start symbol.
@@ -230,24 +237,12 @@ class TPTPGraphBuilder():
                             flag = False
                     if flag:
                         terminating.add(node.value)
-
-    def find_nt_rule(self, key, value):
-        for i in self.nodes_dictionary.values():
-            if self.search_productions_list(i.productions_list, key):
-                if i == value:
-                    print(i.value)
-                else:
-                    i.add_children(value)
-
-    def find_nt_key(self, nt_name):
-        children = []
-        for key, value in self.nodes_dictionary.items():
-            if key == Node(nt_name, RuleType.GRAMMAR) or key == Node(nt_name, RuleType.MACRO) \
-                    or key == Node(nt_name, RuleType.STRICT) or key == Node(nt_name, RuleType.TOKEN):
-                children.append(value)
-        return children
-
-    def build_nodes_dictionary(self, rules_list):
+                        
+    def build_nodes_dictionary(self, rules_list: Parser.GRAMMAR_LIST):
+        """
+        Builds a dictionary from a list of rules.
+        :param rules_list: List of rules from which the dictionary should be build.
+        """
         for expression in rules_list.list:
             if not isinstance(expression, Parser.COMMENT_BLOCK):
                 rule_type = self.find_rule_type_for_expression(expression)
@@ -255,7 +250,7 @@ class TPTPGraphBuilder():
                                                                                   None, expression.position)})
         self.assign_comments_to_rules(rules_list)
 
-    def assign_comments_to_rules(self,rules_list):
+    def assign_comments_to_rules(self,rules_list: list):
         """ Assign comments to rules with heuristic method.
 
         :param rules_list: List of rules.
