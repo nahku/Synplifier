@@ -2,7 +2,7 @@ from collections import namedtuple
 from enum import Enum
 from typing import List
 import InputOutput
-import yacc
+import Parser
 
 
 Node = namedtuple("Node", ["value", "productionProperty"])
@@ -16,8 +16,8 @@ class RuleType(Enum):
 
 
 class NTNode:
-    def __init__(self, value: str, productions_list: yacc.PRODUCTIONS_LIST, rule_type: RuleType,
-                 comment_block: yacc.COMMENT_BLOCK, position: int):
+    def __init__(self, value: str, productions_list: Parser.PRODUCTIONS_LIST, rule_type: RuleType,
+                 comment_block: Parser.COMMENT_BLOCK, position: int):
         """Creates an NTNode.
 
         :param value: Non-terminal symbol name.
@@ -40,7 +40,7 @@ class NTNode:
         """
         self.children.append(children)
 
-    def extend_comment_block(self, comment_block: yacc.COMMENT_BLOCK) -> None:
+    def extend_comment_block(self, comment_block: Parser.COMMENT_BLOCK) -> None:
         """"Append comment block to comment block of this node.
 
         :param comment_block: COMMENT_BLOCK to append
@@ -58,10 +58,10 @@ class TPTPGraphBuilder():
 
         :param start_symbol: Value of the non-terminal start symbol.
         """
-        productions_list = yacc.PRODUCTIONS_LIST(
-            [yacc.PRODUCTION([yacc.PRODUCTION_ELEMENT(yacc.NT_SYMBOL(start_symbol))])])
+        productions_list = Parser.PRODUCTIONS_LIST(
+            [Parser.PRODUCTION([Parser.PRODUCTION_ELEMENT(Parser.NT_SYMBOL(start_symbol))])])
 
-        new_start_node = NTNode("<start_symbol>", productions_list, RuleType.GRAMMAR, yacc.COMMENT_BLOCK([]), -1)
+        new_start_node = NTNode("<start_symbol>", productions_list, RuleType.GRAMMAR, Parser.COMMENT_BLOCK([]), -1)
         self.nodes_dictionary[Node(new_start_node.value, new_start_node.rule_type)] = new_start_node
         self.build_graph_rek(new_start_node)
 
@@ -80,11 +80,6 @@ class TPTPGraphBuilder():
                     # else:
                     # node.children.remove(i)
 
-    # def build_tree(self, start_symbol):
-    #    for key,value in self.nodes_dictionary.items():
-    #        if key != start_symbol:
-    #            self.find_nt_rule(key, value)
-
     def search_productions_list(self, productions_list, nt_name):
         for i in productions_list.list:
             if self.search_production(i, nt_name):
@@ -97,12 +92,12 @@ class TPTPGraphBuilder():
     def search_production_for_nt(self, node, production):
         children = []
         for i in production.list:
-            if isinstance(i, yacc.PRODUCTION):
+            if isinstance(i, Parser.PRODUCTION):
                 self.search_production_for_nt(node, i)
-            elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
+            elif isinstance(i, Parser.XOR_PRODUCTIONS_LIST):
                 self.search_productions_list_for_nt(node, i)
-            elif isinstance(i, yacc.PRODUCTION_ELEMENT):
-                if not isinstance(i.symbol, yacc.T_SYMBOL):
+            elif isinstance(i, Parser.PRODUCTION_ELEMENT):
+                if not isinstance(i.symbol, Parser.T_SYMBOL):
                     children_node = self.find_nt_key(i, i.symbol.value)
                     for j in children_node:
                         children.append(j)  # all children of production
@@ -111,13 +106,13 @@ class TPTPGraphBuilder():
 
     def search_production(self, production, nt_name):
         for i in production.list:
-            if isinstance(i, yacc.PRODUCTION):
+            if isinstance(i, Parser.PRODUCTION):
                 if self.search_production(i, nt_name):
                     return True
-            elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
+            elif isinstance(i, Parser.XOR_PRODUCTIONS_LIST):
                 self.search_productions_list(i, nt_name)
-            elif isinstance(i, yacc.PRODUCTION_ELEMENT):
-                if not isinstance(i.symbol, yacc.T_SYMBOL):
+            elif isinstance(i, Parser.PRODUCTION_ELEMENT):
+                if not isinstance(i.symbol, Parser.T_SYMBOL):
                     if i.symbol.value == nt_name:
                         return True
         return False
@@ -164,7 +159,7 @@ class TPTPGraphBuilder():
         while 1:  # repeat until set of terminating symbols does not change anymore
             visited = set()
             self.find_non_terminating_symbols(start_node, temp_terminating, visited)
-            if (terminating == temp_terminating):
+            if terminating == temp_terminating:
                 break
             else:
                 terminating = temp_terminating
@@ -259,12 +254,11 @@ class TPTPGraphBuilder():
     def build_nodes_dictionary(self, rules_list):
         index = 0
         for expression in rules_list.list:
-            if not isinstance(expression,yacc.COMMENT_BLOCK):
+            if not isinstance(expression, Parser.COMMENT_BLOCK):
                 rule_type = self.find_rule_type_for_expression(expression)
                 self.nodes_dictionary.update({Node(expression.name, rule_type): NTNode(expression.name, expression.productions_list, rule_type,
                                                                                   None, expression.position)})
         self.assign_comments_to_rules(rules_list)
-
 
     def assign_comments_to_rules(self,rules_list):
         """ Assign comments to rules with heuristic method.
@@ -272,7 +266,7 @@ class TPTPGraphBuilder():
         :param rules_list: List of rules.
         """
         for index, expression in enumerate(rules_list.list):
-            if isinstance(expression,yacc.COMMENT_BLOCK):
+            if isinstance(expression, Parser.COMMENT_BLOCK):
                 comment_block_list = self.split_comment_block_by_top_of_page(expression)
                 if len(comment_block_list) == 1:
                     if index < len(rules_list.list)-1:
@@ -304,7 +298,6 @@ class TPTPGraphBuilder():
                 elif len(comment_block_list) > 2:
                     print("Hallo")
 
-
     def find_rule_type_for_expression(self, expression):
         """Find the RuleType of an expression.
 
@@ -313,17 +306,17 @@ class TPTPGraphBuilder():
         :rtype: RuleType
         """
         rule_type = None
-        if isinstance(expression, yacc.GRAMMAR_EXPRESSION):
+        if isinstance(expression, Parser.GRAMMAR_EXPRESSION):
             rule_type = RuleType.GRAMMAR
-        elif isinstance(expression, yacc.TOKEN_EXPRESSION):
+        elif isinstance(expression, Parser.TOKEN_EXPRESSION):
             rule_type = RuleType.TOKEN
-        elif isinstance(expression, yacc.MACRO_EXPRESSION):
+        elif isinstance(expression, Parser.MACRO_EXPRESSION):
             rule_type = RuleType.MACRO
-        elif isinstance(expression, yacc.STRICT_EXPRESSION):
+        elif isinstance(expression, Parser.STRICT_EXPRESSION):
             rule_type = RuleType.STRICT
         return rule_type
 
-    def find_top_of_page_line_ids(self, comment_block: yacc.COMMENT_BLOCK) -> List[int]:
+    def find_top_of_page_line_ids(self, comment_block: Parser.COMMENT_BLOCK) -> List[int]:
         """Find the IDs of top of page lines in a COMMENT_BLOCK ordered ascending.
 
         :param comment_block:
@@ -338,13 +331,13 @@ class TPTPGraphBuilder():
             index += 1
         return index_list
 
-    def split_comment_block_by_top_of_page(self, comment_block: yacc.COMMENT_BLOCK) -> List[yacc.COMMENT_BLOCK]:
+    def split_comment_block_by_top_of_page(self, comment_block: Parser.COMMENT_BLOCK) -> List[Parser.COMMENT_BLOCK]:
         """Split a COMMENT_BLOCK by top of page lines and return a list of splitted COMMENT_BLOCKs without
         the top of page lines.
 
         :param comment_block: COMMENT_BLOCK to be splitted by top of page.
         :return: List of COMMENT_BLOCKs splitted by top of page.
-        :rtype: List[yacc.COMMENT_BLOCK]
+        :rtype: List[Parser.COMMENT_BLOCK]
         """
         top_of_page_indexes = self.find_top_of_page_line_ids(comment_block)
         comment_block_list = []
@@ -356,9 +349,9 @@ class TPTPGraphBuilder():
             if first_top_of_page_index != 0:
                 #if only first line
                 if first_top_of_page_index-1 == 0:
-                    first_comment_block = yacc.COMMENT_BLOCK([comment_block.comment_lines[0]])
+                    first_comment_block = Parser.COMMENT_BLOCK([comment_block.comment_lines[0]])
                 else:
-                    first_comment_block = yacc.COMMENT_BLOCK(comment_block.comment_lines[0:first_top_of_page_index-1])
+                    first_comment_block = Parser.COMMENT_BLOCK(comment_block.comment_lines[0:first_top_of_page_index - 1])
                 comment_block_list.append(first_comment_block)
 
             for index_in_list, index in enumerate(top_of_page_indexes):
@@ -371,9 +364,9 @@ class TPTPGraphBuilder():
                         end = len(comment_block.comment_lines)-1
 
                     if start == end:
-                        new_comment_block = yacc.COMMENT_BLOCK([comment_block.comment_lines[start]])
+                        new_comment_block = Parser.COMMENT_BLOCK([comment_block.comment_lines[start]])
                     else:
-                        new_comment_block = yacc.COMMENT_BLOCK(comment_block.comment_lines[start:end])
+                        new_comment_block = Parser.COMMENT_BLOCK(comment_block.comment_lines[start:end])
                     comment_block_list.append(new_comment_block)
 
         return comment_block_list
@@ -393,17 +386,19 @@ class TPTPGraphBuilder():
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
 
-    def reduce_grammar(self, control_filename: str):
+    def reduce_grammar(self, control_string: str = None) -> None:
         """Reduce Grammar with control file.
 
-        :param disable_rules_filename: Path for the control file.
+        :param control_filename: Path for the control file.
         """
-        self.disable_rules(control_filename)
-        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node("<TPTP_file>", RuleType.GRAMMAR)))
+        lines = control_string.splitlines()
+        start_symbol = lines[0]
+        self.disable_rules(control_string)
+        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node(start_symbol, RuleType.GRAMMAR)))
 
     def __init__(self, filename: str = None, disable_rules_filename: str = None):
         self.nodes_dictionary = {}
-        self.parser = yacc.TPTPParser()
+        self.parser = Parser.TPTPParser()
         if (filename is not None) and (disable_rules_filename is not None):
             rules_list = self.parser.run(filename)
             self.build_nodes_dictionary(rules_list)

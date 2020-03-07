@@ -94,10 +94,6 @@ class View(QMainWindow):
     def initTreeView(self, graphBuilder: GraphBuilder.TPTPGraphBuilder) -> None:
         self.treeView = QTreeWidget()
         self.treeView.setHeaderLabels(['Non Terminal', 'Production Type', 'Production'])
-        # self.treeView.setAlternatingRowColors(True)
-        # self.treeView.header().setSectionResizeMode(0, QHeaderView.Stretch)
-        # self.treeView.header().setSectionResizeMode(1, QHeaderView.Stretch)
-        # self.treeView.header().setSectionResizeMode(2, QHeaderView.Stretch)
         nodesList = list(graphBuilder.nodes_dictionary.values())
         nodesList.sort(key=lambda x: x.position)
         for node in nodesList:
@@ -279,7 +275,7 @@ class View(QMainWindow):
     def reduceTPTPGrammarWithSelection(self):
         try:
             control_string, _ = self.produceControlFile()
-            self.graphBuilder.disable_rules(control_string)
+            self.graphBuilder.reduce_grammar(control_string)
             self.initTreeView(self.graphBuilder)
         except NoStartSymbolError:
             QMessageBox.about(self, "Error", "A start symbol has to be selected")
@@ -302,7 +298,7 @@ class View(QMainWindow):
                 graphBuilder = GraphBuilder.TPTPGraphBuilder()
                 graphBuilder.nodes_dictionary = self.graphBuilder.nodes_dictionary
                 graphBuilder.init_tree(start_symbol)
-                self.graphBuilder.disable_rules(control_string)
+                self.graphBuilder.reduce_grammar(control_string)
                 start_node = self.graphBuilder.nodes_dictionary.get(
                     GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                 if (start_node is not None):
@@ -336,7 +332,7 @@ class View(QMainWindow):
                     graphBuilder = GraphBuilder.TPTPGraphBuilder()
                     graphBuilder.nodes_dictionary = copy.deepcopy(self.graphBuilder.nodes_dictionary)
                     graphBuilder.init_tree(control_string.splitlines()[0])
-                    graphBuilder.disable_rules(control_string)
+                    graphBuilder.reduce_grammar(control_string)
                     start_node = graphBuilder.nodes_dictionary.get(
                         GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                     if (start_node is not None):
