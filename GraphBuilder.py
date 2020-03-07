@@ -51,7 +51,7 @@ class NTNode:
             self.comment_block.comment_lines.extend(comment_block.comment_lines)
 
 
-class TPTPGraphBuilder():
+class TPTPGraphBuilder:
 
     def init_tree(self, start_symbol: str):
         """Initialise the TPTP grammar graph.
