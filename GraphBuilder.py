@@ -124,7 +124,9 @@ class TPTPGraphBuilder():
     def search_nt(self, node, production, children):
         for i in production.list:
             if isinstance(i, yacc.PRODUCTION):
-                children = children + self.search_nt(node, i)
+                temp_children = self.search_nt(node, i, children)
+                if temp_children is not None:
+                    children = children + temp_children
             elif isinstance(i, yacc.XOR_PRODUCTIONS_LIST):
                 self.search_productions_list_for_nt(node, i)
             elif isinstance(i, yacc.PRODUCTION_ELEMENT):
