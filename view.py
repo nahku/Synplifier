@@ -159,17 +159,17 @@ class View(QMainWindow):
         if self.treeView is not None:
             control_filename, _ = QFileDialog.getOpenFileName(None, "Open Control File", "", "Control File (*.txt);;")
 
-            # uncheck all left symbols, check all right symbols
-            for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):
-                if item.parent() is None:
-                    flags = item.flags()
-                    if (Qt.ItemIsUserCheckable & flags):
-                        #item is not a comment
-                        item.setCheckState(0, QtCore.Qt.Unchecked)
-                else:
-                    item.setCheckState(0,QtCore.Qt.Checked)
-
             if control_filename:
+                # uncheck all left symbols, check all right symbols
+                for item in self.treeView.findItems("", Qt.MatchContains | Qt.MatchRecursive):
+                    if item.parent() is None:
+                        flags = item.flags()
+                        if (Qt.ItemIsUserCheckable & flags):
+                            #item is not a comment
+                            item.setCheckState(0, QtCore.Qt.Unchecked)
+                    else:
+                        item.setCheckState(0,QtCore.Qt.Checked)
+
                 disable_rules_string = InputOutput.read_text_from_file(control_filename)
 
                 lines = disable_rules_string.splitlines()
