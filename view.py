@@ -34,60 +34,67 @@ class View(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        openTPTPFileAction = QAction('&Open TPTP Grammar File', self)
-        openTPTPFileAction.setShortcut('Ctrl+O')
-        openTPTPFileAction.triggered.connect(self.openTPTPGrammarFile)
+        importTPTPFileAction = QAction('&Import TPTP Grammar File', self)
+        importTPTPFileAction.setShortcut('Ctrl+O')
+        importTPTPFileAction.triggered.connect(self.openTPTPGrammarFile)
 
-        getTPTPFileFromWebAction = QAction('&Import TPTP Grammar File from Web', self)
-        getTPTPFileFromWebAction.setShortcut('Ctrl+I')
-        getTPTPFileFromWebAction.triggered.connect(self.getTPTPFileFromWeb)
+        importTPTPFileFromWebAction = QAction('&Import TPTP Grammar File from Web', self)
+        importTPTPFileFromWebAction.setShortcut('Ctrl+I')
+        importTPTPFileFromWebAction.triggered.connect(self.getTPTPFileFromWeb)
 
         saveWithControlFileAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
         saveWithControlFileAction.setShortcut('Ctrl+R')
         saveWithControlFileAction.triggered.connect(self.outputTPTPGrammarFromControlFileWithoutComments)
 
-        outputTPTPGrammarFileFromSelectionAction = QAction('&Create TPTP Grammar File from Selection', self)
-        outputTPTPGrammarFileFromSelectionAction.setShortcut('Ctrl+R')
-        outputTPTPGrammarFileFromSelectionAction.triggered.connect(self.createTPTPGrammarFileFromSelectionWithoutComments)
+        saveTPTPGrammarFileFromSelectionAction = QAction('&Save TPTP Grammar File from Selection', self)
+        saveTPTPGrammarFileFromSelectionAction.setShortcut('Ctrl+R')
+        saveTPTPGrammarFileFromSelectionAction.triggered.connect(self.createTPTPGrammarFileFromSelectionWithoutComments)
 
-        produceReducedTPTPGrammarAction = QAction('&Reduced TPTP Grammar with Selection', self)
+        produceReducedTPTPGrammarAction = QAction('&Reduce TPTP Grammar with Selection', self)
         produceReducedTPTPGrammarAction.setShortcut('Ctrl+B')
         produceReducedTPTPGrammarAction.triggered.connect(self.reduceTPTPGrammarWithSelection)
 
-        outputControlFileAction = QAction('&Produce Control File from Selection', self)
-        outputControlFileAction.setShortcut('Ctrl+D')
-        outputControlFileAction.triggered.connect(self.outputControlFile)
+        saveControlFileAction = QAction('&Produce and save Control File from Selection', self)
+        saveControlFileAction.setShortcut('Ctrl+D')
+        saveControlFileAction.triggered.connect(self.outputControlFile)
 
         toggleCommentsAction = QAction('&Toggle Comments', self)
         toggleCommentsAction.setShortcut('Ctrl+C')
         toggleCommentsAction.triggered.connect(self.toggleComments)
 
-        loadControlFileAction = QAction('&Load Control File', self)
-        loadControlFileAction.setShortcut('Ctrl+C+I')
-        loadControlFileAction.triggered.connect(self.loadControlFile)
+        importControlFileAction = QAction('&Import Control File', self)
+        importControlFileAction.setShortcut('Ctrl+C+I')
+        importControlFileAction.triggered.connect(self.loadControlFile)
 
-
-        saveWithControlFileCommentsAction = QAction('&Reduce and save TPTP Grammar with Control File', self)
+        saveWithControlFileCommentsAction = QAction('&Reduce and save TPTP Grammar with Control File with external Comments', self)
         saveWithControlFileCommentsAction.triggered.connect(self.outputTPTPGrammarFromControlFileWithComments)
 
-        outputTPTPGrammarFileFromSelectionCommentsAction = QAction('&Create TPTP Grammar File from Selection', self)
-        outputTPTPGrammarFileFromSelectionCommentsAction.triggered.connect(self.createTPTPGrammarFileFromSelectionWithComments)
+        saveTPTPGrammarFileFromSelectionCommentsAction = QAction('&Create TPTP Grammar File from Selection with external Comments', self)
+        saveTPTPGrammarFileFromSelectionCommentsAction.triggered.connect(self.createTPTPGrammarFileFromSelectionWithComments)
 
         menubar = QMenuBar()
         self.setMenuBar(menubar)
         menubar.setNativeMenuBar(False)
-        menu = menubar.addMenu("Commands")
-        menu.addAction(produceReducedTPTPGrammarAction)
-        menu.addAction(saveWithControlFileAction)
-        menu.addAction(outputControlFileAction)
-        menu.addAction(outputTPTPGrammarFileFromSelectionAction)
-        menu.addAction(toggleCommentsAction)
-        menu.addAction(openTPTPFileAction)
-        menu.addAction(getTPTPFileFromWebAction)
-        menu.addAction(loadControlFileAction)
-        commentMenu = menubar.addMenu("With Comments")
-        commentMenu.addAction(saveWithControlFileCommentsAction)
-        commentMenu.addAction(outputTPTPGrammarFileFromSelectionCommentsAction)
+
+        import_menu = menubar.addMenu("Import")
+        import_menu.addAction(importTPTPFileAction)
+        import_menu.addAction(importTPTPFileFromWebAction)
+        import_menu.addAction(importControlFileAction)
+
+        save_menu = menubar.addMenu("Save")
+        save_menu.addAction(saveTPTPGrammarFileFromSelectionAction)
+        save_menu.addAction(saveWithControlFileAction)
+        save_menu.addAction(saveControlFileAction)
+        save_menu.addSeparator()
+        save_menu.addAction(saveWithControlFileCommentsAction)
+        save_menu.addAction(saveTPTPGrammarFileFromSelectionCommentsAction)
+
+        reduce_menu = menubar.addMenu("Reduce")
+        reduce_menu.addAction(produceReducedTPTPGrammarAction)
+
+        view_menu = menubar.addMenu("View")
+        view_menu.addAction(toggleCommentsAction)
+
         self.setWindowTitle('TPTP Grammar Reducer')
         self.showMaximized()
 
