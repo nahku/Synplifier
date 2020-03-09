@@ -53,7 +53,7 @@ def create_print_list(start_node, visited, print_list):
 def get_print_list(node, print_list):
     print_list.append(PrintListEntry(node.position, []))
     if (node.comment_block is not None):
-        print_list[-1].line_list.extend(node.comment_block.list)
+        print_list[-1].line_list.extend(node.comment_block.comment_lines)
     rule_line = node.value
     rule_line = rule_line.ljust(INDENT_LENGTH)  # uniform length of left side of rule
     if (node.rule_type == GraphBuilder.RuleType.GRAMMAR):
