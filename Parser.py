@@ -1,5 +1,5 @@
 from enum import Enum
-import lexer
+import Lexer
 import ply.yacc as yacc
 
 
@@ -341,6 +341,6 @@ class TPTPParser():
         return result
 
     def __init__(self):
-        self.tokens = lexer.TPTPLexer.tokens
-        self.lexer = lexer.TPTPLexer()
+        self.tokens = Lexer.TPTPLexer.tokens
+        self.lexer = Lexer.TPTPLexer()
         self.parser = yacc.yacc(module=self)

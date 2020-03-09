@@ -1,4 +1,4 @@
-import lexer as lex
+import Lexer as lex
 import os
 
 def test_comment():

@@ -390,6 +390,10 @@ class TPTPGraphBuilder:
         self.nodes_dictionary = {}
         self.parser = Parser.TPTPParser()
         if (filename is not None) and (disable_rules_filename is not None):
-            rules_list = self.parser.run(filename)
-            self.build_nodes_dictionary(rules_list)
-            self.disable_rules(InputOutput.read_text_from_file(disable_rules_filename))
+            #rules_list = self.parser.run(filename)
+            #self.build_nodes_dictionary(rules_list)
+            control_string = InputOutput.read_text_from_file(disable_rules_filename)
+            start_symbol = control_string.splitlines()[0]
+            self.run(filename=filename,start_symbol=start_symbol)
+            #self.init_tree(start_symbol)
+            self.disable_rules(control_string)
