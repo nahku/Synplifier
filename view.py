@@ -275,9 +275,10 @@ class View(QMainWindow):
 
     def reduceTPTPGrammarWithSelection(self):
         try:
-            control_string, _ = self.produceControlFile()
+            control_string, start_symbol = self.produceControlFile()
             self.graphBuilder.reduce_grammar(control_string)
             self.initTreeView(self.graphBuilder)
+            self.checkStartsymbol(start_symbol)
         except NoStartSymbolError:
             QMessageBox.about(self, "Error", "A start symbol has to be selected")
         except MultipleStartSymbolsError:
@@ -370,3 +371,8 @@ class View(QMainWindow):
         self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
         self.graphBuilder.run(start_symbol=start_symbol, file=file, filename=filename)
         self.initTreeView(self.graphBuilder)
+        self.checkStartsymbol(start_symbol)
+
+    def checkStartsymbol(self, start_symbol):
+        for item in self.treeView.findItems(start_symbol, Qt.MatchFixedString | Qt.MatchRecursive):
+            item.setCheckState(0, QtCore.Qt.Checked)
