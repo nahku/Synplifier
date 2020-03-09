@@ -222,7 +222,7 @@ def print_comment_block(comment_block: Parser.COMMENT_BLOCK):
 
     :param comment_block: The comment block that should be printed.
     """
-    for i in comment_block.list:
+    for i in comment_block.comment_lines:
         print(i)
 
 
