@@ -1,10 +1,9 @@
 import ply.lex as lex
-import os
 import re
 
-class TPTPLexer():
 
-    #List of token names
+class TPTPLexer:
+    # List of token names
     tokens = (
         'LGRAMMAR_EXPRESSION',
         'LTOKEN_EXPRESSION',
@@ -24,65 +23,65 @@ class TPTPLexer():
     literals = []
     t_ignore = ' \t\n '
 
-    #token definitions
+    # token definitions
 
-    def t_COMMENT(self,t):
+    def t_COMMENT(self, t):
         r'^%.*$'
         return t
 
-    def t_OPEN_SQUARE_BRACKET(self,t):
+    def t_OPEN_SQUARE_BRACKET(self, t):
         r'\['
         return t
 
-    def t_CLOSE_SQUARE_BRACKET(self,t):
+    def t_CLOSE_SQUARE_BRACKET(self, t):
         r'\]'
         return t
 
-    def t_REPETITION_SYMBOL(self,t):
+    def t_REPETITION_SYMBOL(self, t):
         r'\*'
         return t
 
-    def t_ALTERNATIVE_SYMBOL(self,t):
+    def t_ALTERNATIVE_SYMBOL(self, t):
         r'\|'
         return t
 
-    def t_OPEN_PARENTHESIS(self,t):
+    def t_OPEN_PARENTHESIS(self, t):
         r'\('
         return t
 
-    def t_CLOSE_PARENTHESIS(self,t):
+    def t_CLOSE_PARENTHESIS(self, t):
         r'\)'
         return t
 
-    def t_LGRAMMAR_EXPRESSION(self,t):
+    def t_LGRAMMAR_EXPRESSION(self, t):
         r'<\w+>[\s]*::='
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
-    def t_LTOKEN_EXPRESSION(self,t):
+    def t_LTOKEN_EXPRESSION(self, t):
         r'<\w+>[\s]*::-'
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
-    def t_LSTRICT_EXPRESSION(self,t):
+    def t_LSTRICT_EXPRESSION(self, t):
         r'<\w+>[\s]*:=='
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
-    def t_LMACRO_EXPRESSION(self,t):
+    def t_LMACRO_EXPRESSION(self, t):
         r'<\w+>[\s]*:::'
         t.value = t.value[:-3]
         t.value = t.value.rstrip()
         return t
 
-    def t_NT_SYMBOL(self,t):
+    def t_NT_SYMBOL(self, t):
         r'<\w+>'
         return t
 
-    def t_T_SYMBOL(self,t):
+    def t_T_SYMBOL(self, t):
         r'[$\'\\\.,a-zA-Z\_0-9\0-9-\-<>&@!:{}~?^+=/"!^^/@/+-/%;][a-zA-Z\_0-9\-/"!?/@/+-/*/%;\->&+=$\'\\\.,]*'
         return t
 
@@ -91,20 +90,7 @@ class TPTPLexer():
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
-    def import_tptp_file(self, filename: str) -> str:
-        """Import TPTP grammar file.
-
-        :param filename: Filename of the TPTP grammar file.
-        :return:   grammar file content as string.
-        """
-        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        my_file = os.path.join(THIS_FOLDER, filename)
-        file = open(my_file, "r", encoding='UTF-8')
-        data = file.read()
-        return data
-
     def debug(self, data):
-
         self.lexer.input(data)
         while 1:
             tok = lex.token()
@@ -113,4 +99,4 @@ class TPTPLexer():
 
     def __init__(self):
         # Build the lexer
-        self.lexer = lex.lex(module=self,reflags=re.M)
+        self.lexer = lex.lex(module=self, reflags=re.M)
