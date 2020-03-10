@@ -283,7 +283,7 @@ class View(QMainWindow):
     def reduceTPTPGrammarWithSelection(self):
         try:
             control_string, start_symbol = self.produceControlFile()
-            self.graphBuilder.reduce_grammar(control_string)
+            self.graphBuilder.disable_rules(control_string)
             self.initTreeView(self.graphBuilder)
             self.checkStartsymbol(start_symbol)
         except NoStartSymbolError:
@@ -305,10 +305,10 @@ class View(QMainWindow):
             try:
                 control_string, start_symbol = self.produceControlFile()
                 graphBuilder = GraphBuilder.TPTPGraphBuilder()
-                graphBuilder.nodes_dictionary = self.graphBuilder.nodes_dictionary
+                graphBuilder.nodes_dictionary = copy.deepcopy(self.graphBuilder.nodes_dictionary)
                 graphBuilder.init_tree(start_symbol)
-                self.graphBuilder.reduce_grammar(control_string)
-                start_node = self.graphBuilder.nodes_dictionary.get(
+                graphBuilder.disable_rules(control_string)
+                start_node = graphBuilder.nodes_dictionary.get(
                     GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                 if (start_node is not None):
                     if withComments:
@@ -341,7 +341,7 @@ class View(QMainWindow):
                     graphBuilder = GraphBuilder.TPTPGraphBuilder()
                     graphBuilder.nodes_dictionary = copy.deepcopy(self.graphBuilder.nodes_dictionary)
                     graphBuilder.init_tree(control_string.splitlines()[0])
-                    graphBuilder.reduce_grammar(control_string)
+                    graphBuilder.disable_rules(control_string)
                     start_node = graphBuilder.nodes_dictionary.get(
                         GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                     if (start_node is not None):
