@@ -31,9 +31,10 @@ class EXPRESSION:
         self.productions_list = productions_list
         self.position = None
 
+
 class GRAMMAR_EXPRESSION(EXPRESSION):
     def __init__(self, name, productions_list):
-        super().__init__(name,productions_list)
+        super().__init__(name, productions_list)
 
 
 class TOKEN_EXPRESSION(EXPRESSION):
@@ -90,6 +91,7 @@ class COMMENT_BLOCK:
 
     def __hash__(self):
         return hash(self.comment_lines)
+
 
 class TPTPParser():
 
@@ -199,14 +201,14 @@ class TPTPParser():
                 |    t_symbol_production
         """
         if len(p) == 2:  # NT_SYMBOL|t_symbol_production
-            if (type(p[1]) is T_SYMBOL):
+            if type(p[1]) is T_SYMBOL:
                 p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.NONE)
             else:
                 p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.NONE)
         elif len(p) == 3 and p[1] == "[":  # OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET
             p[0] = PRODUCTION([], ProductionProperty.OPTIONAL)  # evt. Problem wegen leerer Liste
         elif len(p) == 3:  # NT_SYMBOL REPETITION_SYMBOL|t_symbol_production REPETITION_SYMBOL
-            if (type(p[1]) is T_SYMBOL):
+            if type(p[1]) is T_SYMBOL:
                 p[0] = PRODUCTION_ELEMENT(p[1], ProductionProperty.REPETITION)
             else:
                 p[0] = PRODUCTION_ELEMENT(NT_SYMBOL(p[1]), ProductionProperty.REPETITION)
@@ -282,8 +284,8 @@ class TPTPParser():
                 self.replace_optional_square_brackets_by_terminal(production_rule)
         return rules_list
 
-    def replace_optional_square_brackets_by_terminal(self, rule: GRAMMAR_EXPRESSION):
-        """Replaces ProductionProperty OPTIONAL by the terminal square brackets for all productions in a GRAMMAR_EXPRESSION.
+    def replace_optional_square_brackets_by_terminal(self, rule: EXPRESSION):
+        """Replaces ProductionProperty OPTIONAL by the terminal square brackets for all productions in an EXPRESSION.
 
         :param rule: GRAMMAR_EXPRESSION.
         """
@@ -295,14 +297,14 @@ class TPTPParser():
 
         :param production: Production, where ProductionProperty OPTIONAL is to be replaced by terminal square brackets
         """
-        if (production.productionProperty == ProductionProperty.OPTIONAL):
+        if production.productionProperty == ProductionProperty.OPTIONAL:
             production.list.insert(0, PRODUCTION_ELEMENT(T_SYMBOL("[")))
             production.list.append(PRODUCTION_ELEMENT(T_SYMBOL("]")))
             production.productionProperty = ProductionProperty.NONE
 
         i = 0
         for element in production.list:
-            if (isinstance(element, PRODUCTION)):
+            if isinstance(element, PRODUCTION):
                 self.replace_square_brackets_in_production(element)
             elif (isinstance(element, PRODUCTION_ELEMENT) and (
                     element.productionProperty == ProductionProperty.OPTIONAL)):
@@ -311,7 +313,8 @@ class TPTPParser():
                     [PRODUCTION_ELEMENT(T_SYMBOL("[")), element, PRODUCTION_ELEMENT(T_SYMBOL("]"))])
             i = i + 1
 
-    def number_rules(self, rules_list: GRAMMAR_LIST) -> GRAMMAR_LIST:
+    @staticmethod
+    def number_rules(rules_list: GRAMMAR_LIST) -> GRAMMAR_LIST:
         """Number rules by occurrence in TPTP gramar file.
 
         :param rules_list:  List of all rules from the TPTP grammar file.
@@ -319,7 +322,7 @@ class TPTPParser():
         """
         i = 0
         for element in rules_list.list:
-            if (not isinstance(element, COMMENT_BLOCK)):
+            if not isinstance(element, COMMENT_BLOCK):
                 element.position = i
                 i = i + 1
         return rules_list
@@ -332,13 +335,13 @@ class TPTPParser():
         :return: Grammar_List containing the representation of the TPTP grammar.
         """
         if (file is None):
-            result = self.lexer.import_tptp_file(filename)
+            rules_list = self.lexer.import_tptp_file(filename)
         else:
-            result = file
-        result = self.parser.parse(result)
-        result = self.number_rules(result)
-        result = self.disambigue_square_brackets(result)
-        return result
+            rules_list = file
+        rules_list = self.parser.parse(rules_list)
+        rules_list = self.number_rules(rules_list)
+        rules_list = self.disambigue_square_brackets(rules_list)
+        return rules_list
 
     def __init__(self):
         self.tokens = Lexer.TPTPLexer.tokens

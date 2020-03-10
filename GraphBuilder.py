@@ -1,7 +1,7 @@
 from collections import namedtuple
 from enum import Enum
 from typing import List
-import InputOutput
+import Input
 import Parser
 
 Node = namedtuple("Node", ["value", "ruleType"])
@@ -76,7 +76,7 @@ class TPTPGraphBuilder:
             self.search_productions_list_for_nt(start_node, start_node.productions_list)
             if len(start_node.children) != 0:
                 for i in start_node.children:
-                    if i != []:
+                    if i:
                         for j in i:
                             self.build_graph_rek(j)
 
@@ -307,7 +307,8 @@ class TPTPGraphBuilder:
                 elif len(comment_block_list) > 2:
                     print("Hallo")
 
-    def find_rule_type_for_expression(self, expression):
+    @staticmethod
+    def find_rule_type_for_expression(expression: Parser.EXPRESSION):
         """Find the RuleType of an expression.
 
         :param expression: Expression of which rule type is checked.
@@ -325,7 +326,8 @@ class TPTPGraphBuilder:
             rule_type = RuleType.STRICT
         return rule_type
 
-    def find_top_of_page_line_ids(self, comment_block: Parser.COMMENT_BLOCK) -> List[int]:
+    @staticmethod
+    def find_top_of_page_line_ids(comment_block: Parser.COMMENT_BLOCK) -> List[int]:
         """Find the IDs of top of page lines in a COMMENT_BLOCK ordered ascending.
 
         :param comment_block:
@@ -350,7 +352,7 @@ class TPTPGraphBuilder:
         """
         top_of_page_indexes = self.find_top_of_page_line_ids(comment_block)
         comment_block_list = []
-        if top_of_page_indexes == []:
+        if not top_of_page_indexes:  # if list is empty
             comment_block_list = [comment_block]
         else:
             # potential leading comment block
@@ -396,24 +398,11 @@ class TPTPGraphBuilder:
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
 
-    # def reduce_grammar(self, control_string: str = None) -> None:
-    #     """Reduce Grammar with control file.
-    #
-    #     :param control_filename: Path for the control file.
-    #     """
-    #     lines = control_string.splitlines()
-    #     start_symbol = lines[0]
-    #     self.disable_rules(control_string)
-    #     self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node(start_symbol, RuleType.GRAMMAR)))
-
     def __init__(self, filename: str = None, disable_rules_filename: str = None):
         self.nodes_dictionary = {}
         self.parser = Parser.TPTPParser()
         if (filename is not None) and (disable_rules_filename is not None):
-            # rules_list = self.parser.run(filename)
-            # self.build_nodes_dictionary(rules_list)
-            control_string = InputOutput.read_text_from_file(disable_rules_filename)
+            control_string = Input.read_text_from_file(disable_rules_filename)
             start_symbol = control_string.splitlines()[0]
             self.run(filename=filename, start_symbol=start_symbol)
-            # self.init_tree(start_symbol)
             self.disable_rules(control_string)
