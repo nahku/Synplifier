@@ -4,8 +4,7 @@ from typing import List
 import InputOutput
 import Parser
 
-
-Node = namedtuple("Node", ["value", "productionProperty"])
+Node = namedtuple("Node", ["value", "ruleType"])
 
 
 class RuleType(Enum):
@@ -66,7 +65,7 @@ class TPTPGraphBuilder:
         self.build_graph_rek(new_start_node)
 
     def count_number_of_rules(self):
-        return len(self.nodes_dictionary)-1
+        return len(self.nodes_dictionary) - 1
 
     def build_graph_rek(self, start_node: NTNode):
         """Build the TPTP graph recursively.
@@ -90,7 +89,7 @@ class TPTPGraphBuilder:
         for i in productions_list.list:
             children = []
             self.search_production_for_nt(node, i, children)
-            node.children.append(children) #Append children that have been found to node
+            node.children.append(children)  # Append children to node
 
     def search_production_for_nt(self, node: NTNode, production: Parser.PRODUCTION, children: list):
         """
@@ -104,7 +103,8 @@ class TPTPGraphBuilder:
             if isinstance(i, Parser.PRODUCTION):
                 self.search_production_for_nt(node, i, children)
             elif isinstance(i, Parser.XOR_PRODUCTIONS_LIST):
-                self.search_productions_list_for_nt(node, i)
+                for j in i.list:
+                    self.search_production_for_nt(node, j, children)
             elif isinstance(i, Parser.PRODUCTION_ELEMENT):
                 if not isinstance(i.symbol, Parser.T_SYMBOL):
                     children_nodes = self.find_nt_key(i.symbol.value)
@@ -185,10 +185,11 @@ class TPTPGraphBuilder:
             visited.add(Node(node.value, node.rule_type))
             i = len(node.children) - 1
             for children_list in reversed(node.children):
-                not_terminating = False  # every non terminal symbol in children_list has to be terminating in oder for this production to be terminating
+                not_terminating = False  # every non terminal symbol in children_list has to be terminating in oder
+                # for this production to be terminating
                 for child in children_list:
-                    self.delete_non_terminating_productions(child, terminating, visited)
-                    if child.value not in terminating:
+                    self.delete_non_terminating_productions(child, terminating, visited)  # todo check
+                    if not self.value_in_terminating(child.value, terminating):
                         not_terminating = True
                 if not_terminating:
                     del node.children[i]
@@ -201,21 +202,11 @@ class TPTPGraphBuilder:
         :param terminating: Set of known terminating symbol names (strings).
         """
 
-        # todo: maybe replace dictionary with set
         temporary_dictionary = {}
-        for value in terminating:
-            entry = self.nodes_dictionary.get(Node(value, RuleType.GRAMMAR), None)
+        for node in terminating:
+            entry = self.nodes_dictionary.get(node, None)
             if entry is not None:
-                temporary_dictionary.update({Node(value, RuleType.GRAMMAR): entry})
-            entry = self.nodes_dictionary.get(Node(value, RuleType.STRICT), None)
-            if entry is not None:
-                temporary_dictionary.update({Node(value, RuleType.STRICT): entry})
-            entry = self.nodes_dictionary.get(Node(value, RuleType.MACRO), None)
-            if entry is not None:
-                temporary_dictionary.update({Node(value, RuleType.MACRO): entry})
-            entry = self.nodes_dictionary.get(Node(value, RuleType.TOKEN), None)
-            if entry is not None:
-                temporary_dictionary.update({Node(value, RuleType.TOKEN): entry})
+                temporary_dictionary.update({node: entry})
         self.nodes_dictionary = temporary_dictionary
 
     def find_non_terminating_symbols(self, node: NTNode, terminating: set, visited: set):
@@ -230,17 +221,34 @@ class TPTPGraphBuilder:
             visited.add(Node(node.value, node.rule_type))
             for children_list in node.children:
                 if len(children_list) == 0:
-                    terminating.add(node.value)
+                    terminating.add(Node(node.value, node.rule_type))
                 else:
-                    flag = True
+                    terminating_flag = True
                     # every non terminal child has to be terminating in order for the symbol to be terminating
                     for child in children_list:
                         self.find_non_terminating_symbols(child, terminating, visited)
-                        if not (child.value in terminating):
-                            flag = False
-                    if flag:
-                        terminating.add(node.value)
-                        
+                        if not self.value_in_terminating(child.value, terminating):
+                            terminating_flag = False
+                    if terminating_flag:
+                        terminating.add(Node(node.value, node.rule_type))
+
+    @staticmethod
+    def value_in_terminating(value: str, terminating: set) -> bool:
+        """Checks if nonterminal value is in set terminating (of any ruletype).
+
+        :param value: Nonterminal name.
+        :param terminating: Set of known terminating symbols.
+        :return: Is value in terminating?
+        :rtype: bool
+        """
+        if (Node(value, RuleType.GRAMMAR) not in terminating) and \
+                (Node(value, RuleType.TOKEN) not in terminating) and \
+                (Node(value, RuleType.STRICT) not in terminating) and \
+                (Node(value, RuleType.MACRO) not in terminating):
+            return False
+        else:
+            return True
+
     def build_nodes_dictionary(self, rules_list: Parser.GRAMMAR_LIST):
         """
         Builds a dictionary from a list of rules.
@@ -249,11 +257,13 @@ class TPTPGraphBuilder:
         for expression in rules_list.list:
             if not isinstance(expression, Parser.COMMENT_BLOCK):
                 rule_type = self.find_rule_type_for_expression(expression)
-                self.nodes_dictionary.update({Node(expression.name, rule_type): NTNode(expression.name, expression.productions_list, rule_type,
-                                                                                  None, expression.position)})
+                self.nodes_dictionary.update({Node(expression.name, rule_type): NTNode(expression.name,
+                                                                                       expression.productions_list,
+                                                                                       rule_type, None,
+                                                                                       expression.position)})
         self.assign_comments_to_rules(rules_list)
 
-    def assign_comments_to_rules(self,rules_list: list):
+    def assign_comments_to_rules(self, rules_list: Parser.GRAMMAR_LIST):
         """ Assign comments to rules with heuristic method.
 
         :param rules_list: List of rules.
@@ -262,32 +272,38 @@ class TPTPGraphBuilder:
             if isinstance(expression, Parser.COMMENT_BLOCK):
                 comment_block_list = self.split_comment_block_by_top_of_page(expression)
                 if len(comment_block_list) == 1:
-                    if index < len(rules_list.list)-1:
+                    if index < len(rules_list.list) - 1:
                         # if comment is not at the end assign comment to expression after
-                        next_expression = rules_list.list[index+1]
-                        self.nodes_dictionary[Node(next_expression.name,self.find_rule_type_for_expression(next_expression))].extend_comment_block(comment_block_list[0])
+                        next_expression = rules_list.list[index + 1]
+                        self.nodes_dictionary[Node(next_expression.name, self.find_rule_type_for_expression(
+                            next_expression))].extend_comment_block(comment_block_list[0])
                     else:
                         # if comment at the end of file append to rule before
-                        previous_expression = rules_list.list[index-1]
-                        self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[0])
+                        previous_expression = rules_list.list[index - 1]
+                        self.nodes_dictionary[Node(previous_expression.name, self.find_rule_type_for_expression(
+                            previous_expression))].extend_comment_block(comment_block_list[0])
                 elif len(comment_block_list) == 2:
                     if index != 0:
                         # if comment not at the beginning of file assign to rule before
-                        previous_expression = rules_list.list[index-1]
-                        self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[0])
+                        previous_expression = rules_list.list[index - 1]
+                        self.nodes_dictionary[Node(previous_expression.name, self.find_rule_type_for_expression(
+                            previous_expression))].extend_comment_block(comment_block_list[0])
                     else:
                         # if comment at the beginning of file assign to rule after
-                        next_expression = rules_list.list[index+1]
-                        self.nodes_dictionary[Node(next_expression.name,self.find_rule_type_for_expression(next_expression))].extend_comment_block(comment_block_list[0])
+                        next_expression = rules_list.list[index + 1]
+                        self.nodes_dictionary[Node(next_expression.name, self.find_rule_type_for_expression(
+                            next_expression))].extend_comment_block(comment_block_list[0])
 
-                    if index < len(rules_list.list)-1:
+                    if index < len(rules_list.list) - 1:
                         # if comment not at the end of file assign to rule after
-                        next_expression = rules_list.list[index+1]
-                        self.nodes_dictionary[Node(next_expression.name,self.find_rule_type_for_expression(next_expression))].extend_comment_block(comment_block_list[1])
+                        next_expression = rules_list.list[index + 1]
+                        self.nodes_dictionary[Node(next_expression.name, self.find_rule_type_for_expression(
+                            next_expression))].extend_comment_block(comment_block_list[1])
                     else:
                         # if comment at the end of file assign to rule before
-                        previous_expression = rules_list.list[index-1]
-                        self.nodes_dictionary[Node(previous_expression.name,self.find_rule_type_for_expression(previous_expression))].extend_comment_block(comment_block_list[1])
+                        previous_expression = rules_list.list[index - 1]
+                        self.nodes_dictionary[Node(previous_expression.name, self.find_rule_type_for_expression(
+                            previous_expression))].extend_comment_block(comment_block_list[1])
                 elif len(comment_block_list) > 2:
                     print("Hallo")
 
@@ -337,24 +353,25 @@ class TPTPGraphBuilder:
         if top_of_page_indexes == []:
             comment_block_list = [comment_block]
         else:
-            #potential leading comment block
+            # potential leading comment block
             first_top_of_page_index = top_of_page_indexes[0]
             if first_top_of_page_index != 0:
-                #if only first line
-                if first_top_of_page_index-1 == 0:
+                # if only first line
+                if first_top_of_page_index - 1 == 0:
                     first_comment_block = Parser.COMMENT_BLOCK([comment_block.comment_lines[0]])
                 else:
-                    first_comment_block = Parser.COMMENT_BLOCK(comment_block.comment_lines[0:first_top_of_page_index - 1])
+                    first_comment_block = Parser.COMMENT_BLOCK(
+                        comment_block.comment_lines[0:first_top_of_page_index - 1])
                 comment_block_list.append(first_comment_block)
 
             for index_in_list, index in enumerate(top_of_page_indexes):
-                #if top of page is not last line
-                if(index != len(comment_block.comment_lines)-1):
+                # if top of page is not last line
+                if index != len(comment_block.comment_lines) - 1:
                     start = index + 1
-                    if(index_in_list+1 < len(top_of_page_indexes)):
-                        end = top_of_page_indexes[index_in_list+1]-1
+                    if index_in_list + 1 < len(top_of_page_indexes):
+                        end = top_of_page_indexes[index_in_list + 1] - 1
                     else:
-                        end = len(comment_block.comment_lines)-1
+                        end = len(comment_block.comment_lines) - 1
 
                     if start == end:
                         new_comment_block = Parser.COMMENT_BLOCK([comment_block.comment_lines[start]])
@@ -372,31 +389,31 @@ class TPTPGraphBuilder:
         :param start_symbol: Desired start symbol for graph building.
         :param file: TPTP grammar file as string.
         """
-        if (file is not None):
+        if file is not None:
             rules_list = self.parser.run(file=file, filename=None)
         else:
             rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
 
-    def reduce_grammar(self, control_string: str = None) -> None:
-        """Reduce Grammar with control file.
-
-        :param control_filename: Path for the control file.
-        """
-        lines = control_string.splitlines()
-        start_symbol = lines[0]
-        self.disable_rules(control_string)
-        self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node(start_symbol, RuleType.GRAMMAR)))
+    # def reduce_grammar(self, control_string: str = None) -> None:
+    #     """Reduce Grammar with control file.
+    #
+    #     :param control_filename: Path for the control file.
+    #     """
+    #     lines = control_string.splitlines()
+    #     start_symbol = lines[0]
+    #     self.disable_rules(control_string)
+    #     self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node(start_symbol, RuleType.GRAMMAR)))
 
     def __init__(self, filename: str = None, disable_rules_filename: str = None):
         self.nodes_dictionary = {}
         self.parser = Parser.TPTPParser()
         if (filename is not None) and (disable_rules_filename is not None):
-            #rules_list = self.parser.run(filename)
-            #self.build_nodes_dictionary(rules_list)
+            # rules_list = self.parser.run(filename)
+            # self.build_nodes_dictionary(rules_list)
             control_string = InputOutput.read_text_from_file(disable_rules_filename)
             start_symbol = control_string.splitlines()[0]
-            self.run(filename=filename,start_symbol=start_symbol)
-            #self.init_tree(start_symbol)
+            self.run(filename=filename, start_symbol=start_symbol)
+            # self.init_tree(start_symbol)
             self.disable_rules(control_string)

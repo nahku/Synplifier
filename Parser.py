@@ -61,9 +61,9 @@ class PRODUCTIONS_LIST:
         self.list = productions_list
 
 
-class XOR_PRODUCTIONS_LIST:
+class XOR_PRODUCTIONS_LIST(PRODUCTIONS_LIST):
     def __init__(self, xor_productions_list):
-        self.list = xor_productions_list
+        super().__init__(xor_productions_list)
 
 
 class PRODUCTION:
