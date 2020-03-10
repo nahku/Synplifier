@@ -65,6 +65,9 @@ class TPTPGraphBuilder:
         self.nodes_dictionary[Node(new_start_node.value, new_start_node.rule_type)] = new_start_node
         self.build_graph_rek(new_start_node)
 
+    def count_number_of_rules(self):
+        return len(self.nodes_dictionary)-1
+
     def build_graph_rek(self, start_node: NTNode):
         """Build the TPTP graph recursively.
 
