@@ -150,11 +150,13 @@ class TPTPGraphBuilder:
             data = list(map(int, data))
             data.sort(reverse=True)
             for index in data:
-                del self.nodes_dictionary.get(Node(nt_name, rule_type)).productions_list.list[index]
-                del self.nodes_dictionary.get(Node(nt_name, rule_type)).children[index]
+                node = self.nodes_dictionary.get(Node(nt_name, rule_type))
+                del node.productions_list.list[index]
+                del node.children[index]
 
         self.init_tree(start_symbol)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node('<start_symbol>', RuleType.GRAMMAR)))
+        #print(self.count_number_of_rules())
 
     def remove_non_terminating_symbols(self, start_node: NTNode):
         """Removes non-terminating symbols from the TPTP grammar graph recursively.
@@ -397,6 +399,7 @@ class TPTPGraphBuilder:
             rules_list = self.parser.run(filename)
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
+        #print(self.count_number_of_rules())
 
     def __init__(self, filename: str = None, disable_rules_filename: str = None):
         self.nodes_dictionary = {}
@@ -406,3 +409,4 @@ class TPTPGraphBuilder:
             start_symbol = control_string.splitlines()[0]
             self.run(filename=filename, start_symbol=start_symbol)
             self.disable_rules(control_string)
+        #print(self.count_number_of_rules())

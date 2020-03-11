@@ -1,5 +1,6 @@
 from enum import Enum
 import Lexer
+import Input
 import ply.yacc as yacc
 
 
@@ -335,7 +336,7 @@ class TPTPParser():
         :return: Grammar_List containing the representation of the TPTP grammar.
         """
         if (file is None):
-            rules_list = self.lexer.import_tptp_file(filename)
+            rules_list = Input.import_tptp_file(filename)
         else:
             rules_list = file
         rules_list = self.parser.parse(rules_list)
