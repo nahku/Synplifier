@@ -328,18 +328,15 @@ class TPTPParser():
                 i = i + 1
         return rules_list
 
-    def run(self, filename: str = None, file: str = None) -> GRAMMAR_LIST:
+    def run(self, file: str = None) -> GRAMMAR_LIST:
         """Run parser on TPTP grammar file either passed as string or as filepath.
 
         :param filename: Filename of the TPTP grammar file.
         :param file: TPTP grammar file as string.
         :return: Grammar_List containing the representation of the TPTP grammar.
         """
-        if (file is None):
-            rules_list = Input.import_tptp_file(filename)
-        else:
-            rules_list = file
-        rules_list = self.parser.parse(rules_list)
+
+        rules_list = self.parser.parse(file)
         rules_list = self.number_rules(rules_list)
         rules_list = self.disambigue_square_brackets(rules_list)
         return rules_list

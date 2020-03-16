@@ -385,28 +385,25 @@ class TPTPGraphBuilder:
 
         return comment_block_list
 
-    def run(self, filename: str, start_symbol: str, file: str = None):
+    def run(self, start_symbol: str, file: str):
         """Runs the graph builder using the TPTP grammar file when specified
         and the start symbol, if not specified it uses the filename.
 
-        :param filename: Filename of the TPTP grammar file.
         :param start_symbol: Desired start symbol for graph building.
         :param file: TPTP grammar file as string.
         """
         if file is not None:
             rules_list = self.parser.run(file=file, filename=None)
         else:
-            rules_list = self.parser.run(filename)
+            rules_list = self.parser.run(file)
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
         #print(self.count_number_of_rules())
 
-    def __init__(self, filename: str = None, disable_rules_filename: str = None):
+    def __init__(self, file: str = None, disable_rules_string: str = None):
         self.nodes_dictionary = {}
         self.parser = Parser.TPTPParser()
-        if (filename is not None) and (disable_rules_filename is not None):
-            control_string = Input.read_text_from_file(disable_rules_filename)
-            start_symbol = control_string.splitlines()[0]
-            self.run(filename=filename, start_symbol=start_symbol)
-            self.disable_rules(control_string)
-        #print(self.count_number_of_rules())
+        if (file is not None) and (disable_rules_string is not None):
+            start_symbol = disable_rules_string.splitlines()[0]
+            self.run(start_symbol=start_symbol, file=file)
+            self.disable_rules(disable_rules_string)

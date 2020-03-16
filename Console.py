@@ -1,5 +1,5 @@
 import argparse
-import Output
+import Input,Output
 from GraphBuilder import TPTPGraphBuilder, Node, RuleType
 
 if __name__ == "__main__":
@@ -13,7 +13,7 @@ if __name__ == "__main__":
                         help='optional output file name (default output.txt)')
     args = parser.parse_args()
 
-    graphBuilder = TPTPGraphBuilder(args.grammar, args.control)
+    graphBuilder = TPTPGraphBuilder(Input.read_text_from_file(args.grammar), Input.read_text_from_file(args.control))
     start_node = graphBuilder.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR))
     if start_node:
         if args.output is not None:
