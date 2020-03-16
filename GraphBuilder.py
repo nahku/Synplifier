@@ -392,7 +392,7 @@ class TPTPGraphBuilder:
         :param file: TPTP grammar file as string.
         """
         if file is not None:
-            rules_list = self.parser.run(file=file, filename=None)
+            rules_list = self.parser.run(file=file)
         else:
             rules_list = self.parser.run(file)
         self.build_nodes_dictionary(rules_list)
