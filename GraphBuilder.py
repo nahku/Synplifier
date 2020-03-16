@@ -1,7 +1,6 @@
 from collections import namedtuple
 from enum import Enum
 from typing import List
-import Input
 import Parser
 
 Node = namedtuple("Node", ["value", "ruleType"])

@@ -1,6 +1,5 @@
 from enum import Enum
 import Lexer
-import Input
 import ply.yacc as yacc
 
 
