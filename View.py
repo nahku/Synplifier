@@ -377,7 +377,7 @@ class View(QMainWindow):
 
     def create_tptp_view(self, start_symbol, file=None, filename=None):
         self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
-        self.graphBuilder.run(start_symbol=start_symbol, file=file, filename=filename)
+        self.graphBuilder.run(start_symbol=start_symbol, file=file)
         self.init_tree_view(self.graphBuilder)
         self.check_startsymbol(start_symbol)
 

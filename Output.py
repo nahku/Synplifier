@@ -106,7 +106,7 @@ def save_ordered_rules_from_graph_with_comments(filename: str, start_node):
     save_ordered_rules_from_graph(filename, start_node)
 
     graph_builder = GraphBuilder.TPTPGraphBuilder()
-    graph_builder.run(start_symbol="<comment>", filename="comment.txt")
+    graph_builder.run(start_symbol="<comment>")
     start_node = graph_builder.nodes_dictionary.get(
         GraphBuilder.Node("<comment>", GraphBuilder.RuleType.TOKEN))
     save_ordered_rules_from_graph(filename, start_node, print_option="a")
