@@ -35,57 +35,55 @@ class View(QMainWindow):
         self.init_gui()
 
     def init_gui(self):
-        import_tptp_file_action = QAction('&Import TPTP Grammar File', self)
+        import_tptp_file_action = QAction('&Import TPTP syntax file', self)
         import_tptp_file_action.setShortcut('Ctrl+O')
         import_tptp_file_action.triggered.connect(self.open_tptp_grammar_file)
 
-        import_tptp_file_from_web_action = QAction('&Import TPTP Grammar File from Web', self)
+        import_tptp_file_from_web_action = QAction('&Import TPTP syntax file from web', self)
         import_tptp_file_from_web_action.setShortcut('Ctrl+I')
         import_tptp_file_from_web_action.triggered.connect(self.get_tptp_file_from_web)
 
-        save_with_control_file_action = QAction('&Reduce and save TPTP Grammar with Control File', self)
+        save_with_control_file_action = QAction('&Reduce and save TPTP syntax with control file', self)
         save_with_control_file_action.setShortcut('Ctrl+R')
         save_with_control_file_action.triggered.connect(self.output_tptp_grammar_from_control_file_without_comments)
 
-        save_tptp_grammar_file_from_selection_action = QAction('&Save TPTP Grammar File from Selection', self)
+        save_tptp_grammar_file_from_selection_action = QAction('&Reduce and save TPTP syntax with selection', self)
         save_tptp_grammar_file_from_selection_action.setShortcut('Ctrl+R')
         save_tptp_grammar_file_from_selection_action.triggered.connect(self.create_tptp_grammar_file_from_selection_without_comments)
 
-        produce_reduced_tptp_grammar_action = QAction('&Reduce TPTP Grammar with Selection', self)
+        produce_reduced_tptp_grammar_action = QAction('&Reduce TPTP syntax with selection', self)
         produce_reduced_tptp_grammar_action.setShortcut('Ctrl+B')
         produce_reduced_tptp_grammar_action.triggered.connect(self.reduce_tptp_grammar_with_selection)
 
-        save_control_file_action = QAction('&Produce and save Control File from Selection', self)
+        save_control_file_action = QAction('&Produce and save control file from selection', self)
         save_control_file_action.setShortcut('Ctrl+D')
         save_control_file_action.triggered.connect(self.output_control_file)
 
-        toggle_comments_action = QAction('&Toggle Comments', self)
+        toggle_comments_action = QAction('&Toggle comments', self)
         toggle_comments_action.setShortcut('Ctrl+C')
         toggle_comments_action.triggered.connect(self.toggle_comments)
 
-        import_control_file_action = QAction('&Import Control File', self)
+        import_control_file_action = QAction('&Import control file', self)
         import_control_file_action.setShortcut('Ctrl+C+I')
         import_control_file_action.triggered.connect(self.load_control_file)
 
-        save_with_control_file_comments_action = QAction('&Reduce and save TPTP Grammar with Control File with external Comments', self)
+        save_with_control_file_comments_action = QAction('&Reduce and save TPTP syntax with control file with external comments', self)
         save_with_control_file_comments_action.triggered.connect(self.output_tptp_grammar_from_control_file_with_comments)
 
-        save_tptp_grammar_file_from_selection_comments_action = QAction('&Create TPTP Grammar File from Selection with external Comments', self)
+        save_tptp_grammar_file_from_selection_comments_action = QAction('&Reduce and save TPTP syntax from selection with external comments', self)
         save_tptp_grammar_file_from_selection_comments_action.triggered.connect(self.create_tptp_grammar_file_from_selection_with_comments)
 
         menubar = QMenuBar()
         self.setMenuBar(menubar)
         menubar.setNativeMenuBar(False)
 
-        import_menu = menubar.addMenu("Import")
+        import_menu = menubar.addMenu("Import syntax")
         import_menu.addAction(import_tptp_file_action)
         import_menu.addAction(import_tptp_file_from_web_action)
-        import_menu.addAction(import_control_file_action)
 
-        save_menu = menubar.addMenu("Save")
+        save_menu = menubar.addMenu("Save syntax")
         save_menu.addAction(save_tptp_grammar_file_from_selection_action)
         save_menu.addAction(save_with_control_file_action)
-        save_menu.addAction(save_control_file_action)
         save_menu.addSeparator()
         save_menu.addAction(save_with_control_file_comments_action)
         save_menu.addAction(save_tptp_grammar_file_from_selection_comments_action)
@@ -93,16 +91,20 @@ class View(QMainWindow):
         reduce_menu = menubar.addMenu("Reduce")
         reduce_menu.addAction(produce_reduced_tptp_grammar_action)
 
+        control_file_menu = menubar.addMenu("Control file")
+        control_file_menu.addAction(import_control_file_action)
+        control_file_menu.addAction(save_control_file_action)
+
         view_menu = menubar.addMenu("View")
         view_menu.addAction(toggle_comments_action)
 
-        self.setWindowTitle('TPTP Grammar Reducer')
+        self.setWindowTitle('TPTP sub-syntax extractor')
         self.showMaximized()
 
-    def init_tree_view(self, graph_builder: GraphBuilder.TPTPGraphBuilder) -> None:
+    def init_tree_view(self) -> None:
         self.treeView = QTreeWidget()
         self.treeView.setHeaderLabels(['Non Terminal', 'Production Type', 'Production'])
-        nodes_list = list(graph_builder.nodes_dictionary.values())
+        nodes_list = list(self.graphBuilder.nodes_dictionary.values())
         nodes_list.sort(key=lambda x: x.position)
         for node in nodes_list:
             if node.position >= 0:
@@ -152,6 +154,10 @@ class View(QMainWindow):
                 if not (Qt.ItemIsUserCheckable & flags):
                     item.setHidden(new_status)
             self.commentStatus = new_status
+
+    def check_startsymbol(self, start_symbol):
+        for item in self.treeView.findItems(start_symbol, Qt.MatchFixedString | Qt.MatchRecursive):
+            item.setCheckState(0, QtCore.Qt.Checked)
 
     def load_control_file(self):
         """Loads control file and checks tree view items accordingly.
@@ -285,7 +291,7 @@ class View(QMainWindow):
         try:
             control_string, start_symbol = self.produce_control_file()
             self.graphBuilder.disable_rules(control_string)
-            self.init_tree_view(self.graphBuilder)
+            self.init_tree_view()
             self.check_startsymbol(start_symbol)
         except NoStartSymbolError:
             QMessageBox.about(self, "Error", "A start symbol has to be selected")
@@ -366,21 +372,18 @@ class View(QMainWindow):
                     QMessageBox.about(self, "Error", "A start symbol has to be specified")
                 else:
                     # todo check if start symbol exists
-                    self.create_tptp_view(start_symbol, None, filename)
+                    self.create_tptp_view(start_symbol, Input.read_text_from_file(filename))
 
     def get_tptp_file_from_web(self):
         file = Input.import_tptp_grammar_from_web()
         start_symbol, okPressed = QInputDialog.getText(self, "Input the desired start symbol", "Start Symbol:",
                                                        QLineEdit.Normal, "<TPTP_file>")
         if okPressed and start_symbol != '':
-            self.create_tptp_view(start_symbol, file, None)
+            self.create_tptp_view(start_symbol, file)
 
-    def create_tptp_view(self, start_symbol, file=None, filename=None):
+    def create_tptp_view(self, start_symbol, file):
         self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
         self.graphBuilder.run(start_symbol=start_symbol, file=file)
-        self.init_tree_view(self.graphBuilder)
+        self.init_tree_view()
         self.check_startsymbol(start_symbol)
 
-    def check_startsymbol(self, start_symbol):
-        for item in self.treeView.findItems(start_symbol, Qt.MatchFixedString | Qt.MatchRecursive):
-            item.setCheckState(0, QtCore.Qt.Checked)
