@@ -3,7 +3,7 @@ import urllib
 import os
 
 
-def import_tptp_grammar_from_web() -> str:
+def import_tptp_syntax_from_web() -> str:
     with urllib.request.urlopen("http://www.tptp.org/TPTP/SyntaxBNF.html") as url:
         html_doc = url.read()
     soup = BeautifulSoup(html_doc, 'html.parser')
@@ -12,11 +12,11 @@ def import_tptp_grammar_from_web() -> str:
     tptp_grammar = '\n'.join(tptp_grammar.split('\n')[1:])
     return tptp_grammar
 
-def import_tptp_file(filename: str) -> str:
+def import_tptp_syntax(filename: str) -> str:
     """Import TPTP grammar file.
 
     :param filename: Filename of the TPTP grammar file.
-    :return:   grammar file content as string.
+    :return: grammar file content as string.
     """
     THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
     my_file = os.path.join(THIS_FOLDER, filename)

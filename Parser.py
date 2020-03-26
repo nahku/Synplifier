@@ -1,6 +1,7 @@
 from enum import Enum
 import Lexer
 import ply.yacc as yacc
+from typing import List
 
 
 class ProductionProperty(Enum):
@@ -25,29 +26,29 @@ class NT_SYMBOL(SYMBOL):
         super().__init__(value)
 
 
-class EXPRESSION:
+class RULE:
     def __init__(self, name, productions_list):
         self.name = name
         self.productions_list = productions_list
         self.position = None
 
 
-class GRAMMAR_EXPRESSION(EXPRESSION):
+class GRAMMAR_RULE(RULE):
     def __init__(self, name, productions_list):
         super().__init__(name, productions_list)
 
 
-class TOKEN_EXPRESSION(EXPRESSION):
+class TOKEN_RULE(RULE):
     def __init__(self, name, productions_list):
         super().__init__(name, productions_list)
 
 
-class STRICT_EXPRESSION(EXPRESSION):
+class STRICT_RULE(RULE):
     def __init__(self, name, productions_list):
         super().__init__(name, productions_list)
 
 
-class MACRO_EXPRESSION(EXPRESSION):
+class MACRO_RULE(RULE):
     def __init__(self, name, productions_list):
         super().__init__(name, productions_list)
 
@@ -92,8 +93,11 @@ class COMMENT_BLOCK:
     def __hash__(self):
         return hash(self.comment_lines)
 
+    def extend(self, comment_lines: List[str]):
+        self.comment_lines.extend(comment_lines)
 
-class TPTPParser():
+
+class TPTPParser:
 
     # production rules
 
@@ -135,27 +139,27 @@ class TPTPParser():
 
         """
         if len(p) == 3:
-            p[0] = GRAMMAR_EXPRESSION(p[1], p[2])
+            p[0] = GRAMMAR_RULE(p[1], p[2])
         elif len(p) == 2:  # for case <null> ::=
-            p[0] = GRAMMAR_EXPRESSION(p[1], PRODUCTIONS_LIST([PRODUCTION([PRODUCTION_ELEMENT(T_SYMBOL(""))])]))
+            p[0] = GRAMMAR_RULE(p[1], PRODUCTIONS_LIST([PRODUCTION([PRODUCTION_ELEMENT(T_SYMBOL(""))])]))
 
     def p_token_expression(self, p):
         """
         token_expression : LTOKEN_EXPRESSION productions_list
         """
-        p[0] = TOKEN_EXPRESSION(p[1], p[2])
+        p[0] = TOKEN_RULE(p[1], p[2])
 
     def p_strict_expression(self, p):
         """
         strict_expression : LSTRICT_EXPRESSION productions_list
         """
-        p[0] = STRICT_EXPRESSION(p[1], p[2])
+        p[0] = STRICT_RULE(p[1], p[2])
 
     def p_macro_expression(self, p):
         """
         macro_expression : LMACRO_EXPRESSION productions_list
         """
-        p[0] = MACRO_EXPRESSION(p[1], p[2])
+        p[0] = MACRO_RULE(p[1], p[2])
 
     def p_productions_list(self, p):
         """
@@ -280,14 +284,14 @@ class TPTPParser():
         :return: List of all rules from TPTP grammar file with correct square bracket interpretation.
         """
         for production_rule in rules_list.list:
-            if (isinstance(production_rule, GRAMMAR_EXPRESSION)) or (isinstance(production_rule, STRICT_EXPRESSION)):
+            if (isinstance(production_rule, GRAMMAR_RULE)) or (isinstance(production_rule, STRICT_RULE)):
                 self.replace_optional_square_brackets_by_terminal(production_rule)
         return rules_list
 
-    def replace_optional_square_brackets_by_terminal(self, rule: EXPRESSION):
-        """Replaces ProductionProperty OPTIONAL by the terminal square brackets for all productions in an EXPRESSION.
+    def replace_optional_square_brackets_by_terminal(self, rule: RULE):
+        """Replaces ProductionProperty OPTIONAL by the terminal square brackets for all productions in an RULE.
 
-        :param rule: GRAMMAR_EXPRESSION.
+        :param rule: GRAMMAR_RULE.
         """
         for production in rule.productions_list.list:
             self.replace_square_brackets_in_production(production)

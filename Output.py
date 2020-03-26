@@ -8,8 +8,8 @@ INDENT_LENGTH = 20
 
 def print_rules_from_rules_list(rules_list):
     for i in rules_list.list:
-        if isinstance(i, Parser.MACRO_EXPRESSION) | isinstance(i, Parser.STRICT_EXPRESSION) | \
-                isinstance(i, Parser.GRAMMAR_EXPRESSION) | isinstance(i, Parser.TOKEN_EXPRESSION):
+        if isinstance(i, Parser.MACRO_RULE) | isinstance(i, Parser.STRICT_RULE) | \
+                isinstance(i, Parser.GRAMMAR_RULE) | isinstance(i, Parser.TOKEN_RULE):
             print_expression(i)
             print("")
         else:
@@ -119,13 +119,13 @@ def save_text_to_file(text: str, filename: str):
 
 def print_expression(expression):
     print_wo_newline(expression.name)
-    if isinstance(expression, Parser.GRAMMAR_EXPRESSION):
+    if isinstance(expression, Parser.GRAMMAR_RULE):
         print_wo_newline(" ::= ")
-    elif isinstance(expression, Parser.TOKEN_EXPRESSION):
+    elif isinstance(expression, Parser.TOKEN_RULE):
         print_wo_newline(" ::- ")
-    elif isinstance(expression, Parser.STRICT_EXPRESSION):
+    elif isinstance(expression, Parser.STRICT_RULE):
         print_wo_newline(" :== ")
-    elif isinstance(expression, Parser.MACRO_EXPRESSION):
+    elif isinstance(expression, Parser.MACRO_RULE):
         print_wo_newline(" ::: ")
     print_productions_list(expression.productions_list)
 

@@ -37,23 +37,23 @@ class View(QMainWindow):
     def init_gui(self):
         import_tptp_file_action = QAction('&Import TPTP syntax file', self)
         import_tptp_file_action.setShortcut('Ctrl+O')
-        import_tptp_file_action.triggered.connect(self.open_tptp_grammar_file)
+        import_tptp_file_action.triggered.connect(self.load_tptp_syntax_file)
 
         import_tptp_file_from_web_action = QAction('&Import TPTP syntax file from web', self)
         import_tptp_file_from_web_action.setShortcut('Ctrl+I')
-        import_tptp_file_from_web_action.triggered.connect(self.get_tptp_file_from_web)
+        import_tptp_file_from_web_action.triggered.connect(self.get_tptp_syntax_from_web)
 
         save_with_control_file_action = QAction('&Reduce and save TPTP syntax with control file', self)
         save_with_control_file_action.setShortcut('Ctrl+R')
-        save_with_control_file_action.triggered.connect(self.output_tptp_grammar_from_control_file_without_comments)
+        save_with_control_file_action.triggered.connect(self.output_tptp_syntax_from_control_file_without_comments)
 
         save_tptp_grammar_file_from_selection_action = QAction('&Reduce and save TPTP syntax with selection', self)
         save_tptp_grammar_file_from_selection_action.setShortcut('Ctrl+R')
-        save_tptp_grammar_file_from_selection_action.triggered.connect(self.create_tptp_grammar_file_from_selection_without_comments)
+        save_tptp_grammar_file_from_selection_action.triggered.connect(self.create_tptp_syntax_file_from_selection_without_comments)
 
         produce_reduced_tptp_grammar_action = QAction('&Reduce TPTP syntax with selection', self)
         produce_reduced_tptp_grammar_action.setShortcut('Ctrl+B')
-        produce_reduced_tptp_grammar_action.triggered.connect(self.reduce_tptp_grammar_with_selection)
+        produce_reduced_tptp_grammar_action.triggered.connect(self.reduce_tptp_syntax_with_selection)
 
         save_control_file_action = QAction('&Produce and save control file from selection', self)
         save_control_file_action.setShortcut('Ctrl+D')
@@ -68,10 +68,10 @@ class View(QMainWindow):
         import_control_file_action.triggered.connect(self.load_control_file)
 
         save_with_control_file_comments_action = QAction('&Reduce and save TPTP syntax with control file with external comments', self)
-        save_with_control_file_comments_action.triggered.connect(self.output_tptp_grammar_from_control_file_with_comments)
+        save_with_control_file_comments_action.triggered.connect(self.create_tptp_syntax_from_control_file_with_comments)
 
         save_tptp_grammar_file_from_selection_comments_action = QAction('&Reduce and save TPTP syntax from selection with external comments', self)
-        save_tptp_grammar_file_from_selection_comments_action.triggered.connect(self.create_tptp_grammar_file_from_selection_with_comments)
+        save_tptp_grammar_file_from_selection_comments_action.triggered.connect(self.create_tptp_syntax_file_from_selection_with_comments)
 
         menubar = QMenuBar()
         self.setMenuBar(menubar)
@@ -155,7 +155,7 @@ class View(QMainWindow):
                     item.setHidden(new_status)
             self.commentStatus = new_status
 
-    def check_startsymbol(self, start_symbol):
+    def check_start_symbol(self, start_symbol: str):
         for item in self.treeView.findItems(start_symbol, Qt.MatchFixedString | Qt.MatchRecursive):
             item.setCheckState(0, QtCore.Qt.Checked)
 
@@ -227,8 +227,8 @@ class View(QMainWindow):
     def produce_control_file(self):
         """Produces control file string from gui selection.
 
-        :return:
-
+        :return: control file string and
+        :rtype: (str,str)
         :raises:
             NoImportedGrammarError: No grammar has been imported.
             MultipleStartSymbolsError: Multiple start symbols have been selected.
@@ -287,12 +287,12 @@ class View(QMainWindow):
             control_string += "\n"
         return control_string, start_symbol_selection[0]
 
-    def reduce_tptp_grammar_with_selection(self):
+    def reduce_tptp_syntax_with_selection(self):
         try:
             control_string, start_symbol = self.produce_control_file()
             self.graphBuilder.disable_rules(control_string)
             self.init_tree_view()
-            self.check_startsymbol(start_symbol)
+            self.check_start_symbol(start_symbol)
         except NoStartSymbolError:
             QMessageBox.about(self, "Error", "A start symbol has to be selected")
         except MultipleStartSymbolsError:
@@ -300,13 +300,13 @@ class View(QMainWindow):
         except NoImportedGrammarError:
             QMessageBox.about(self, "Error", "No grammar imported")
 
-    def create_tptp_grammar_file_from_selection_with_comments(self):
-        self.create_tptp_grammar_file_from_selection(with_comments=True)
+    def create_tptp_syntax_file_from_selection_with_comments(self):
+        self.create_tptp_syntax_file_from_selection(with_comments=True)
 
-    def create_tptp_grammar_file_from_selection_without_comments(self):
-        self.create_tptp_grammar_file_from_selection(with_comments=False)
+    def create_tptp_syntax_file_from_selection_without_comments(self):
+        self.create_tptp_syntax_file_from_selection(with_comments=False)
 
-    def create_tptp_grammar_file_from_selection(self, with_comments: bool):
+    def create_tptp_syntax_file_from_selection(self, with_comments: bool):
         filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "", "TPTP Grammar File(*.txt);;")
         if filename:
             try:
@@ -331,13 +331,13 @@ class View(QMainWindow):
             except NoImportedGrammarError:
                 QMessageBox.about(self, "Error", "No grammar imported")
 
-    def output_tptp_grammar_from_control_file_with_comments(self):
-        self.output_tptp_grammar_from_control_file(with_comments=True)
+    def create_tptp_syntax_from_control_file_with_comments(self):
+        self.create_tptp_syntax_from_control_file(with_comments=True)
 
-    def output_tptp_grammar_from_control_file_without_comments(self):
-        self.output_tptp_grammar_from_control_file(with_comments=False)
+    def output_tptp_syntax_from_control_file_without_comments(self):
+        self.create_tptp_syntax_from_control_file(with_comments=False)
 
-    def output_tptp_grammar_from_control_file(self, with_comments: bool):
+    def create_tptp_syntax_from_control_file(self, with_comments: bool):
         control_filename, _ = QFileDialog.getOpenFileName(None, "Open Control File", "", "Control File (*.txt);;")
         if control_filename:
             save_filename, _ = QFileDialog.getSaveFileName(None, "Save TPTP Grammar File", "",
@@ -361,7 +361,7 @@ class View(QMainWindow):
                 else:
                     QMessageBox.about(self, "Error", "No grammar imported")
 
-    def open_tptp_grammar_file(self):
+    def load_tptp_syntax_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open TPTP Grammar File", "", "TPTP Grammar File (*.txt);;")
         # if filename is not empty
         if filename:
@@ -374,16 +374,16 @@ class View(QMainWindow):
                     # todo check if start symbol exists
                     self.create_tptp_view(start_symbol, Input.read_text_from_file(filename))
 
-    def get_tptp_file_from_web(self):
-        file = Input.import_tptp_grammar_from_web()
+    def get_tptp_syntax_from_web(self):
+        file = Input.import_tptp_syntax_from_web()
         start_symbol, okPressed = QInputDialog.getText(self, "Input the desired start symbol", "Start Symbol:",
                                                        QLineEdit.Normal, "<TPTP_file>")
         if okPressed and start_symbol != '':
             self.create_tptp_view(start_symbol, file)
 
-    def create_tptp_view(self, start_symbol, file):
+    def create_tptp_view(self, start_symbol:str, file:str):
         self.graphBuilder = GraphBuilder.TPTPGraphBuilder()
         self.graphBuilder.run(start_symbol=start_symbol, file=file)
         self.init_tree_view()
-        self.check_startsymbol(start_symbol)
+        self.check_start_symbol(start_symbol)
 

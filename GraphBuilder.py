@@ -31,7 +31,7 @@ class NTNode:
         self.children = []
         self.position = position
 
-    def add_children(self, children: list):
+    def add_children(self, children: List):
         """ Add children to children list of NTNode object.
 
         :param children: List of children that should be added to NTNode object.
@@ -46,7 +46,7 @@ class NTNode:
         if self.comment_block is None:
             self.comment_block = comment_block
         else:
-            self.comment_block.comment_lines.extend(comment_block.comment_lines)
+            self.comment_block.extend(comment_block.comment_lines)
 
 
 class TPTPGraphBuilder:
@@ -64,7 +64,10 @@ class TPTPGraphBuilder:
         self.build_graph_rek(new_start_node)
 
     def count_number_of_rules(self):
-        return len(self.nodes_dictionary) - 1
+        number_of_rules = 0
+        for node in self.nodes_dictionary.values():
+            number_of_rules += len(node.children)
+        return number_of_rules
 
     def build_graph_rek(self, start_node: NTNode):
         """Build the TPTP graph recursively.
@@ -90,7 +93,7 @@ class TPTPGraphBuilder:
             self.search_production_for_nt(node, i, children)
             node.children.append(children)  # Append children to node
 
-    def search_production_for_nt(self, node: NTNode, production: Parser.PRODUCTION, children: list):
+    def search_production_for_nt(self, node: NTNode, production: Parser.PRODUCTION, children: List):
         """
         Searches for NT symbols recursively that are part of the production. After the NT symbol has been identified,
         the node of the NT symbol is added to the list of children from the input node.
@@ -155,7 +158,7 @@ class TPTPGraphBuilder:
 
         self.init_tree(start_symbol)
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node('<start_symbol>', RuleType.GRAMMAR)))
-        #print(self.count_number_of_rules())
+        print(self.count_number_of_rules())
 
     def remove_non_terminating_symbols(self, start_node: NTNode):
         """Removes non-terminating symbols from the TPTP grammar graph recursively.
@@ -309,7 +312,7 @@ class TPTPGraphBuilder:
                     print("Hallo")
 
     @staticmethod
-    def find_rule_type_for_expression(expression: Parser.EXPRESSION):
+    def find_rule_type_for_expression(expression: Parser.RULE):
         """Find the RuleType of an expression.
 
         :param expression: Expression of which rule type is checked.
@@ -317,13 +320,13 @@ class TPTPGraphBuilder:
         :rtype: RuleType
         """
         rule_type = None
-        if isinstance(expression, Parser.GRAMMAR_EXPRESSION):
+        if isinstance(expression, Parser.GRAMMAR_RULE):
             rule_type = RuleType.GRAMMAR
-        elif isinstance(expression, Parser.TOKEN_EXPRESSION):
+        elif isinstance(expression, Parser.TOKEN_RULE):
             rule_type = RuleType.TOKEN
-        elif isinstance(expression, Parser.MACRO_EXPRESSION):
+        elif isinstance(expression, Parser.MACRO_RULE):
             rule_type = RuleType.MACRO
-        elif isinstance(expression, Parser.STRICT_EXPRESSION):
+        elif isinstance(expression, Parser.STRICT_RULE):
             rule_type = RuleType.STRICT
         return rule_type
 
@@ -397,7 +400,7 @@ class TPTPGraphBuilder:
             rules_list = self.parser.run(file)
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
-        #print(self.count_number_of_rules())
+        print(self.count_number_of_rules())
 
     def __init__(self, file: str = None, disable_rules_string: str = None):
         self.nodes_dictionary = {}
