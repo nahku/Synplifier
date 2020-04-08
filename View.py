@@ -316,7 +316,7 @@ class View(QMainWindow):
                 graphBuilder.init_tree(start_symbol)
                 graphBuilder.disable_rules(control_string)
                 start_node = graphBuilder.nodes_dictionary.get(
-                    GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
+                    GraphBuilder.Node_Key("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                 if start_node is not None:
                     if with_comments:
                         Output.save_ordered_rules_from_graph_with_comments(filename, start_node)
@@ -350,7 +350,7 @@ class View(QMainWindow):
                     graphBuilder.init_tree(control_string.splitlines()[0])
                     graphBuilder.disable_rules(control_string)
                     start_node = graphBuilder.nodes_dictionary.get(
-                        GraphBuilder.Node("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
+                        GraphBuilder.Node_Key("<start_symbol>", GraphBuilder.RuleType.GRAMMAR))
                     if start_node is not None:
                         if with_comments:
                             Output.save_ordered_rules_from_graph_with_comments(save_filename, start_node)

@@ -1,0 +1,229 @@
+%----v7.3.0.0 (TPTP version.internal development number)
+%------------------------------------------------------------------------------
+%----README ... this header provides important meta- and usage information
+%----
+%----Intended uses of the various parts of the TPTP syntax are explained
+%----in the TPTP technical manual, linked from www.tptp.org.
+%----
+%----Four kinds of separators are used, to indicate different types of rules:
+%----  ::= is used for regular grammar rules, for syntactic parsing.
+%----  :== is used for semantic grammar rules. These define specific values
+%----      that make semantic sense when more general syntactic rules apply.
+%----  ::- is used for rules that produce tokens.
+%----  ::: is used for rules that define character classes used in the
+%----       construction of tokens.
+%----
+%----White space may occur between any two tokens. White space is not specified
+%----in the grammar, but there are some restrictions to ensure that the grammar
+%----is compatible with standard Prolog: a <TPTP_file> should be readable with
+%----read/1.
+%----
+%----The syntax of comments is defined by the <comment> rule. Comments may
+%----occur between any two tokens, but do not act as white space. Comments
+%----will normally be discarded at the lexical level, but may be processed
+%----by systems that understand them (e.g., if the system comment convention
+%----is followed).
+%----
+%----Multiple languages are defined. Depending on your need, you can implement 
+%----just the one(s) you need. The common rules for atoms, terms, etc, come 
+%----after the definitions of the languages, and mostly all needed for all the 
+%----Files. Empty file is OK.
+<TPTP_file>          ::= <TPTP_input>*
+<TPTP_input>         ::= <annotated_formula> | <include>
+%----Formula records
+<annotated_formula>  ::= <cnf_annotated>
+<cnf_annotated>      ::= cnf(<name>,<formula_role>,<cnf_formula><annotations>).
+<annotations>        ::= <null>
+%----In derivations the annotated formulae names must be unique, so that
+%----parent references (see <inference_record>) are unambiguous.
+%----Types for problems.
+%----Note: The previous <source_type> from ...
+%----   <formula_role> ::= <user_role>-<source>
+%----... is now gone. Parsers may choose to be tolerant of it for backwards
+%----compatibility.
+<formula_role>       ::= <lower_word>
+%----"axiom"s are accepted, without proof. There is no guarantee that the
+%----axioms of a problem are consistent.
+%----"hypothesis"s are assumed to be true for a particular problem, and are
+%----used like "axiom"s.
+%----"definition"s are intended to define symbols. They are either universally
+%----quantified equations, or universally quantified equivalences with an
+%----atomic lefthand side. They can be treated like "axiom"s.
+%----"assumption"s can be used like axioms, but must be discharged before a
+%----derivation is complete.
+%----"lemma"s and "theorem"s have been proven from the "axiom"s. They can be
+%----used like "axiom"s in problems, and a problem containing a non-redundant
+%----"lemma" or theorem" is ill-formed. They can also appear in derivations.
+%----"theorem"s are more important than "lemma"s from the user perspective.
+%----"conjecture"s are to be proven from the "axiom"(-like) formulae. A problem
+%----is solved only when all "conjecture"s are proven.
+%----"negated_conjecture"s are formed from negation of a "conjecture" (usually
+%----in a FOF to CNF conversion).
+%----"plain"s have no specified user semantics.
+%----"fi_domain", "fi_functors", and "fi_predicates" are used to record the
+%----domain, interpretation of functors, and interpretation of predicates, for
+%----a finite interpretation.
+%----"type" defines the type globally for one symbol; treat as $true.
+<formula_role>       :== axiom | hypothesis | definition | assumption | lemma | theorem | corollary | conjecture | negated_conjecture | plain | type | fi_domain | fi_functors | fi_predicates | unknown
+%----<fof_term> != <fof_term> is equivalent to ~ <fof_term> = <fof_term>
+<fof_infix_unary>    ::= <fof_term><infix_inequality><fof_term>
+<fof_atomic_formula> ::= <fof_plain_atomic_formula> | <fof_defined_atomic_formula> | <fof_system_atomic_formula>
+<fof_plain_atomic_formula> ::= <fof_plain_term>
+<fof_plain_atomic_formula> :== <proposition> | <predicate>(<fof_arguments>)
+<fof_defined_atomic_formula> ::= <fof_defined_plain_formula> | <fof_defined_infix_formula>
+<fof_defined_plain_formula> ::= <fof_defined_plain_term>
+<fof_defined_plain_formula> :== <defined_proposition> | <defined_predicate>(<fof_arguments>)
+<fof_defined_infix_formula> ::= <fof_term><defined_infix_pred><fof_term>
+%----System terms have system specific interpretations
+<fof_system_atomic_formula> ::= <fof_system_term>
+%----<fof_system_atomic_formula>s are used for evaluable predicates that are
+%----available in particular tools. The predicate names are not controlled by 
+%----the TPTP syntax, so use with due care. Same for <fof_system_term>s.
+%----FOF terms.
+<fof_plain_term>     ::= <constant> | <functor>(<fof_arguments>)
+%----Defined terms have TPTP specific interpretations
+<fof_defined_term>   ::= <defined_term> | <fof_defined_atomic_term>
+<fof_defined_atomic_term> ::= <fof_defined_plain_term>
+%----None yet             | <defined_infix_term>
+%----None yet <defined_infix_term> ::= <fof_term> <defined_infix_func> <fof_term>
+%----None yet <defined_infix_func> ::=
+<fof_defined_plain_term> ::= <defined_constant> | <defined_functor>(<fof_arguments>)
+%----System terms have system specific interpretations
+<fof_system_term>    ::= <system_constant> | <system_functor>(<fof_arguments>)
+%----Arguments recurse back to terms (this is the FOF world here)
+<fof_arguments>      ::= <fof_term> | <fof_term>,<fof_arguments>
+%----These are terms used as arguments. Not the entry point for terms because
+%----<fof_plain_term> is also used as <fof_plain_atomic_formula>. The <tff_
+%----options are for only TFF, but are here because <fof_plain_atomic_formula> 
+%----is used in <fof_atomic_formula>, which is also used as 
+%----<tff_atomic_formula>.
+<fof_term>           ::= <fof_function_term> | <variable>
+<fof_function_term>  ::= <fof_plain_term> | <fof_defined_term> | <fof_system_term>
+%----CNF formulae (variables implicitly universally quantified)
+<cnf_formula>        ::= <disjunction> | (<disjunction>)
+<disjunction>        ::= <literal> | <disjunction><vline><literal>
+<literal>            ::= <fof_atomic_formula> | ~<fof_atomic_formula> | <fof_infix_unary>
+<proposition>        :== <predicate>
+<predicate>          :== <atomic_word>
+<defined_proposition> :== $true | $false
+<defined_predicate>  :== $distinct | $less | $lesseq | $greater | $greatereq | $is_int | $is_rat | $box_P | $box_i | $box_int | $box | $dia_P | $dia_i | $dia_int | $dia
+%----$distinct means that each of it's constant arguments are pairwise !=. It
+%----is part of the TFF syntax. It can be used only as a fact in an axiom (not
+%----a conjecture), and not under any connective.
+<defined_infix_pred> ::= <infix_equality>
+<infix_equality>     ::= =
+<infix_inequality>   ::= !=
+<constant>           ::= <functor>
+<functor>            ::= <atomic_word>
+<system_constant>    ::= <system_functor>
+<system_functor>     ::= <atomic_system_word>
+<defined_constant>   ::= <defined_functor>
+<defined_functor>    ::= <atomic_defined_word>
+<defined_functor>    :== $uminus | $sum | $difference | $product | $quotient | $quotient_e | $quotient_t | $quotient_f | $remainder_e | $remainder_t | $remainder_f | $floor | $ceiling | $truncate | $round | $to_int | $to_rat | $to_real
+<defined_term>       ::= <number> | <distinct_object>
+<variable>           ::= <upper_word>
+%----Include directives
+<include>            ::= include(<file_name><formula_selection>).
+<formula_selection>  ::= ,[<name_list>] | <null>
+<name_list>          ::= <name> | <name>,<name_list>
+%----General purpose
+<name>               ::= <atomic_word> | <integer>
+%----Integer names are expected to be unsigned
+<atomic_word>        ::= <lower_word> | <single_quoted>
+%----<single_quoted> tokens do not include their outer quotes, therefore the
+%----<lower_word> <atomic_word> cat and the <single_quoted> <atomic_word> 'cat'
+%----are the same. Quotes must be removed from a <single_quoted> <atomic_word>
+%----if doing so produces a <lower_word> <atomic_word>. Note that <numbers>s
+%----and <variable>s are not <lower_word>s, so '123' and 123, and 'X' and X,
+%----are different.
+<atomic_defined_word> ::= <dollar_word>
+<atomic_system_word> ::= <dollar_dollar_word>
+<number>             ::= <integer> | <rational> | <real>
+%----Numbers are always interpreted as themselves, and are thus implicitly
+%----distinct if they have different values, e.g., 1 != 2 is an implicit axiom.
+%----All numbers are base 10 at the moment.
+<file_name>          ::= <single_quoted>
+<null>               ::= 
+%----Defined comments are a convention used for annotations that are used as
+%----additional input for systems. They look like comments, but start with %$
+%----or /*$. A wily user of the syntax can notice the $ and extract information
+%----from the "comment" and pass that on as input to the system. They are
+%----analogous to pragmas in programming languages. To extract these separately
+%----from regular comments, the rules are:
+%----  <defined_comment>    ::- <def_comment_line>|<def_comment_block>
+%----  <def_comment_line>   ::: [%]<dollar><printable_char>*
+%----  <def_comment_block>  ::: [/][*]<dollar><not_star_slash>[*][*]*[/]
+%----A string that matches both <defined_comment> and <comment> should be
+%----recognized as <defined_comment>, so put these before <comment>.
+%----Defined comments that are in use include:
+%----    TO BE ANNOUNCED
+%----System comments are a convention used for annotations that may used as
+%----additional input to a specific system. They look like comments, but start
+%----with %$$ or /*$$. A wily user of the syntax can notice the $$ and extract
+%----information from the "comment" and pass that on as input to the system.
+%----The specific system for which the information is intended should be
+%----identified after the $$, e.g., /*$$Otter 3.3: Demodulator */
+%----To extract these separately from regular comments, the rules are:
+%----  <system_comment>     ::- <sys_comment_line>|<sys_comment_block>
+%----  <sys_comment_line>   ::: [%]<dollar><dollar><printable_char>*
+%----  <sys_comment_block>  ::: [/][*]<dollar><dollar><not_star_slash>[*][*]*[/]
+%----A string that matches both <system_comment> and <defined_comment> should
+%----be recognized as <system_comment>, so put these before <defined_comment>.
+<single_quoted>      ::- <single_quote><sq_char><sq_char>*<single_quote>
+%----<single_quoted>s contain visible characters. \ is the escape character for
+%----' and \, i.e., \' is not the end of the <single_quoted>.
+%----The token does not include the outer quotes, e.g., 'cat' and cat are the
+%----same. See <atomic_word> for information about stripping the quotes.
+<distinct_object>    ::- <double_quote><do_char>*<double_quote>
+%---Space and visible characters upto ~, except " and \
+%----<distinct_object>s contain visible characters. \ is the escape character
+%----for " and \, i.e., \" is not the end of the <distinct_object>.
+%----<distinct_object>s are different from (but may be equal to) other tokens,
+%----e.g., "cat" is different from 'cat' and cat. Distinct objects are always
+%----interpreted as themselves, so if they are different they are unequal,
+%----e.g., "Apple" != "Microsoft" is implicit.
+<dollar_word>        ::- <dollar><lower_word>
+<dollar_dollar_word> ::- <dollar><dollar><lower_word>
+<upper_word>         ::- <upper_alpha><alpha_numeric>*
+<lower_word>         ::- <lower_alpha><alpha_numeric>*
+%----Tokens used in syntax, and cannot be character classes
+<vline>              ::- [|]
+%----Numbers. Signs are made part of the same token here.
+<real>               ::- (<signed_real>|<unsigned_real>)
+<signed_real>        ::- <sign><unsigned_real>
+<unsigned_real>      ::- (<decimal_fraction>|<decimal_exponent>)
+<rational>           ::- (<signed_rational>|<unsigned_rational>)
+<signed_rational>    ::- <sign><unsigned_rational>
+<unsigned_rational>  ::- <decimal><slash><positive_decimal>
+<integer>            ::- (<signed_integer>|<unsigned_integer>)
+<signed_integer>     ::- <sign><unsigned_integer>
+<unsigned_integer>   ::- <decimal>
+<decimal>            ::- (<zero_numeric>|<positive_decimal>)
+<positive_decimal>   ::- <non_zero_numeric><numeric>*
+<decimal_exponent>   ::- (<decimal>|<decimal_fraction>)<exponent><exp_integer>
+<decimal_fraction>   ::- <decimal><dot_decimal>
+<dot_decimal>        ::- <dot><numeric><numeric>*
+<exp_integer>        ::- (<signed_exp_integer>|<unsigned_exp_integer>)
+<signed_exp_integer> ::- <sign><unsigned_exp_integer>
+<unsigned_exp_integer> ::- <numeric><numeric>*
+<double_quote>       ::: ["]
+<do_char>            ::: ([\40-\41\43-\133\135-\176]|[\\]["\\])
+<single_quote>       ::: [']
+%---Space and visible characters upto ~, except ' and \
+<sq_char>            ::: ([\40-\46\50-\133\135-\176]|[\\]['\\])
+<sign>               ::: [+-]
+<dot>                ::: [.]
+<exponent>           ::: [Ee]
+<slash>              ::: [/]
+<zero_numeric>       ::: [0]
+<non_zero_numeric>   ::: [1-9]
+<numeric>            ::: [0-9]
+<lower_alpha>        ::: [a-z]
+<upper_alpha>        ::: [A-Z]
+<alpha_numeric>      ::: (<lower_alpha>|<upper_alpha>|<numeric>|[_])
+<dollar>             ::: [$]
+<comment>            ::- <comment_line> | <comment_block>
+<comment_line>       ::- [%]<printable_char>*
+<comment_block>      ::: [/][*]<not_star_slash>[*][*]*[/]
+<not_star_slash>     ::: ([^*]*[*][*]*[^/*])*[^*]*
+<printable_char>     ::: .

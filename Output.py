@@ -1,4 +1,5 @@
 import Parser
+import Input
 import GraphBuilder
 from collections import namedtuple
 
@@ -18,22 +19,22 @@ def print_rules_from_rules_list(rules_list):
 
 def print_rules_from_graph(start_node, visited):
     print_rule_from_nt_node(start_node)
-    visited.update({GraphBuilder.Node(start_node.value, start_node.rule_type): start_node})
+    visited.update({GraphBuilder.Node_Key(start_node.value, start_node.rule_type): start_node})
     for i in start_node.children:
         for j in i:
-            if GraphBuilder.Node(j.value, j.rule_type) not in visited.keys():
+            if GraphBuilder.Node_Key(j.value, j.rule_type) not in visited.keys():
                 print_rules_from_graph(j, visited)
-                visited.update({GraphBuilder.Node(j.value, j.rule_type): j})
+                visited.update({GraphBuilder.Node_Key(j.value, j.rule_type): j})
 
 
 def create_print_list(start_node, visited, print_list):
     print_list = get_print_list(start_node, print_list)
-    visited.update({GraphBuilder.Node(start_node.value, start_node.rule_type): start_node})
+    visited.update({GraphBuilder.Node_Key(start_node.value, start_node.rule_type): start_node})
     for i in start_node.children:
         for j in i:
-            if GraphBuilder.Node(j.value, j.rule_type) not in visited.keys():
+            if GraphBuilder.Node_Key(j.value, j.rule_type) not in visited.keys():
                 print_list = create_print_list(j, visited, print_list)
-                visited.update({GraphBuilder.Node(j.value, j.rule_type): j})
+                visited.update({GraphBuilder.Node_Key(j.value, j.rule_type): j})
     return print_list
 
 
@@ -106,9 +107,9 @@ def save_ordered_rules_from_graph_with_comments(filename: str, start_node):
     save_ordered_rules_from_graph(filename, start_node)
 
     graph_builder = GraphBuilder.TPTPGraphBuilder()
-    graph_builder.run(start_symbol="<comment>")
+    graph_builder.run(start_symbol = "<comment>", file = Input.read_text_from_file("comment.txt"))
     start_node = graph_builder.nodes_dictionary.get(
-        GraphBuilder.Node("<comment>", GraphBuilder.RuleType.TOKEN))
+        GraphBuilder.Node_Key("<comment>", GraphBuilder.RuleType.TOKEN))
     save_ordered_rules_from_graph(filename, start_node, print_option="a")
 
 

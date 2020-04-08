@@ -1,6 +1,6 @@
 import argparse
 import Input, Output
-from GraphBuilder import TPTPGraphBuilder, Node, RuleType
+from GraphBuilder import TPTPGraphBuilder, Node_Key, RuleType
 
 
 class Console:
@@ -12,7 +12,7 @@ class Console:
         args = self.argument_parser.parse_args()
         graphBuilder = TPTPGraphBuilder(file=Input.read_text_from_file(args.grammar),
                                         disable_rules_string=Input.read_text_from_file(args.control))
-        start_node = graphBuilder.nodes_dictionary.get(Node("<start_symbol>", RuleType.GRAMMAR))
+        start_node = graphBuilder.nodes_dictionary.get(Node_Key("<start_symbol>", RuleType.GRAMMAR))
         if start_node:
             Output.save_ordered_rules_from_graph(args.output, start_node)
 
