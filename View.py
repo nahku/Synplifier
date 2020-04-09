@@ -67,10 +67,10 @@ class View(QMainWindow):
         import_control_file_action.setShortcut('Ctrl+C+I')
         import_control_file_action.triggered.connect(self.load_control_file)
 
-        save_with_control_file_comments_action = QAction('&Reduce and save TPTP syntax with control file with external comments', self)
+        save_with_control_file_comments_action = QAction('&Reduce and save TPTP syntax with control file with external comment syntax', self)
         save_with_control_file_comments_action.triggered.connect(self.create_tptp_syntax_from_control_file_with_comments)
 
-        save_tptp_grammar_file_from_selection_comments_action = QAction('&Reduce and save TPTP syntax from selection with external comments', self)
+        save_tptp_grammar_file_from_selection_comments_action = QAction('&Reduce and save TPTP syntax from selection with external comment syntax', self)
         save_tptp_grammar_file_from_selection_comments_action.triggered.connect(self.create_tptp_syntax_file_from_selection_with_comments)
 
         menubar = QMenuBar()

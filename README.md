@@ -50,6 +50,13 @@ In the <annotations> productions, the ,<source><optional_info> production is dis
 ```
 To disable more productions just add new lines containing the nonterminal symbol, the rule type and the indexes of the productions to be blocked.
 ###Command-line
+
+| **Name**             | **Short form** | **Default** | **Description**                                                                                              |
+| :------------------- | :------------- | :---------- | :----------------------------------------------------------------------------------------------------------- |
+| \--grammar           | \-g            | None        | <span data-acronym-label="TPTP" data-acronym-form="singular+short">TPTP</span> syntax file path and filename |
+| \--control           | \-c            | None        | Control file path and filename                                                                               |
+| \--output            | \-o            | output.txt  | Output file path and filename (optional)                                                                     |
+| \--external\_comment | \-ex           | False       | Flag to include external comment syntax (optional)                                                           |
 ```
-$ python Console.py <tptp_syntax_filename>.txt <control_file_name>.txt
+$ python Console.py -g <tptp_syntax_filename>.txt -c <control_file_name>.txt
 ```
