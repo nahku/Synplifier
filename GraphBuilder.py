@@ -31,6 +31,27 @@ class NTNode:
         self.children = []
         self.position = position
 
+    def __str__(self):
+        node_string = ""
+        if self.comment_block is not None:
+            node_string *= str(self.comment_block)
+
+        node_string += self.value
+
+        node_string = node_string.ljust(20)  # uniform length of left side of rule
+
+        if self.rule_type == RuleType.GRAMMAR:
+            node_string += " ::= "
+        elif self.rule_type == RuleType.TOKEN:
+            node_string += " ::- "
+        elif self.rule_type == RuleType.STRICT:
+            node_string += " :== "
+        elif self.rule_type == RuleType.MACRO:
+            node_string += " ::: "
+        node_string += str(self.productions_list)
+
+        return node_string
+
     def add_children(self, children: List):
         """ Add children to children list of NTNode object.
 

@@ -36,27 +36,27 @@ class View(QMainWindow):
 
     def init_gui(self):
         import_tptp_file_action = QAction('&Import TPTP syntax file', self)
-        import_tptp_file_action.setShortcut('Ctrl+O')
+        import_tptp_file_action.setShortcut('Ctrl+I')
         import_tptp_file_action.triggered.connect(self.load_tptp_syntax_file)
 
         import_tptp_file_from_web_action = QAction('&Import TPTP syntax file from web', self)
-        import_tptp_file_from_web_action.setShortcut('Ctrl+I')
+        import_tptp_file_from_web_action.setShortcut('Ctrl+W')
         import_tptp_file_from_web_action.triggered.connect(self.get_tptp_syntax_from_web)
 
         save_with_control_file_action = QAction('&Reduce and save TPTP syntax with control file', self)
-        save_with_control_file_action.setShortcut('Ctrl+R')
+        save_with_control_file_action.setShortcut('Ctrl+S')
         save_with_control_file_action.triggered.connect(self.output_tptp_syntax_from_control_file_without_comments)
 
         save_tptp_grammar_file_from_selection_action = QAction('&Reduce and save TPTP syntax with selection', self)
-        save_tptp_grammar_file_from_selection_action.setShortcut('Ctrl+R')
+        save_tptp_grammar_file_from_selection_action.setShortcut('Ctrl+D')
         save_tptp_grammar_file_from_selection_action.triggered.connect(self.create_tptp_syntax_file_from_selection_without_comments)
 
         produce_reduced_tptp_grammar_action = QAction('&Reduce TPTP syntax with selection', self)
-        produce_reduced_tptp_grammar_action.setShortcut('Ctrl+B')
+        produce_reduced_tptp_grammar_action.setShortcut('Ctrl+R')
         produce_reduced_tptp_grammar_action.triggered.connect(self.reduce_tptp_syntax_with_selection)
 
         save_control_file_action = QAction('&Produce and save control file from selection', self)
-        save_control_file_action.setShortcut('Ctrl+D')
+        save_control_file_action.setShortcut('Ctrl+F')
         save_control_file_action.triggered.connect(self.output_control_file)
 
         toggle_comments_action = QAction('&Toggle comments', self)
@@ -64,7 +64,7 @@ class View(QMainWindow):
         toggle_comments_action.triggered.connect(self.toggle_comments)
 
         import_control_file_action = QAction('&Import control file', self)
-        import_control_file_action.setShortcut('Ctrl+C+I')
+        import_control_file_action.setShortcut('Ctrl+O')
         import_control_file_action.triggered.connect(self.load_control_file)
 
         save_with_control_file_comments_action = QAction('&Reduce and save TPTP syntax with control file with external comment syntax', self)
@@ -125,7 +125,7 @@ class View(QMainWindow):
                 item.setBackground(1, light_gray)
                 item.setBackground(2, light_gray)
                 for production in node.productions_list.list:
-                    child_item = QTreeWidgetItem(['', '', Output.get_production_string(production)])
+                    child_item = QTreeWidgetItem(['', '', str(production)])
                     child_item.setCheckState(0, QtCore.Qt.Checked)
                     item.addChild(child_item)
                 if node.comment_block is not None:

@@ -14,16 +14,37 @@ class SYMBOL:
     def __init__(self, value):
         self.value = value
 
-
 class T_SYMBOL(SYMBOL):
     def __init__(self, value, property=ProductionProperty.NONE):
         super().__init__(value)
         self.property = property
 
+    def __str__(self):
+        symbol_string = ""
+        if self.property == ProductionProperty.NONE:
+            symbol_string += self.value
+        elif self.property == ProductionProperty.REPETITION:
+            symbol_string += self.value
+            symbol_string += "*"
+        elif self.property == ProductionProperty.OPTIONAL:
+            symbol_string += "["
+            symbol_string += self.value
+            symbol_string += "]"
+        elif self.property == ProductionProperty.XOR:
+            symbol_string += "("
+            symbol_string += self.value
+            symbol_string += ")"
+
+        return symbol_string
+
+
 
 class NT_SYMBOL(SYMBOL):
     def __init__(self, value):
         super().__init__(value)
+
+    def __str__(self):
+        return self.value
 
 
 class RULE:
@@ -62,10 +83,36 @@ class PRODUCTIONS_LIST:
     def __init__(self, productions_list):
         self.list = productions_list
 
+    def __str__(self):
+        productions_list_string = ""
+        length = len(self.list)
+        j = 1
+        for production in self.list:
+            productions_list_string += str(production)
+            if j < length:
+                productions_list_string += " | "
+            j = j + 1
+        return productions_list_string
+
 
 class XOR_PRODUCTIONS_LIST(PRODUCTIONS_LIST):
     def __init__(self, xor_productions_list):
         super().__init__(xor_productions_list)
+
+    def __str__(self):
+        xor_productions_list_string = ""
+        xor_productions_list_string += "("
+        productions_list_string = ""
+        length = len(self.list)
+        j = 1
+        for production in self.list:
+            productions_list_string += str(production)
+            if j < length:
+                productions_list_string += "|"
+            j = j + 1
+        xor_productions_list_string += productions_list_string
+        xor_productions_list_string += ")"
+        return xor_productions_list_string
 
 
 class PRODUCTION:
@@ -73,16 +120,62 @@ class PRODUCTION:
         self.list = list
         self.productionProperty = productionProperty
 
+    def __str__(self):
+        production_string = ""
+        for element in self.list:
+            if isinstance(element, PRODUCTION):
+                if element.productionProperty == ProductionProperty.NONE:
+                    production_string += str(element)
+                elif element.productionProperty == ProductionProperty.REPETITION:
+                    production_string += "("
+                    production_string += str(element)
+                    production_string += ")"
+                    production_string += "*"
+                elif element.productionProperty == ProductionProperty.OPTIONAL:
+                    production_string += "["
+                    production_string += str(element)
+                    production_string += "]"
+                elif element.productionProperty == ProductionProperty.XOR:
+                    production_string += "("
+                    production_string += str(element)
+                    production_string += ")"
+            elif isinstance(element, XOR_PRODUCTIONS_LIST) or isinstance(element, PRODUCTION_ELEMENT):
+                production_string += str(element)
+        return production_string
+
 
 class PRODUCTION_ELEMENT:
     def __init__(self, symbol: SYMBOL, productionProperty=ProductionProperty.NONE):
         self.symbol = symbol
         self.productionProperty = productionProperty  # none, repetition or optional
 
+    def __str__(self):
+        production_element_string = ""
+        if self.productionProperty == ProductionProperty.NONE:
+            production_element_string += str(self.symbol)
+        elif self.productionProperty == ProductionProperty.REPETITION:
+            production_element_string += str(self.symbol)
+            production_element_string += "*"
+        elif self.productionProperty == ProductionProperty.OPTIONAL:
+            production_element_string += "["
+            production_element_string += str(self.symbol)
+            production_element_string += "]"
+        elif self.productionProperty == ProductionProperty.XOR:
+            production_element_string += str(self.symbol)
+            production_element_string += "|"
+        return production_element_string
+
 
 class COMMENT_BLOCK:
     def __init__(self, comment_lines):
         self.comment_lines = comment_lines
+
+    def __str__(self):
+        comment_string = ""
+        if self.comment_lines is not None:
+            for line in self.comment_lines:
+                comment_string += line + "\n"
+        return comment_string
 
     def __eq__(self, other):
         if not isinstance(other, COMMENT_BLOCK):
