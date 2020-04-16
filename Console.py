@@ -14,7 +14,10 @@ class Console:
                                         disable_rules_string=Input.read_text_from_file(args.control))
         start_node = graphBuilder.nodes_dictionary.get(Node_Key("<start_symbol>", RuleType.GRAMMAR))
         if start_node:
-            Output.save_ordered_rules_from_graph(args.output, start_node)
+            if args.external_comment:
+                Output.save_ordered_rules_from_graph_with_comments(args.output, start_node)
+            else:
+                Output.save_ordered_rules_from_graph(args.output, start_node)
 
     def __init__(self):
         self.argument_parser = argparse.ArgumentParser(
@@ -25,6 +28,8 @@ class Console:
                                           help='path of the control file')
         self.argument_parser.add_argument('-o', '--output', metavar='', type=str, required=False,
                                           help='optional output file name (default output.txt)', default= "output.txt")
+        #default false, if present true
+        self.argument_parser.add_argument('-ec', '--external_comment', action='store_true', help="flag - include external comment syntax")
 
 
 if __name__ == "__main__":

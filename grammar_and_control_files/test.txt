@@ -1,0 +1,245 @@
+<thf_annotated>      ::= thf(<name>,<formula_role>,<thf_formula><annotations>).
+<annotations>        ::= <null>
+%----In derivations the annotated formulae names must be unique, so that
+%----parent references (see <inference_record>) are unambiguous.
+%----Types for problems.
+%----Note: The previous <source_type> from ...
+%----   <formula_role> ::= <user_role>-<source>
+%----... is now gone. Parsers may choose to be tolerant of it for backwards
+%----compatibility.
+<formula_role> ::= <lower_word>
+%----"axiom"s are accepted, without proof. There is no guarantee that the
+%----axioms of a problem are consistent.
+%----"hypothesis"s are assumed to be true for a particular problem, and are
+%----used like "axiom"s.
+%----"definition"s are intended to define symbols. They are either universally
+%----quantified equations, or universally quantified equivalences with an
+%----atomic lefthand side. They can be treated like "axiom"s.
+%----"assumption"s can be used like axioms, but must be discharged before a
+%----derivation is complete.
+%----"lemma"s and "theorem"s have been proven from the "axiom"s. They can be
+%----used like "axiom"s in problems, and a problem containing a non-redundant
+%----"lemma" or theorem" is ill-formed. They can also appear in derivations.
+%----"theorem"s are more important than "lemma"s from the user perspective.
+%----"conjecture"s are to be proven from the "axiom"(-like) formulae. A problem
+%----is solved only when all "conjecture"s are proven.
+%----"negated_conjecture"s are formed from negation of a "conjecture" (usually
+%----in a FOF to CNF conversion).
+%----"plain"s have no specified user semantics.
+%----"fi_domain", "fi_functors", and "fi_predicates" are used to record the
+%----domain, interpretation of functors, and interpretation of predicates, for
+%----a finite interpretation.
+%----"type" defines the type globally for one symbol; treat as $true.
+<formula_role> :== axiom | hypothesis | definition | assumption | lemma | theorem | corollary | conjecture | negated_conjecture | plain | type | fi_domain | fi_functors | fi_predicates | unknown
+%----THF formulae.
+<thf_formula> ::= <thf_logic_formula> | <thf_atom_typing> | <thf_subtype> | <thf_sequent>
+<thf_logic_formula>  ::= <thf_unitary_formula> | <thf_unary_formula> | <thf_binary_formula> | <thf_defined_infix>
+<thf_binary_formula> ::= <thf_binary_nonassoc> | <thf_binary_assoc> | <thf_binary_type>
+%----There's no precedence among binary connectives
+<thf_binary_nonassoc> ::= <thf_unit_formula><nonassoc_connective><thf_unit_formula>
+<thf_binary_assoc>   ::= <thf_or_formula> | <thf_and_formula> | <thf_apply_formula>
+<thf_or_formula>     ::= <thf_unit_formula><vline><thf_unit_formula> | <thf_or_formula><vline><thf_unit_formula>
+<thf_and_formula>    ::= <thf_unit_formula>&<thf_unit_formula> | <thf_and_formula>&<thf_unit_formula>
+%----@ (denoting apply) is left-associative and lambda is right-associative.
+%----^ [X] : ^ [Y] : f @ g (where f is a <thf_apply_formula> and g is a
+%----<thf_unitary_formula>) should be parsed as: (^ [X] : (^ [Y] : f)) @ g.
+%----That is, g is not in the scope of either lambda.
+<thf_apply_formula> ::= <thf_unit_formula>@<thf_unit_formula> | <thf_apply_formula>@<thf_unit_formula>
+<thf_unit_formula>   ::= <thf_unitary_formula> | <thf_unary_formula> | <thf_defined_infix>
+<thf_preunit_formula> ::= <thf_unitary_formula> | <thf_prefix_unary>
+<thf_unitary_formula> ::= <thf_quantified_formula> | <thf_atomic_formula> | <variable> | (<thf_logic_formula>)
+%----All variables must be quantified
+<thf_quantified_formula> ::= <thf_quantification><thf_unit_formula>
+<thf_quantification> ::= <thf_quantifier>[<thf_variable_list>]:
+<thf_variable_list>  ::= <thf_typed_variable> | <thf_typed_variable>,<thf_variable_list>
+<thf_typed_variable> ::= <variable>:<thf_top_level_type>
+<thf_unary_formula>  ::= <thf_prefix_unary> | <thf_infix_unary>
+<thf_prefix_unary>   ::= <thf_unary_connective><thf_preunit_formula>
+<thf_infix_unary>    ::= <thf_unitary_term><infix_inequality><thf_unitary_term>
+<thf_atomic_formula> ::= <thf_plain_atomic> | <thf_defined_atomic> | <thf_system_atomic> | <thf_fof_function>
+<thf_plain_atomic>   ::= <constant> | <thf_tuple>
+%----Tuples can't be formulae. See TFF. FIX HERE.
+<thf_defined_atomic> ::= <defined_constant> | <thf_conditional> | <thf_let> | (<thf_conn_term>) | <defined_term>
+<thf_defined_infix>  ::= <thf_unitary_term><defined_infix_pred><thf_unitary_term>
+%----Defined terms can't be formulae. See TFF. FIX HERE.
+<thf_system_atomic> ::= <system_constant>
+%----Allows first-order style in THF.
+<thf_fof_function> ::= <functor>(<thf_arguments>) | <defined_functor>(<thf_arguments>) | <system_functor>(<thf_arguments>)
+<thf_conditional>    ::= $ite(<thf_logic_formula>,<thf_logic_formula>,<thf_logic_formula>)
+<thf_let>            ::= $let(<thf_let_types>,<thf_let_defns>,<thf_formula>)
+<thf_let_types>      ::= <thf_atom_typing> | [<thf_atom_typing_list>]
+<thf_atom_typing_list> ::= <thf_atom_typing> | <thf_atom_typing>,<thf_atom_typing_list>
+<thf_let_defns>      ::= <thf_let_defn> | [<thf_let_defn_list>]
+<thf_let_defn>       ::= <thf_logic_formula><assignment><thf_logic_formula>
+<thf_let_defn_list>  ::= <thf_let_defn> | <thf_let_defn>,<thf_let_defn_list>
+<thf_unitary_term>   ::= <thf_atomic_formula> | <variable> | (<thf_logic_formula>)
+<thf_tuple>          ::= [] | [<thf_formula_list>]
+<thf_formula_list>   ::= <thf_logic_formula> | <thf_logic_formula>,<thf_formula_list>
+<thf_conn_term>      ::= <nonassoc_connective> | <assoc_connective> | <infix_equality> | <thf_unary_connective>
+%----Note that syntactically this allows (p @ =), but for = the first
+%----argument must be known to infer the type of =, so that's not
+%----allowed, i.e., only (= @ p).
+%----Arguments recurse back up to formulae (this is the THF world here)
+<thf_arguments> ::= <thf_formula_list>
+%----<thf_top_level_type> appears after ":", where a type is being specified
+%----for a term or variable. <thf_unitary_type> includes <thf_unitary_formula>,
+%----so the syntax is very loose, but trying to be more specific about 
+%----<thf_unitary_type>s (ala the semantic rule) leads to reduce/reduce 
+%----conflicts.
+<thf_atom_typing> ::= <untyped_atom>:<thf_top_level_type> | (<thf_atom_typing>)
+<thf_top_level_type> ::= <thf_unitary_type> | <thf_mapping_type> | <thf_apply_type>
+%----Removed along with adding <thf_binary_type> to <thf_binary_formula>, for
+%----TH1 polymorphic types with binary after quantification.
+%----      | (<thf_binary_type>)
+<thf_unitary_type> ::= <thf_unitary_formula>
+<thf_unitary_type>   :== <thf_atomic_type> | <th1_quantified_type>
+<thf_atomic_type>    :== <type_constant> | <defined_type> | <variable> | <thf_mapping_type> | (<thf_atomic_type>)
+<th1_quantified_type> :== !>[<thf_variable_list>]:<thf_unitary_type>
+<thf_apply_type>     ::= <thf_apply_formula>
+<thf_binary_type>    ::= <thf_mapping_type> | <thf_xprod_type> | <thf_union_type>
+%----Mapping is right-associative: o > o > o means o > (o > o).
+<thf_mapping_type> ::= <thf_unitary_type><arrow><thf_unitary_type> | <thf_unitary_type><arrow><thf_mapping_type>
+%----Xproduct is left-associative: o * o * o means (o * o) * o. Xproduct
+%----can be replaced by tuple types.
+<thf_xprod_type> ::= <thf_unitary_type><star><thf_unitary_type> | <thf_xprod_type><star><thf_unitary_type>
+%----Union is left-associative: o + o + o means (o + o) + o.
+<thf_union_type> ::= <thf_unitary_type><plus><thf_unitary_type> | <thf_union_type><plus><thf_unitary_type>
+%----Tuple types, e.g., [a,b,c], are allowed (by the loose syntax) as tuples.
+<thf_subtype> ::= <untyped_atom><subtype_sign><atom>
+<thf_sequent>        ::= <thf_tuple><gentzen_arrow><thf_tuple> | (<thf_sequent>)
+%----Connectives - THF
+<thf_quantifier> ::= <fof_quantifier> | <th0_quantifier> | <th1_quantifier>
+%----TH0 quantifiers are also available in TH1
+<th1_quantifier> ::= !> | ?*
+<th0_quantifier>     ::= ^ | @+ | @-
+<thf_unary_connective> ::= <unary_connective> | <th1_unary_connective>
+<th1_unary_connective> ::= !! | ?? | @@+ | @@- | @=
+%----Connectives - THF and TFF
+<subtype_sign> ::= <<
+%----Connectives - TFF
+%----Connectives - FOF
+<fof_quantifier> ::= ! | ?
+<nonassoc_connective> ::= <=> | => | <= | <~> | ~<vline> | ~&
+<assoc_connective>   ::= <vline> | &
+<unary_connective>   ::= ~
+%----The seqent arrow
+<gentzen_arrow> ::= -->
+<assignment>         ::= :=
+%----Types for THF and TFF
+<type_constant> ::= <type_functor>
+<type_functor>       ::= <atomic_word>
+<defined_type>       ::= <atomic_defined_word>
+<defined_type>       :== $oType | $o | $iType | $i | $tType | $real | $rat | $int
+%----For all language types
+<atom> ::= <untyped_atom> | <defined_constant>
+<untyped_atom>       ::= <constant> | <system_constant>
+%----$distinct means that each of it's constant arguments are pairwise !=. It
+%----is part of the TFF syntax. It can be used only as a fact in an axiom (not
+%----a conjecture), and not under any connective.
+<defined_infix_pred> ::= <infix_equality>
+<infix_equality>     ::= =
+<infix_inequality>   ::= !=
+<constant>           ::= <functor>
+<functor>            ::= <atomic_word>
+<system_constant>    ::= <system_functor>
+<system_functor>     ::= <atomic_system_word>
+<defined_constant>   ::= <defined_functor>
+<defined_functor>    ::= <atomic_defined_word>
+<defined_functor>    :== $uminus | $sum | $difference | $product | $quotient | $quotient_e | $quotient_t | $quotient_f | $remainder_e | $remainder_t | $remainder_f | $floor | $ceiling | $truncate | $round | $to_int | $to_rat | $to_real
+<defined_term>       ::= <number> | <distinct_object>
+<variable>           ::= <upper_word>
+%----General purpose
+<name> ::= <atomic_word> | <integer>
+%----Integer names are expected to be unsigned
+<atomic_word> ::= <lower_word> | <single_quoted>
+%----<single_quoted> tokens do not include their outer quotes, therefore the
+%----<lower_word> <atomic_word> cat and the <single_quoted> <atomic_word> 'cat'
+%----are the same. Quotes must be removed from a <single_quoted> <atomic_word>
+%----if doing so produces a <lower_word> <atomic_word>. Note that <numbers>s
+%----and <variable>s are not <lower_word>s, so '123' and 123, and 'X' and X,
+%----are different.
+<atomic_defined_word> ::= <dollar_word>
+<atomic_system_word> ::= <dollar_dollar_word>
+<number>             ::= <integer> | <rational> | <real>
+<null>               ::= 
+%----Defined comments are a convention used for annotations that are used as
+%----additional input for systems. They look like comments, but start with %$
+%----or /*$. A wily user of the syntax can notice the $ and extract information
+%----from the "comment" and pass that on as input to the system. They are
+%----analogous to pragmas in programming languages. To extract these separately
+%----from regular comments, the rules are:
+%----  <defined_comment>    ::- <def_comment_line>|<def_comment_block>
+%----  <def_comment_line>   ::: [%]<dollar><printable_char>*
+%----  <def_comment_block>  ::: [/][*]<dollar><not_star_slash>[*][*]*[/]
+%----A string that matches both <defined_comment> and <comment> should be
+%----recognized as <defined_comment>, so put these before <comment>.
+%----Defined comments that are in use include:
+%----    TO BE ANNOUNCED
+%----System comments are a convention used for annotations that may used as
+%----additional input to a specific system. They look like comments, but start
+%----with %$$ or /*$$. A wily user of the syntax can notice the $$ and extract
+%----information from the "comment" and pass that on as input to the system.
+%----The specific system for which the information is intended should be
+%----identified after the $$, e.g., /*$$Otter 3.3: Demodulator */
+%----To extract these separately from regular comments, the rules are:
+%----  <system_comment>     ::- <sys_comment_line>|<sys_comment_block>
+%----  <sys_comment_line>   ::: [%]<dollar><dollar><printable_char>*
+%----  <sys_comment_block>  ::: [/][*]<dollar><dollar><not_star_slash>[*][*]*[/]
+%----A string that matches both <system_comment> and <defined_comment> should
+%----be recognized as <system_comment>, so put these before <defined_comment>.
+<single_quoted> ::- <single_quote><sq_char><sq_char>*<single_quote>
+%----<single_quoted>s contain visible characters. \ is the escape character for
+%----' and \, i.e., \' is not the end of the <single_quoted>.
+%----The token does not include the outer quotes, e.g., 'cat' and cat are the
+%----same. See <atomic_word> for information about stripping the quotes.
+<distinct_object> ::- <double_quote><do_char>*<double_quote>
+%---Space and visible characters upto ~, except " and \
+%----<distinct_object>s contain visible characters. \ is the escape character
+%----for " and \, i.e., \" is not the end of the <distinct_object>.
+%----<distinct_object>s are different from (but may be equal to) other tokens,
+%----e.g., "cat" is different from 'cat' and cat. Distinct objects are always
+%----interpreted as themselves, so if they are different they are unequal,
+%----e.g., "Apple" != "Microsoft" is implicit.
+<dollar_word> ::- <dollar><lower_word>
+<dollar_dollar_word> ::- <dollar><dollar><lower_word>
+<upper_word>         ::- <upper_alpha><alpha_numeric>*
+<lower_word>         ::- <lower_alpha><alpha_numeric>*
+%----Tokens used in syntax, and cannot be character classes
+<vline> ::- [|]
+<star>               ::- [*]
+<plus>               ::- [+]
+<arrow>              ::- [>]
+%----Numbers. Signs are made part of the same token here.
+<real> ::- (<signed_real>|<unsigned_real>)
+<signed_real>        ::- <sign><unsigned_real>
+<unsigned_real>      ::- (<decimal_fraction>|<decimal_exponent>)
+<rational>           ::- (<signed_rational>|<unsigned_rational>)
+<signed_rational>    ::- <sign><unsigned_rational>
+<unsigned_rational>  ::- <decimal><slash><positive_decimal>
+<integer>            ::- (<signed_integer>|<unsigned_integer>)
+<signed_integer>     ::- <sign><unsigned_integer>
+<unsigned_integer>   ::- <decimal>
+<decimal>            ::- (<zero_numeric>|<positive_decimal>)
+<positive_decimal>   ::- <non_zero_numeric><numeric>*
+<decimal_exponent>   ::- (<decimal>|<decimal_fraction>)<exponent><exp_integer>
+<decimal_fraction>   ::- <decimal><dot_decimal>
+<dot_decimal>        ::- <dot><numeric><numeric>*
+<exp_integer>        ::- (<signed_exp_integer>|<unsigned_exp_integer>)
+<signed_exp_integer> ::- <sign><unsigned_exp_integer>
+<unsigned_exp_integer> ::- <numeric><numeric>*
+<double_quote>       ::: ["]
+<do_char>            ::: ([\40-\41\43-\133\135-\176]|[\\]["\\])
+<single_quote>       ::: [']
+%---Space and visible characters upto ~, except ' and \
+<sq_char> ::: ([\40-\46\50-\133\135-\176]|[\\]['\\])
+<sign>               ::: [+-]
+<dot>                ::: [.]
+<exponent>           ::: [Ee]
+<slash>              ::: [/]
+<zero_numeric>       ::: [0]
+<non_zero_numeric>   ::: [1-9]
+<numeric>            ::: [0-9]
+<lower_alpha>        ::: [a-z]
+<upper_alpha>        ::: [A-Z]
+<alpha_numeric>      ::: (<lower_alpha>|<upper_alpha>|<numeric>|[_])
+<dollar>             ::: [$]
