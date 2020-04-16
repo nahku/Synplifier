@@ -208,7 +208,6 @@ class View(QMainWindow):
                                 child = item.child(index)
                                 # if child exists
                                 if child is not None:
-                                    child = item.child(index)
                                     child.setCheckState(0, QtCore.Qt.Unchecked)
 
     def output_control_file(self):
@@ -254,7 +253,6 @@ class View(QMainWindow):
                     entry = Entry(parent.text(0), GraphBuilder.RuleType.MACRO)
                 elif rule_type == "TOKEN":
                     entry = Entry(parent.text(0), GraphBuilder.RuleType.TOKEN)
-                parent = item.parent()
                 indexOfChild = parent.indexOfChild(item)
                 if entry not in entry_dictionary:
                     entry_dictionary[entry] = [indexOfChild]
