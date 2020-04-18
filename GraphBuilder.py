@@ -34,7 +34,7 @@ class NTNode:
     def __str__(self):
         node_string = ""
         if self.comment_block is not None:
-            node_string *= str(self.comment_block)
+            node_string += str(self.comment_block)
 
         node_string += self.value
 
@@ -84,11 +84,33 @@ class TPTPGraphBuilder:
         self.nodes_dictionary[Node_Key(new_start_node.value, new_start_node.rule_type)] = new_start_node
         self.build_graph_rek(new_start_node)
 
-    def count_number_of_rules(self):
-        number_of_rules = 0
-        for node in self.nodes_dictionary.values():
-            number_of_rules += len(node.children)
-        return number_of_rules
+    def count_rules(self):
+        counter_nodes = [0];
+        counter_productions = [0];
+        counter_nodes = self.count_nodes_in_graph(set(),self.nodes_dictionary.get(Node_Key("<start_symbol>",RuleType.GRAMMAR)),counter_nodes)
+        counter_productions = self.count_productions_in_graph(set(),self.nodes_dictionary.get(Node_Key("<start_symbol>",RuleType.GRAMMAR)),counter_productions)
+        print("Productions: " + str(counter_productions[0]))
+        print("Rules: " + str(counter_nodes[0]))
+
+    def count_nodes_in_graph(self, visited: set, node: NTNode, counter):
+        if node not in visited:
+            visited.add(node)
+            if node.value is not "<start_node>":
+                counter[0] += 1
+            for children_list in node.children:
+                for child in children_list:
+                    self.count_nodes_in_graph(visited,child,counter)
+        return counter
+
+    def count_productions_in_graph(self, visited: set, node: NTNode, counter):
+        if node not in visited:
+            visited.add(node)
+            if node.value is not "<start_node>":
+                counter[0] += len(node.productions_list.list)
+            for children_list in node.children:
+                for child in children_list:
+                    self.count_productions_in_graph(visited,child,counter)
+        return counter
 
     def build_graph_rek(self, start_node: NTNode):
         """Build the TPTP graph recursively.
@@ -178,7 +200,7 @@ class TPTPGraphBuilder:
                 del node.children[index]
         self.remove_non_terminating_symbols(self.nodes_dictionary.get(Node_Key('<start_symbol>', RuleType.GRAMMAR)))
         self.init_tree(start_symbol)
-        print(self.count_number_of_rules())
+        self.count_rules()
 
     def remove_non_terminating_symbols(self, start_node: NTNode):
         """Removes non-terminating symbols from the TPTP grammar graph recursively.
@@ -367,7 +389,7 @@ class TPTPGraphBuilder:
             rules_list = self.parser.run(file)
         self.build_nodes_dictionary(rules_list)
         self.init_tree(start_symbol)
-        print(self.count_number_of_rules())
+        self.count_rules()
 
     def __init__(self, file: str = None, disable_rules_string: str = None):
         self.nodes_dictionary = {}
