@@ -219,6 +219,7 @@
                            $modal_axiom_D | $modal_axiom_4 | $modal_axiom_5
 
 %----Top of Page---------------------------------------------------------------
+%Test
 %----TFF formulae.
 <tff_formula>          ::= <tff_logic_formula> | <tff_atom_typing> |
                            <tff_subtype> | <tfx_sequent>

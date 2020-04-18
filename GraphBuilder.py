@@ -281,7 +281,7 @@ class TPTPGraphBuilder:
         """
         for expression in rules_list.list:
             if not isinstance(expression, Parser.COMMENT_BLOCK):
-                rule_type = self.find_rule_type_for_expression(expression)
+                rule_type = self.find_rule_type_for_rule(expression)
                 self.nodes_dictionary.update({Node_Key(expression.name, rule_type): NTNode(expression.name,
                                                                                            expression.productions_list,
                                                                                            rule_type, None,
@@ -295,46 +295,48 @@ class TPTPGraphBuilder:
         """
         for index, expression in enumerate(rules_list.list):
             if isinstance(expression, Parser.COMMENT_BLOCK):
-                comment_block_list = self.split_comment_block_by_top_of_page(expression)
+                comment_block_list = expression.split_comment_block_by_top_of_page()
                 if len(comment_block_list) == 1:
                     if index < len(rules_list.list) - 1:
                         # if comment is not at the end assign comment to expression after
-                        next_expression = rules_list.list[index + 1]
-                        self.nodes_dictionary[Node_Key(next_expression.name, self.find_rule_type_for_expression(
-                            next_expression))].extend_comment_block(comment_block_list[0])
+                        next_rule = rules_list.list[index + 1]
+                        self.append_comment_block_to_node(next_rule,comment_block_list[0])
                     else:
                         # if comment at the end of file append to rule before
-                        previous_expression = rules_list.list[index - 1]
-                        self.nodes_dictionary[Node_Key(previous_expression.name, self.find_rule_type_for_expression(
-                            previous_expression))].extend_comment_block(comment_block_list[0])
+                        previous_rule = rules_list.list[index - 1]
+                        self.append_comment_block_to_node(previous_rule,comment_block_list[0])
                 elif len(comment_block_list) == 2:
                     if index != 0:
                         # if comment not at the beginning of file assign to rule before
-                        previous_expression = rules_list.list[index - 1]
-                        self.nodes_dictionary[Node_Key(previous_expression.name, self.find_rule_type_for_expression(
-                            previous_expression))].extend_comment_block(comment_block_list[0])
+                        previous_rule = rules_list.list[index - 1]
+                        self.append_comment_block_to_node(previous_rule,comment_block_list[0])
                     else:
                         # if comment at the beginning of file assign to rule after
-                        next_expression = rules_list.list[index + 1]
-                        self.nodes_dictionary[Node_Key(next_expression.name, self.find_rule_type_for_expression(
-                            next_expression))].extend_comment_block(comment_block_list[0])
-
+                        next_rule = rules_list.list[index + 1]
+                        self.append_comment_block_to_node(next_rule,comment_block_list[0])
                     if index < len(rules_list.list) - 1:
                         # if comment not at the end of file assign to rule after
-                        next_expression = rules_list.list[index + 1]
-                        self.nodes_dictionary[Node_Key(next_expression.name, self.find_rule_type_for_expression(
-                            next_expression))].extend_comment_block(comment_block_list[1])
+                        next_rule = rules_list.list[index + 1]
+                        self.append_comment_block_to_node(next_rule,comment_block_list[1])
                     else:
                         # if comment at the end of file assign to rule before
-                        previous_expression = rules_list.list[index - 1]
-                        self.nodes_dictionary[Node_Key(previous_expression.name, self.find_rule_type_for_expression(
-                            previous_expression))].extend_comment_block(comment_block_list[1])
+                        previous_rule = rules_list.list[index - 1]
+                        self.append_comment_block_to_node(previous_rule,comment_block_list[1])
                 elif len(comment_block_list) > 2:
                     print("Hallo")
                     # todo attach comment blocks from second on
 
+    def append_comment_block_to_node(self, rule: Parser.RULE, comment_block: Parser.COMMENT_BLOCK):
+        """Appends comment block to node in nodes_dictionary idientified by rule.
+
+        :param rule: Rule, that specifies the node to append the comment_block.
+        :param comment_block: Comment block that is to be appended to node specified by rule.
+        """
+        node_key = Node_Key(rule.name, self.find_rule_type_for_rule(rule));
+        self.nodes_dictionary[node_key].extend_comment_block(comment_block)
+
     @staticmethod
-    def find_rule_type_for_expression(expression: Parser.RULE):
+    def find_rule_type_for_rule(expression: Parser.RULE):
         """Find the RuleType of an expression.
 
         :param expression: Expression of which rule type is checked.
@@ -351,63 +353,6 @@ class TPTPGraphBuilder:
         elif isinstance(expression, Parser.STRICT_RULE):
             rule_type = RuleType.STRICT
         return rule_type
-
-    @staticmethod
-    def find_top_of_page_line_ids(comment_block: Parser.COMMENT_BLOCK) -> List[int]:
-        """Find the IDs of top of page lines in a COMMENT_BLOCK ordered ascending.
-
-        :param comment_block:
-        :return: List of IDs of top of page lines.
-        :rtype: List[int]
-        """
-        index = 0
-        index_list = []
-        for line in comment_block.comment_lines:
-            if line == "%----Top of Page---------------------------------------------------------------":
-                index_list.append(index)
-            index += 1
-        return index_list
-
-    def split_comment_block_by_top_of_page(self, comment_block: Parser.COMMENT_BLOCK) -> List[Parser.COMMENT_BLOCK]:
-        """Split a COMMENT_BLOCK by top of page lines and return a list of splitted COMMENT_BLOCKs without
-        the top of page lines.
-
-        :param comment_block: COMMENT_BLOCK to be splitted by top of page.
-        :return: List of COMMENT_BLOCKs splitted by top of page.
-        :rtype: List[Parser.COMMENT_BLOCK]
-        """
-        top_of_page_indexes = self.find_top_of_page_line_ids(comment_block)
-        comment_block_list = []
-        if not top_of_page_indexes:  # if list is empty
-            comment_block_list = [comment_block]
-        else:
-            # potential leading comment block
-            first_top_of_page_index = top_of_page_indexes[0]
-            if first_top_of_page_index != 0:
-                # if only first line
-                if first_top_of_page_index - 1 == 0:
-                    first_comment_block = Parser.COMMENT_BLOCK([comment_block.comment_lines[0]])
-                else:
-                    first_comment_block = Parser.COMMENT_BLOCK(
-                        comment_block.comment_lines[0:first_top_of_page_index - 1])
-                comment_block_list.append(first_comment_block)
-
-            for index_in_list, index in enumerate(top_of_page_indexes):
-                # if top of page is not last line
-                if index != len(comment_block.comment_lines) - 1:
-                    start = index + 1
-                    if index_in_list + 1 < len(top_of_page_indexes):
-                        end = top_of_page_indexes[index_in_list + 1] - 1
-                    else:
-                        end = len(comment_block.comment_lines) - 1
-
-                    if start == end:
-                        new_comment_block = Parser.COMMENT_BLOCK([comment_block.comment_lines[start]])
-                    else:
-                        new_comment_block = Parser.COMMENT_BLOCK(comment_block.comment_lines[start:end])
-                    comment_block_list.append(new_comment_block)
-
-        return comment_block_list
 
     def run(self, start_symbol: str, file: str):
         """Runs the graph builder using the TPTP grammar file when specified

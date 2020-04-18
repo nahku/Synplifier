@@ -189,6 +189,60 @@ class COMMENT_BLOCK:
     def extend(self, comment_lines: List[str]):
         self.comment_lines.extend(comment_lines)
 
+    def find_top_of_page_line_ids(self) -> List[int]:
+        """Find the IDs of top of page lines ordered ascending.
+
+        :return: List of IDs of top of page lines.
+        :rtype: List[int]
+        """
+        index = 0
+        index_list = []
+        for line in self.comment_lines:
+            if line == "%----Top of Page---------------------------------------------------------------":
+                index_list.append(index)
+            index += 1
+        return index_list
+
+    def split_comment_block_by_top_of_page(self) -> List:
+        """Split a COMMENT_BLOCK by top of page lines and return a list of split COMMENT_BLOCKs without
+        the top of page lines.
+
+        :return: List of COMMENT_BLOCKs split by top of page.
+        :rtype: List[COMMENT_BLOCK]
+        """
+        top_of_page_indexes = self.find_top_of_page_line_ids()
+        comment_block_list = []
+        if not top_of_page_indexes:  # if list is empty
+            comment_block_list = [self]
+        else:
+            # potential leading comment block
+            first_top_of_page_index = top_of_page_indexes[0]
+            if first_top_of_page_index != 0:
+                # if only first line
+                if first_top_of_page_index == 1:
+                    first_comment_block = COMMENT_BLOCK([self.comment_lines[0]])
+                else:
+                    first_comment_block = COMMENT_BLOCK(
+                        self.comment_lines[0:first_top_of_page_index])
+                comment_block_list.append(first_comment_block)
+
+            for index_in_list, index in enumerate(top_of_page_indexes):
+                # if top of page is not last line
+                if index != len(self.comment_lines) - 1:
+                    start = index + 1
+                    if index_in_list + 1 < len(top_of_page_indexes):
+                        end = top_of_page_indexes[index_in_list + 1]
+                    else:
+                        end = len(self.comment_lines)
+
+                    if start == end:
+                        new_comment_block = COMMENT_BLOCK([self.comment_lines[start]])
+                    else:
+                        new_comment_block = COMMENT_BLOCK(self.comment_lines[start:end])
+                    comment_block_list.append(new_comment_block)
+
+        return comment_block_list
+
 
 class TPTPParser:
 
@@ -412,7 +466,7 @@ class TPTPParser:
 
     @staticmethod
     def number_rules(rules_list: GRAMMAR_LIST) -> GRAMMAR_LIST:
-        """Number rules by occurrence in TPTP gramar file.
+        """Number rules by occurrence in TPTP grammar file.
 
         :param rules_list:  List of all rules from the TPTP grammar file.
         :return: List of all rules from TPTP grammar file numbered by occurence.
@@ -424,10 +478,9 @@ class TPTPParser:
                 i = i + 1
         return rules_list
 
-    def run(self, file: str = None) -> GRAMMAR_LIST:
-        """Run parser on TPTP grammar file either passed as string or as filepath.
+    def run(self, file: str) -> GRAMMAR_LIST:
+        """Run parser on TPTP grammar file passed as string.
 
-        :param filename: Filename of the TPTP grammar file.
         :param file: TPTP grammar file as string.
         :return: Grammar_List containing the representation of the TPTP grammar.
         """
