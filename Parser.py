@@ -218,12 +218,7 @@ class COMMENT_BLOCK:
             # potential leading comment block
             first_top_of_page_index = top_of_page_indexes[0]
             if first_top_of_page_index != 0:
-                # if only first line
-                if first_top_of_page_index == 1:
-                    first_comment_block = COMMENT_BLOCK([self.comment_lines[0]])
-                else:
-                    first_comment_block = COMMENT_BLOCK(
-                        self.comment_lines[0:first_top_of_page_index])
+                first_comment_block = COMMENT_BLOCK(self.comment_lines[0:first_top_of_page_index])
                 comment_block_list.append(first_comment_block)
 
             for index_in_list, index in enumerate(top_of_page_indexes):
