@@ -221,19 +221,18 @@ class COMMENT_BLOCK:
                 first_comment_block = COMMENT_BLOCK(self.comment_lines[0:first_top_of_page_index])
                 comment_block_list.append(first_comment_block)
 
-            for index_in_list, index in enumerate(top_of_page_indexes):
+            for index_in_list, top_of_page_index in enumerate(top_of_page_indexes):
                 # if top of page is not last line
-                if index != len(self.comment_lines) - 1:
-                    start = index + 1
+                if top_of_page_index != len(self.comment_lines) - 1:
+                    start = top_of_page_index + 1
+                    #if this is not last top_of_page_index
                     if index_in_list + 1 < len(top_of_page_indexes):
+                        #end is next top_of_page_index
                         end = top_of_page_indexes[index_in_list + 1]
                     else:
+                        #end is end of comment lines
                         end = len(self.comment_lines)
-
-                    if start == end:
-                        new_comment_block = COMMENT_BLOCK([self.comment_lines[start]])
-                    else:
-                        new_comment_block = COMMENT_BLOCK(self.comment_lines[start:end])
+                    new_comment_block = COMMENT_BLOCK(self.comment_lines[start:end])
                     comment_block_list.append(new_comment_block)
 
         return comment_block_list
