@@ -114,7 +114,7 @@ class TPTPGraphBuilder:
             self.search_production_for_nt(node, i, children)
             node.children.append(children)  # Append children to node
 
-    def search_production_for_nt(self, node: NTNode, production: Parser.PRODUCTION, children: List):
+    def search_production_for_nt(self, node: NTNode, production: Parser.PRODUCTION, children: list):
         """
         Searches for NT symbols recursively that are part of the production. After the NT symbol has been identified,
         the node of the NT symbol is added to the list of children from the input node.
