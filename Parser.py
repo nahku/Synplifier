@@ -119,22 +119,19 @@ class PRODUCTION:
 
     def __str__(self):
         production_string = ""
-        
+        if self.productionProperty == ProductionProperty.REPETITION:
+            production_string += "("
+        elif self.productionProperty == ProductionProperty.OPTIONAL:
+            production_string += "["
+
         for element in self.list:
-            if isinstance(element, PRODUCTION):
-                if element.productionProperty == ProductionProperty.NONE:
-                    production_string += str(element)
-                elif element.productionProperty == ProductionProperty.REPETITION:
-                    production_string += "("
-                    production_string += str(element)
-                    production_string += ")"
-                    production_string += "*"
-                elif element.productionProperty == ProductionProperty.OPTIONAL:
-                    production_string += "["
-                    production_string += str(element)
-                    production_string += "]"
-            elif isinstance(element, XOR_PRODUCTIONS_LIST) or isinstance(element, PRODUCTION_ELEMENT):
-                production_string += str(element)
+            production_string += str(element)
+
+        if self.productionProperty == ProductionProperty.REPETITION:
+            production_string += ")"
+            production_string += "*"
+        elif self.productionProperty == ProductionProperty.OPTIONAL:
+            production_string += "]"
         return production_string
 
 
