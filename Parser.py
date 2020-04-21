@@ -30,10 +30,6 @@ class T_SYMBOL(SYMBOL):
             symbol_string += "["
             symbol_string += self.value
             symbol_string += "]"
-        elif self.property == ProductionProperty.XOR:
-            symbol_string += "("
-            symbol_string += self.value
-            symbol_string += ")"
 
         return symbol_string
 
@@ -86,12 +82,13 @@ class PRODUCTIONS_LIST:
     def __str__(self):
         productions_list_string = ""
         length = len(self.list)
-        j = 1
+        index = 1
         for production in self.list:
             productions_list_string += str(production)
-            if j < length:
+            if index < length:
                 productions_list_string += " | "
-            j = j + 1
+            index += 1
+
         return productions_list_string
 
 
@@ -122,6 +119,7 @@ class PRODUCTION:
 
     def __str__(self):
         production_string = ""
+        
         for element in self.list:
             if isinstance(element, PRODUCTION):
                 if element.productionProperty == ProductionProperty.NONE:
@@ -135,10 +133,6 @@ class PRODUCTION:
                     production_string += "["
                     production_string += str(element)
                     production_string += "]"
-                elif element.productionProperty == ProductionProperty.XOR:
-                    production_string += "("
-                    production_string += str(element)
-                    production_string += ")"
             elif isinstance(element, XOR_PRODUCTIONS_LIST) or isinstance(element, PRODUCTION_ELEMENT):
                 production_string += str(element)
         return production_string
@@ -160,9 +154,6 @@ class PRODUCTION_ELEMENT:
             production_element_string += "["
             production_element_string += str(self.symbol)
             production_element_string += "]"
-        elif self.productionProperty == ProductionProperty.XOR:
-            production_element_string += str(self.symbol)
-            production_element_string += "|"
         return production_element_string
 
 
