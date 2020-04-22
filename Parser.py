@@ -14,6 +14,7 @@ class SYMBOL:
     def __init__(self, value):
         self.value = value
 
+
 class T_SYMBOL(SYMBOL):
     def __init__(self, value, property=ProductionProperty.NONE):
         super().__init__(value)
@@ -32,7 +33,6 @@ class T_SYMBOL(SYMBOL):
             symbol_string += "]"
 
         return symbol_string
-
 
 
 class NT_SYMBOL(SYMBOL):

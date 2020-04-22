@@ -304,10 +304,12 @@ class TPTPGraphBuilder:
         for expression in rules_list.list:
             if not isinstance(expression, Parser.COMMENT_BLOCK):
                 rule_type = self.find_rule_type_for_rule(expression)
-                self.nodes_dictionary.update({Node_Key(expression.name, rule_type): NTNode(expression.name,
-                                                                                           expression.productions_list,
-                                                                                           rule_type, None,
-                                                                                           expression.position)})
+                node_key = Node_Key(expression.name, rule_type)
+                if node_key not in self.nodes_dictionary:
+                    nt_node = NTNode(expression.name, expression.productions_list, rule_type, None, expression.position)
+                    self.nodes_dictionary.update({node_key: nt_node})
+                else:
+                    self.nodes_dictionary[node_key].productions_list.list.extend(expression.productions_list.list)
         self.assign_comments_to_rules(rules_list)
 
     def assign_comments_to_rules(self, rules_list: Parser.GRAMMAR_LIST):
