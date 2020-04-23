@@ -85,8 +85,8 @@ class TPTPGraphBuilder:
         self.build_graph_rek(new_start_node)
 
     def count_rules(self):
-        counter_nodes = [0];
-        counter_productions = [0];
+        counter_nodes = [0]
+        counter_productions = [0]
         counter_nodes = self.count_nodes_in_graph(set(),self.nodes_dictionary.get(Node_Key("<start_symbol>",RuleType.GRAMMAR)),counter_nodes)
         counter_productions = self.count_productions_in_graph(set(),self.nodes_dictionary.get(Node_Key("<start_symbol>",RuleType.GRAMMAR)),counter_productions)
         print("Productions: " + str(counter_productions[0]))
