@@ -85,18 +85,23 @@ class TPTPGraphBuilder:
         self.build_graph_rek(new_start_node)
 
     def count_rules(self):
-        counter_nodes = [0]
-        counter_productions = [0]
+        counter_nodes = [0,0]
+        counter_productions = [0,0]
         counter_nodes = self.count_nodes_in_graph(set(),self.nodes_dictionary.get(Node_Key("<start_symbol>",RuleType.GRAMMAR)),counter_nodes)
         counter_productions = self.count_productions_in_graph(set(),self.nodes_dictionary.get(Node_Key("<start_symbol>",RuleType.GRAMMAR)),counter_productions)
         print("Productions: " + str(counter_productions[0]))
+        print("Syntax productions: " + str(counter_productions[1]))
         print("Rules: " + str(counter_nodes[0]))
+        print("Syntax rules: " + str(counter_nodes[1]))
 
     def count_nodes_in_graph(self, visited: set, node: NTNode, counter):
         if node not in visited:
             visited.add(node)
-            if node.value is not "<start_node>":
+            if node.value != "<start_symbol>":
                 counter[0] += 1
+                # Grammar rule counter
+                if node.rule_type is RuleType.GRAMMAR:
+                    counter[1] += 1
             for children_list in node.children:
                 for child in children_list:
                     self.count_nodes_in_graph(visited,child,counter)
@@ -105,8 +110,10 @@ class TPTPGraphBuilder:
     def count_productions_in_graph(self, visited: set, node: NTNode, counter):
         if node not in visited:
             visited.add(node)
-            if node.value is not "<start_node>":
+            if node.value != "<start_symbol>":
                 counter[0] += len(node.productions_list.list)
+                if node.rule_type is RuleType.GRAMMAR:
+                    counter[1] += len(node.productions_list.list)
             for children_list in node.children:
                 for child in children_list:
                     self.count_productions_in_graph(visited,child,counter)
